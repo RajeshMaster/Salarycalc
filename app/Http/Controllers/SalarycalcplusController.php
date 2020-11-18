@@ -90,7 +90,7 @@ Class SalarycalcplusController extends Controller {
 				$current_year = intval($splityear[0]);
 			}
 		} else if ($request->selYear) {
-			if ($request->selMonth > $account_close_mn) {
+			if (date('m') > $account_close_mn) {
 				$current_year = intval($request->selYear) + 1;
 				$last_year = intval($request->selYear);
 			} else {
@@ -2451,7 +2451,7 @@ Class SalarycalcplusController extends Controller {
     	$template_name = 'resources/assets/uploadandtemplates/templates/salary_details_plus_index.xls';
     	if (!isset($request->payrollExcel)) {
     		// for historyTotal page payroll
-        	$excel_name='Salary+_'.$request->selYear;
+        	$excel_name='Salary+_'.$request->selYear.'分給料明細';
     	} else {
     		// for index page payroll
     		if ($request->get_prev_yr == 1) {
@@ -2461,7 +2461,7 @@ Class SalarycalcplusController extends Controller {
 				$request->selYear = $date_month[0];
 				$request->selMonth = $date_month[1];
 			}
-    		$excel_name='Salary+_'.$request->selYear.'_'.$request->selMonth;
+    		$excel_name='Salary+_'.$request->selYear.'_'.$request->selMonth.'分給料明細';
     	}
 		Excel::load($template_name, function($objTpl) use($request, $hdn_empid) {
 			
@@ -2763,10 +2763,11 @@ Class SalarycalcplusController extends Controller {
 			$objTpl->getActiveSheet()->freezePane('B5');
 			$objTpl->getActiveSheet()->freezePane('C5');
 			$objTpl->getActiveSheet()->freezePane('D5');
+			$objTpl->getActiveSheet()->getCell('C2')->setValue('株式会社Microbit');
 			if (!isset($request->payrollExcel)) {
-				$objTpl->getActiveSheet()->setCellValue('C2', $request->selYear.'年分   給与一覧');
+				$objTpl->getActiveSheet()->setCellValue('C3', $request->selYear.'年分   給与一覧');
 			} else {
-				$objTpl->getActiveSheet()->setCellValue('C2', $request->selYear.'年 '.$request->selMonth.'月分   給与一覧');
+				$objTpl->getActiveSheet()->setCellValue('C3', $request->selYear.'年 '.$request->selMonth.'月分   給与一覧');
 			}
 			$objTpl->setActiveSheetIndex(0);
         	$objTpl->getActiveSheet(0)->setSelectedCells('A1');
