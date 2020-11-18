@@ -2451,7 +2451,7 @@ Class SalarycalcplusController extends Controller {
     	$template_name = 'resources/assets/uploadandtemplates/templates/salary_details_plus_index.xls';
     	if (!isset($request->payrollExcel)) {
     		// for historyTotal page payroll
-        	$excel_name='Salary+_'.$request->selYear.'分給料明細';
+        	$excel_name='Salary+_'.$request->selYear.urlencode('分給料明細');
     	} else {
     		// for index page payroll
     		if ($request->get_prev_yr == 1) {
@@ -2461,7 +2461,7 @@ Class SalarycalcplusController extends Controller {
 				$request->selYear = $date_month[0];
 				$request->selMonth = $date_month[1];
 			}
-    		$excel_name='Salary+_'.$request->selYear.'_'.$request->selMonth.'分給料明細';
+    		$excel_name='Salary+_'.$request->selYear.'_'.$request->selMonth.urlencode('分給料明細');
     	}
 		Excel::load($template_name, function($objTpl) use($request, $hdn_empid) {
 			
