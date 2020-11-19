@@ -41,11 +41,11 @@ class User extends Authenticatable
           parent::setAttribute($key, $value);
         }
     }
-    /*public static function fnfetchscreenname() {
+    public static function fnfetchscreenname() {
         $certificateName = DB::TABLE('dev_ourdetails')
                                 ->SELECT('systemname')
                                 ->get();
         return $certificateName;
-    }*/
+    }
 
 }

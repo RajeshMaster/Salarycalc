@@ -1509,5 +1509,7 @@ return [
 
     'lbl_gensen_download' => 'Gensen Download',
 
+    'lbl_pdfdownload' => 'PDF Download',
+
     // End vengad Code 2020/07/06
 ];

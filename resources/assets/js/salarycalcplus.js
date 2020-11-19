@@ -549,6 +549,40 @@ function salaryplusdownload(mainmenu) {
 	}
 }
 
+function salarypluspdfdownload(mainmenu) {
+
+	var variable = $("#selMonth").val();
+	if(typeof(variable) != "undefined" && variable !== null) {
+	    $("#payrollPdf").val(variable);
+	    var form = '#salarycalcindex';
+	} else{
+		var form = '#salarycalchistoryTotal';
+	}
+
+	$('#hdn_empid_arr').val('');
+	var cbChecked = new Array();
+	var cbChecked_text_mailflg_0 = new Array();
+	var cbChecked_text_mailflg_1 = new Array();
+	if($('.checkbox:checkbox:checked').length > 0){
+		$('.checkbox:checkbox:checked').each(function() {
+			if ($(this).attr("data-mailflg") == 0) {
+	      		cbChecked[cbChecked.length] = this.value;            
+	      		cbChecked_text_mailflg_0[cbChecked_text_mailflg_0.length] = $(this).attr("data-name-empid").toUpperCase();            
+			} else {
+	      		cbChecked_text_mailflg_1[cbChecked_text_mailflg_1.length] = $(this).attr("data-name-empid").toUpperCase();            
+			}
+	    });
+	    $('#hdn_empid_arr').val(cbChecked);
+	    var confirmprocess_download = confirm("Do You Want To Download?");
+	    if(confirmprocess_download) {
+			$(form).attr('action','../salarycalcplus/salarypluspdfdownload?mainmenu='+mainmenu+'&time='+datetime);
+			$(form).submit();
+		}
+	} else {
+		alert("Please Select Employee ID");return;
+	}
+}
+
 function salplusPayrollSingledownload(mainmenu,dataCount) {
 	if (dataCount != "" && dataCount > 0) {
 		var confirmprocess_download = confirm("Do You Want To Download?");

@@ -1681,5 +1681,7 @@ return [
 
     'lbl_gensen_download' => '原線 ダウンロード',
 
+    'lbl_pdfdownload' => 'PDF Download',
+
     // End vengad Code 2020/07/06
 ];

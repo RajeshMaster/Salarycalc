@@ -221,6 +221,9 @@
 			<!-- used for common excel dwld -->
 			{{ Form::hidden('payrollExcel', '' , array('id' => 'payrollExcel')) }}
 			<!-- used for common excel dwld -->
+			<!-- used for common excel dwld -->
+			{{ Form::hidden('payrollPdf', '' , array('id' => 'payrollPdf')) }}
+			<!-- used for common excel dwld -->
 
 		<!-- Start Heading -->
 		<div class="row hline pm0">
@@ -274,6 +277,9 @@
 
 				<a href="javascript:salaryplusdownload('{{ $request->mainmenu }}');" class="btn btn-primary" title="Download" style="color: white;"><span class="fa fa-download"></span>
 					{{ trans('messages.lbl_salledger') }}
+				</a>&nbsp;
+				<a href="javascript:salarypluspdfdownload('{{ $request->mainmenu }}');" class="btn btn-primary" title="Download" style="color: white;"><span class="fa fa-download"></span>
+					{{ trans('messages.lbl_pdfdownload') }}
 				</a>
 			</div>
 		</div>

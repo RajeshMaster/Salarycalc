@@ -165,6 +165,14 @@
 
         </div>
     {{ Form::close() }}
+    {{ Form::open(array('name'=>'documentAddEditCancel', 
+                        'id'=>'documentAddEditCancel', 
+                        'url' => 'Document/addeditprocess?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
+                        'files' => true,
+                        'method' => 'POST')) }}
+            {{ Form::hidden('mainmenu',$request->mainmenu, array('id' => 'mainmenu')) }}
+            {{ Form::hidden('selYear', $request->selYear , array('id' => 'selYear')) }}
+    {{ Form::close() }}
 </article>
 </div>
     

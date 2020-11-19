@@ -140,6 +140,7 @@ Route::group(['prefix'=>'salarycalcplus','middleware' => 'auth'], function() {
 	Route::any('getTransferedAmount', 'SalarycalcplusController@getTransferedAmount');
 	// Start Madasamy Code 22/05/20
 	Route::any('historyTotal', 'SalarycalcplusController@historyTotal');
+	Route::any('salarypluspdfdownload', 'SalarycalcplusController@salarypluspdfdownload');
 	// End Madasamy Code 22/05/20
 });
 

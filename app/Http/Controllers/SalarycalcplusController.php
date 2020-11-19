@@ -23,7 +23,7 @@ use PHPExcel_Cell;
 use PHPExcel_Style_Conditional;
 use PHPExcel_Style_Color;
 use Maatwebsite\Excel\Facades\Excel;
-
+use PDF;
 
 Class SalarycalcplusController extends Controller {
 	
@@ -2784,5 +2784,55 @@ Class SalarycalcplusController extends Controller {
         })->setFilename($excel_name)->download('xls');
     }
 	// End Madasamy 31/07/2020
+
+	/**
+	*
+	* Pdf Download
+	* @author sarath
+	* @return object to particular view page
+	* Created At 18/11/2020
+	*
+	*/
+	public function salarypluspdfdownload(Request $request) {
+		// Get salary Details
+		$hdn_empid = explode(',', $request->hdn_empid_arr);
+		if (!isset($request->payrollPdf)) {
+			// for historyTotal page payroll
+			$pdfName = 'Salary+_'.$request->selYear.urlencode('分給料明細');
+		} else {
+			// for index page payroll
+			if ($request->get_prev_yr == 1) {
+				$prev_month_ts = strtotime($request->selYear.'-'.$request->selMonth.' -1 month');
+				$date_month = date('Y-m', $prev_month_ts);
+				$date_month = explode('-', $date_month);
+				$request->selYear = $date_month[0];
+				$request->selMonth = $date_month[1];
+			}
+			$pdfName = 'Salary+_'.$request->selYear.'_'.$request->selMonth.urlencode('分給料明細');
+		}
+		if (!isset($request->payrollPdf)) {
+			$salPlus = self::getSalaryDetailsTotal($hdn_empid,$request->selYear);
+		} else {
+			$salPlus = self::getSalaryDetailsTotal($hdn_empid,$request->selYear,$request->selMonth);
+		}
+		
+		$salArr = $salPlus['salArr'];
+		$temp_salaryDetails = $salPlus['salArrTot']['temp_salaryDetails'];
+		$temp_salaryDetails_DD = $salPlus['salArrTot']['temp_salaryDetails_DD'];
+		$tot_travel_amt = $salPlus['salArrTot']['tot_travel_amt'];
+		$salresult = $salPlus['salArrTot']['salresult'];
+		$dedresult = $salPlus['salArrTot']['dedresult'];
+
+		$salary_det = SalaryCalcplus::getsalaryDetails($request,'1');
+		$salary_ded = SalaryCalcplus::getsalaryDetails($request,'2');
+
+		$customPaper = array(0,0,820,1540);
+		$pdf = PDF::loadView('salarycalcplus.PdfView',
+			compact('request','salPlus','salArr','salary_det','salresult',
+					'temp_salaryDetails','dedresult','temp_salaryDetails_DD',
+					'salary_ded','tot_travel_amt'))->setPaper($customPaper);
+		return $pdf->download($pdfName.'.pdf');
+
+	}
 
 }

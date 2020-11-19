@@ -234,6 +234,10 @@
 			<a href="javascript:salaryplusdownload('{{ $request->mainmenu }}');" class="btn btn-primary pull-right" title="Download" style="color: white;">
 				<span class="fa fa-download"></span>{{ trans('messages.lbl_salledger') }}
 			</a>
+			<a href="javascript:salarypluspdfdownload('{{ $request->mainmenu }}');" 
+				class="btn btn-primary pull-right" title="Download" style="color: white;margin-right: 1%;"><span class="fa fa-download"></span>
+					{{ trans('messages.lbl_pdfdownload') }}
+				</a>
 		</div>
 		<br>
 
