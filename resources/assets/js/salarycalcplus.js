@@ -522,7 +522,7 @@ function salaryplusdownload(mainmenu) {
 	    $("#payrollExcel").val(variable);
 	    var form = '#salarycalcindex';
 	} else{
-		var form = '#payrollhistorydownloadprocess';
+		var form = '#salarycalchistoryTotal';
 	}
 
 	$('#hdn_empid_arr').val('');
@@ -556,7 +556,7 @@ function salarypluspdfdownload(mainmenu) {
 	    $("#payrollPdf").val(variable);
 	    var form = '#salarycalcindex';
 	} else{
-		var form = '#payrollhistorydownloadprocess';
+		var form = '#salarycalchistoryTotal';
 	}
 
 	$('#hdn_empid_arr').val('');
