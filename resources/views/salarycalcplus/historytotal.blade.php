@@ -230,14 +230,18 @@
 				class="btn btn-info box80 pull-left">
 				<span class="fa fa-arrow-left"></span>{{ trans('messages.lbl_back') }}
 			</a>
-
-			<a href="javascript:salaryplusdownload('{{ $request->mainmenu }}');" class="btn btn-primary pull-right" title="Download" style="color: white;">
-				<span class="fa fa-download"></span>{{ trans('messages.lbl_salledger') }}
-			</a>
 			<a href="javascript:salarypluspdfdownload('{{ $request->mainmenu }}');" 
-				class="btn btn-primary pull-right" title="Download" style="color: white;margin-right: 1%;"><span class="fa fa-download"></span>
+				class="btn btn-primary pull-right" title="Download" 
+				style="color: white;"><span class="fa fa-download"></span>
 					{{ trans('messages.lbl_pdfdownload') }}
-				</a>
+			</a>
+			<a href="javascript:salaryplusdownload('{{ $request->mainmenu }}');" 
+				class="btn btn-primary pull-right" title="Download" 
+				style="color: white;margin-right: 1%;">
+				<span class="fa fa-download"></span>
+				{{ trans('messages.lbl_salledger') }}
+			</a>
+			
 		</div>
 		<br>
 
@@ -471,7 +475,18 @@
 		@else
 			<div class="text-center fr">{{ trans('messages.lbl_nodatafound') }}</div>
 		@endif
-
+		{{ Form::close() }}
+		{{ Form::open(array('name'=>'payrollhistorydownloadprocess',
+							'id'=>'payrollhistorydownloadprocess',
+							'url'=>'salarycalcplus/historyTotal?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
+							'files'=>true,
+							'method' => 'POST' )) }}
+		{{ Form::hidden('mainmenu', $request->mainmenu, array('id' => 'mainmenu')) }}
+		{{ Form::hidden('selYear', $request->selYear, array('id' => 'selYear')) }}
+		{{ Form::hidden('hdn_empid_arr', '' , array('id' => 'hdn_empid_arr')) }}
+		{{ Form::hidden('salflg', '' , array('id' => 'salflg')) }}
+		{{ Form::hidden('hdn_salid_arr', '' , array('id' => 'hdn_salid_arr')) }}
+		{{ Form::close() }}
 	</article>
 </div>
 @endsection

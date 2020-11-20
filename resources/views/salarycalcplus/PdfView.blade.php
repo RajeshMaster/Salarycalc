@@ -83,47 +83,47 @@
 						{{ trans('messages.lbl_totpay_amt') }}</th>
 					@endif
 					@php($sal_ded_cnt = '')
- 					@if(count($salary_ded)!="")
-		 				@for ($j = 0; $j < count($salary_ded); $j++)
-		 					@if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0')
- 								@php($sal_ded_cnt += 1)
-		 					@endif
-		 				@endfor
-		 			@endif
-		 			@if($sal_ded_cnt!="")
-		 				<th rowspan="1" colspan="<?php echo $sal_ded_cnt; ?>" 
-		 					class="vam multiadd_th res resbg tac">
-		 					{{ trans('messages.lbl_salary_ded') }}</th>
-		 				<th rowspan="2" colspan="1" class="vam multiadd_th tac" style="min-width: 110px;background-color: #f39c1280 !important">{{ trans('messages.lbl_totded_amt') }}</th>
-		 			@endif
-		 			@php($sal_trv_cnt = '')
+					@if(count($salary_ded)!="")
+						@for ($j = 0; $j < count($salary_ded); $j++)
+							@if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0')
+								@php($sal_ded_cnt += 1)
+							@endif
+						@endfor
+					@endif
+					@if($sal_ded_cnt!="")
+						<th rowspan="1" colspan="<?php echo $sal_ded_cnt; ?>" 
+						class="vam multiadd_th res resbg tac">
+							{{ trans('messages.lbl_salary_ded') }}</th>
+						<th rowspan="2" colspan="1" class="vam multiadd_th tac" style="min-width: 110px;background-color: #f39c1280 !important">{{ trans('messages.lbl_totded_amt') }}</th>
+					@endif
+					@php($sal_trv_cnt = '')
 					@if($tot_travel_amt != '')
- 						@php($sal_trv_cnt += 1)
- 						<th rowspan="2" colspan="1" class="vam multiadd_th　res resbg tac">{{ trans('messages.lbl_travel_exp') }}</th>
- 						<th rowspan="2" colspan="1" class="vam multiadd_th tac" style="min-width: 110px;background-color: #f39c1280 !important">{{ trans('messages.lbl_total') }}</th>
+						@php($sal_trv_cnt += 1)
+						<th rowspan="2" colspan="1" class="vam multiadd_th　res resbg tac">{{ trans('messages.lbl_travel_exp') }}</th>
+						<th rowspan="2" colspan="1" class="vam multiadd_th tac" style="min-width: 110px;background-color: #f39c1280 !important">{{ trans('messages.lbl_total') }}</th>
 					@endif
 					<th rowspan="2" colspan="1" class="vam multiadd_th　res resbg tac" 
 					style="min-width: 120px;">{{ trans('messages.lbl_grandtot') }}</th>
 				</tr>
 				<tr>
 					@if(count($salary_det)!="")
-		 				@for ($i = 0; $i < count($salary_det); $i++)
-		 					@if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0')
-			 					<th class="vam multiadd_th res resbg tac">
-			 						<label title="{{ (isset($salary_det[$i]->nick_name) && $salary_det[$i]->nick_name != '')?$salary_det[$i]->Name:'' }}" style="margin-bottom: 0px !important;">{{ (isset($salary_det[$i]->nick_name) && $salary_det[$i]->nick_name != '')?$salary_det[$i]->nick_name:$salary_det[$i]->Name }}</label>
-			 					</th>
-	 						@endif
-		 				@endfor
-	 				@endif
-	 				@if(count($salary_ded)!="")
-		 				@for ($j = 0; $j < count($salary_ded); $j++)
-		 					@if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0')
-			 					<th class="vam multiadd_th res resbg tac">
-			 						<label title="{{ (isset($salary_ded[$j]->nick_name) && $salary_ded[$j]->nick_name != '')?$salary_ded[$j]->Name: ''}}" style="margin-bottom: 0px !important;">{{ (isset($salary_ded[$j]->nick_name) && $salary_ded[$j]->nick_name != '')?$salary_ded[$j]->nick_name:$salary_ded[$j]->Name }}</label>
-			 					</th>
-	 						@endif
-		 				@endfor
-	 				@endif
+						@for ($i = 0; $i < count($salary_det); $i++)
+							@if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0')
+								<th class="vam multiadd_th res resbg tac">
+									<label title="{{ (isset($salary_det[$i]->nick_name) && $salary_det[$i]->nick_name != '')?$salary_det[$i]->Name:'' }}" style="margin-bottom: 0px !important;">{{ (isset($salary_det[$i]->nick_name) && $salary_det[$i]->nick_name != '')?$salary_det[$i]->nick_name:$salary_det[$i]->Name }}</label>
+								</th>
+							@endif
+						@endfor
+					@endif
+					@if(count($salary_ded)!="")
+						@for ($j = 0; $j < count($salary_ded); $j++)
+						@if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0')
+							<th class="vam multiadd_th res resbg tac">
+								<label title="{{ (isset($salary_ded[$j]->nick_name) && $salary_ded[$j]->nick_name != '')?$salary_ded[$j]->Name: ''}}" style="margin-bottom: 0px !important;">{{ (isset($salary_ded[$j]->nick_name) && $salary_ded[$j]->nick_name != '')?$salary_ded[$j]->nick_name:$salary_ded[$j]->Name }}</label>
+								</th>
+							@endif
+						@endfor
+					@endif
 				</tr>
 			</thead>
 			<tbody id="multiadd_tbody">
@@ -219,6 +219,68 @@
 				@endif
 				@php $sNo++ @endphp
 				@endforeach
+				<tr>
+					<td colspan="3" class="tac">合計</td>
+					@php $tot_over_amt = '' @endphp
+					@php($tot1 = '')
+					@if(count($salary_det)!="")
+						@for ($i = 0; $i < count($salary_det); $i++)
+							@if(count($salArr)!="")
+								@if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0')
+									<th class="vam multiadd_th text-right">
+										<span id="totalSDspan<?php echo $i ?>" class="text-right multiadd_td" style="color:blue;">
+											@php($tot1 += $temp_salaryDetails[$salary_det[$i]->Salarayid])
+											@php $tot_over_amt += $temp_salaryDetails[$salary_det[$i]->Salarayid] @endphp
+											{{ number_format($temp_salaryDetails[$salary_det[$i]->Salarayid]) }}
+										</span>
+									</th>
+								@endif
+							@endif
+						@endfor
+					@endif
+					@if($sal_det_cnt != '')
+					<th class="vam multiadd_th text-right pr10" style="color:blue;background-color: #f39c1280 !important;">
+						{{ number_format($tot1) }}
+					</th>
+					@endif
+					@php($tot2 = '')
+					@if(count($salary_ded)!="")
+						@for ($j = 0; $j < count($salary_ded); $j++)
+							@if(count($salArr)!="")
+								@if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0')
+									<th class="vam multiadd_th text-right">
+										<span id="totalDDspan<?php echo $j ?>" class="text-right multiadd_td" style="color:red;">
+											@php($tot2 += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid])
+											@php $tot_over_amt += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] @endphp
+											{{ number_format($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) }}
+										</span>
+									</th>
+								@endif
+							@endif
+						@endfor
+					@else
+						<th class="vam multiadd_th text-right" style="min-width: 287px;"></th>
+					@endif
+					@if($sal_ded_cnt != '')
+					<th class="vam multiadd_th text-right pr10" style="color:red;background-color: #f39c1280 !important;">
+						{{ number_format($tot2) }}
+					</th>
+					@endif
+					@if($tot_travel_amt != '')
+					<th class="vam multiadd_th text-right pr10" style="color:blue;">
+						@php $tot_over_amt += $tot_travel_amt @endphp
+						{{ number_format($tot_travel_amt) }}
+					</th>
+					<th class="vam multiadd_th text-right pr10" style="color:blue;background-color: #f39c1280 !important;">
+						{{ number_format($tot_travel_amt) }}
+					</th>
+					@endif
+					<th class="vam multiadd_th text-right pr10" style="color:blue;background-color: #00a65a45 !important;">
+					@if($tot_over_amt != '')
+						{{ number_format($tot_over_amt) }}
+					@endif
+					</th>
+				</tr>
 			</tbody>
 		</table>
 		@endif
