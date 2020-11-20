@@ -243,15 +243,6 @@
 		</div>
 		
 		<div class="col-xs-12 mt5 pm0 pull-left pl10">
-			<!-- Session msg -->
-			@if(Session::has('success'))
-				<div align="center" class="alertboxalign" role="alert">
-					<p class="alert {{ Session::get('alert', Session::get('type') ) }}">
-		            	{{ Session::get('success') }}
-		          	</p>
-				</div>
-			@endif
-			<!-- Session msg -->
 
 			<a class="pull-left" href="javascript:salaryselectpopup_main();">
 	          	<img class="box19" src="{{ URL::asset('resources/assets/images/edit.png') }}"></a>
