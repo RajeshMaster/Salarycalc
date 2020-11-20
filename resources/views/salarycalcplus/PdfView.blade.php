@@ -208,7 +208,7 @@
 								@endif
 							</td>
 						@endif
-						<td class="text-right pr10 multiadd_td" style="min-width: 110px;background-color: #00a65a45 !important;">
+						<td class="text-right pr10 multiadd_td res resbg" style="min-width: 110px;background-color: #00a65a45 !important;">
 							@if($sal['grandTotal'] != "" && $sal['salExist'])
 								{{ number_format($sal['grandTotal']) }}
 							@else

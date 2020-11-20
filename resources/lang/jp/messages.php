@@ -79,7 +79,7 @@ return [
 
 	'lbl_salhistory' => '給料 履歴',
 
-	'lbl_salledger' => '給料台帳',
+	'lbl_salledger' => 'Payroll Excel Download',
 
 	'lbl_transferdetails' => '振込明細',
 
@@ -1681,7 +1681,7 @@ return [
 
     'lbl_gensen_download' => '原線 ダウンロード',
 
-    'lbl_pdfdownload' => 'PDF Download',
+    'lbl_pdfdownload' => 'Payroll PDF Download',
 
     // End vengad Code 2020/07/06
 ];

@@ -77,7 +77,7 @@ return [
 
 	'lbl_salhistory' => 'Salary History',
 
-	'lbl_salledger' => 'Payroll',
+	'lbl_salledger' => 'Payroll Excel Download',
 
 	'lbl_transferdetails' => 'Transfer Details',
 
@@ -1509,7 +1509,7 @@ return [
 
     'lbl_gensen_download' => 'Gensen Download',
 
-    'lbl_pdfdownload' => 'PDF Download',
+    'lbl_pdfdownload' => 'Payroll PDF Download',
 
     // End vengad Code 2020/07/06
 ];
