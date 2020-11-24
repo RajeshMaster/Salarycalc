@@ -129,7 +129,7 @@
 
 										'onkeyup'=>'return fnMoneyFormat(this.id,"jp")',
 
-										'class'=>'box18per ime_mode_disable',
+										'class'=>'box18per ime_mode_disable numonly',
 
 										'data-label' => trans('messages.lbl_basic_amount'))) }}
 						</div>
@@ -153,7 +153,7 @@
 
 										'onkeyup'=>'return fnMoneyFormat(this.id,"jp")',
 
-										'class'=>'box18per ime_mode_disable',
+										'class'=>'box18per ime_mode_disable numonly',
 
 										'data-label' => trans('messages.lbl_increment_amount'))) }}
 						</div>
@@ -250,7 +250,7 @@
 
 										'onkeyup'=>'return fnMoneyFormat(this.id,"jp")',
 
-										'class'=>'box18per ime_mode_disable',
+										'class'=>'box18per ime_mode_disable numonly',
 
 										'data-label' => trans('messages.lbl_HRA'))) }}
 						</div>

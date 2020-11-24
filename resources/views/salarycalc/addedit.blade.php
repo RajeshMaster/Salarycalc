@@ -262,7 +262,7 @@
 									<div class="col-xs-5">
 										{{ Form::text('salary_'.$salary_det[$m]->Salarayid,null,array('id'=>'salary_'.$salary_det[$m]->Salarayid,
 												'name' => 'salary_'.$salary_det[$m]->Salarayid,
-												'class'=>'txt Basic ime_mode_disable form-control box67per',
+												'class'=>'txt Basic ime_mode_disable form-control box67per numonly',
 												'maxlength' => '10',
 												'style'=>'text-align:right;',
 												'onkeypress'=>'return event.charCode >=6 && event.charCode <=58',
@@ -340,7 +340,7 @@
 										{{ Form::text('deduction_'.$salary_ded[$n]->Salarayid,null,array('id'=>'deduction_'.$salary_ded[$n]->Salarayid,
 												'name' => 'deduction_'.$salary_ded[$n]->Salarayid,
 												'style'=>'text-align:right;color:red;',
-												'class'=>'txt ESI ime_mode_disable form-control box37per',
+												'class'=>'txt ESI ime_mode_disable form-control box37per numonly',
 												'maxlength' => '10',
 												'onfocus' => 'return fnRemoveZero(this.id);',
 												'onclick' => 'return fnRemoveZero(this.id);',
@@ -376,7 +376,7 @@
 								{{ Form::text('transferred',null,array('id'=>'transferred',
 										'name' => 'transferred',
 										'style'=>'text-align:right;',
-										'class'=>'ime_mode_disable form-control box37per',
+										'class'=>'ime_mode_disable form-control box37per numonly',
 										'maxlength' => '10',
 										'onkeypress'=>'return event.charCode >=6 && event.charCode <=58',
 										'onkeyup'=>'return fnMoneyFormat(this.id,"jp");',
@@ -399,7 +399,7 @@
 							<div class="col-xs-7">
 								{{ Form::text('leave_cnt',null,array('id'=>'leave_cnt',
 										'name' => 'leave_cnt',
-										'class'=>'ime_mode_disable form-control box25per',
+										'class'=>'ime_mode_disable form-control box25per numonly',
 										'maxlength' => '10',
 										'onkeypress'=>'return event.charCode >=6 && event.charCode <=58')) }}
 							</div>
