@@ -71,7 +71,7 @@
 		function callPage(screenType) {
 			$("#screenType").val(screenType);
 			if (screenType == "Invoice") {
-				$('#menuNewform').attr('action', '../../laravelinvoice/login');
+				$('#menuNewform').attr('action', '../../larainvoice/login');
 				$("#menuNewform").submit();
 			} else if(screenType == "Accounting") {
 				$('#menuNewform').attr('action', '../../AccountingSys/login');

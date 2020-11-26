@@ -126,7 +126,7 @@ html {
 
 				<div id="CMN_logo_area" style="margin-top: 4.8px;margin-left: 16px;">
 
-					<a href="#"><img class="logo logosize" style="height:40px;" src="{{ URL::asset('resources/assets/images/microbit_logo.jpg') }}"></a>
+					<img class="logo logosize" style="height:40px;" src="{{ URL::asset('resources/assets/images/microbit_logo.jpg') }}">
 
 				</div>
 
