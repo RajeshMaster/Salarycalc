@@ -2046,7 +2046,7 @@ Class SalarycalcplusController extends Controller {
 
     public function gensenDownload(Request $request) {
 
-		$template_name = 'resources/assets/uploadandtemplates/templates/gensen_details.xls';
+		$template_name = 'resources/assets/uploadandtemplates/templates/gensen_details.xlsx';
 		$excel_name ='Gensen_'.strtoupper($request->lastname).'_'.$request->selYear;
 		Excel::load($template_name, function($objPHPExcel) use($request) {
 			
@@ -2098,7 +2098,7 @@ Class SalarycalcplusController extends Controller {
 
 			$objPHPExcel->setActiveSheetIndex(0);
           	$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
-		})->setFilename($excel_name)->download('xls');
+		})->setFilename($excel_name)->download('xlsx');
 	}
 
     function commonTotal($objTpl,$record,$k,$color=null) {
