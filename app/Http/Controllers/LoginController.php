@@ -62,6 +62,8 @@ class LoginController extends Controller
 
 				Session::put('userid',Auth::user()->userid);
 
+				Session::flash('password',$request->password);
+
 				Session::put('username',Auth::user()->username);
 
 				Session::put('usercode',Auth::user()->usercode);
@@ -107,9 +109,11 @@ class LoginController extends Controller
 
 
 	        	// print_r(Auth::user()->FirstName);exit;
-
-				return Redirect::to('Menu/index?mainmenu=home&time='.date('YmdHis'));
-
+		        if (Session::get('userclassification') != 4 || $request->screenType == "Salarycalc") {
+	        		return Redirect::to('Menu/index?mainmenu=home&time='.date('YmdHis'));
+	        	} else {
+	        		return Redirect::to('Menu/indexNew?mainmenu=home&time='.date('YmdHis'));
+	        	}
 			}
 
 		} else {

@@ -9,6 +9,9 @@ class MenuController extends Controller {
 	function index(Request $request) { 
 		return view('Menu.index',['request'=> $request]);
 	}
+	function indexNew(Request $request) { 
+		return view('Menu.indexNew',['request'=> $request]);
+	}
 }
 
 ?>

@@ -62,7 +62,7 @@
 		<div class="CMN_header_wrap_wrap mb5">
 			<div class="CMN_header_wrap">
 				<div id="CMN_logo_area" style="margin-top: 4px;margin-bottom: 10px;margin-left: 2px;">
-					<a href="#"><img class="logo logosize shadowforimage" style="height:40px;" src="{{ URL::asset('resources/assets/images/microbit_logo.jpg') }}"></a>
+					<img class="logo logosize shadowforimage" style="height:40px;" src="{{ URL::asset('resources/assets/images/microbit_logo.jpg') }}">
 				</div>
 				<div id="CMN_user_area">
 					<div id="CMN_user_date" style="padding-right:10px;background-color: #F0F0F0 !important;vertical-align: middle;">

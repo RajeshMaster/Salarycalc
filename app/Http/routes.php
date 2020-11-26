@@ -70,8 +70,9 @@ Route::group(['prefix'=>'NonStaff', 'middleware' => 'auth'], function() {
 
 // Home
 Route::group(['prefix'=>'Menu', 'middleware' => 'auth'], function() {
-	Route::get('index', 'MenuController@index');
 	Route::get('changelanguage', 'AjaxController@index');
+	Route::get('index', 'MenuController@index');
+	Route::get('indexNew', 'MenuController@indexNew');
 });
 
 // Setting
