@@ -2071,7 +2071,176 @@ Class SalarycalcplusController extends Controller {
 			
 
 			$address = $return_address." ".$firstname." ".$lastname; 
+			$request->Emp_ID = $request->empid;
+			$tot1 = 0;
+			$tot2 = 0;
+			$deduction = 0;
+			$temp_salaryDetails = array();
+			$salary_det = SalaryCalcplus::getsalaryDetailsnodelflg($request,'1');
+			$salary_ded = SalaryCalcplus::getsalaryDetailsnodelflg($request,'2');
+			// Total For Salary Details
+			$g_query1 = SalaryCalcplus::salaryDetailhistory($request,1);
+			$a = 0;
+			$get_master_tot = array();
+			$get_master_tot1 = array();
+			$tot_travel_amt = '';
+			foreach ($g_query1 as $key => $value) {
+				//For Travel,Salary Amount & Transferred Details
+				if ($value->Travel != '') {
+					$tot_travel_amt += $value->Travel;
+				}
+				//For Salary Details
+				$arr1 = array();
+				$arr2 = array();
+				$sal_arr = array();
+				$val1 = '';
+				if ($value->Salary != '') {
+					$Salary = explode('##', mb_substr($value->Salary, 0, -2));
+					foreach ($Salary as $key => $value_key) {
+						$sal_final = explode('$', $value_key);
+						$arr1[$key] = $sal_final[0];
+						$arr2[$sal_final[0]] = $sal_final[1];
+					}
+				}
+				if(count($salary_det) != "") {
+					foreach ($salary_det as $key1 => $value1) {
+						$sal_arr[$value1->Salarayid] = $value1->Salarayid;
+					}
+				}
+				$salresult_a = array_intersect($sal_arr,$arr1);
+				$salresult_b = array_diff($sal_arr,$arr1);
+				$salresult = array_merge($salresult_a,$salresult_b);
+				ksort($salresult);
+				if(count($salary_det) != "" && is_array($salresult)) {
+					$x = 0;
+					foreach ($salresult as $key2 => $value2) {
+						if ($key2 != '') {
+							if($key2 == isset($arr2[$key2])) {
+								$val1 += $arr2[$key2];
+								$get_master_tot[$a][$key2] = $arr2[$key2];
+							} else {
+								$get_master_tot[$a][$key2] = 0;
+							}
+						}
+						$x++;
+					}
+				}
+				// Salary Deduction
+				$arr3 = array();
+				$arr4 = array();
+				$ded_arr = array();
+				$val2 = '';
+				if ($value->Deduction != '') {
+					$Deduction = explode('##', mb_substr($value->Deduction, 0, -2));
+					foreach ($Deduction as $key => $value1) {
+						$ded_final = explode('$', $value1);
+						$arr3[$key] = $ded_final[0];
+						$arr4[$ded_final[0]] = $ded_final[1];
+					}
+				}
+				if(count($salary_ded) != "") {
+					foreach ($salary_ded as $key2 => $value2) {
+						$ded_arr[$value2->Salarayid] = $value2->Salarayid;
+					}
+				}
+				$dedresult_a = array_intersect($ded_arr,$arr3);
+				$dedresult_b = array_diff($ded_arr,$arr3);
+				$dedresult = array_merge($dedresult_a,$dedresult_b);
+				ksort($dedresult);
+				if(count($salary_ded)!="") {
+					$y = 0;
+					foreach ($dedresult as $key2 => $value2) {
+						if ($key2 != '') {
+							if($key2 == isset($arr4[$key2])) {
+								$val2 += $arr4[$key2];
+								$get_master_tot1[$a][$key2] = $arr4[$key2];
+							}
+						}
+						$y++;
+					}
+				}
+				$a++;
+			}
 			
+			// Salary Details
+			$salaryDetails = array();
+			foreach ($get_master_tot as $key => $value) {
+				foreach ($value as $key_sid => $amount) {
+					$salaryDetails[$key_sid][] = $amount;
+				}
+			}
+
+			$temp_salaryDetails = array();
+			foreach ($salaryDetails as $key => $value) {
+				$b = '';
+				foreach ($value as $key_sid => $amount) {
+					$b += $amount;
+				}
+				$temp_salaryDetails[$key] = $b;
+			}
+
+			// Salary Deduction
+			$salaryDetails_DD = array();
+			foreach ($get_master_tot1 as $key_DD => $value_DD) {
+				foreach ($value_DD as $key_sid_DD => $amount_DD) {
+					$salaryDetails_DD[$key_sid_DD][] = $amount_DD;
+				}
+			}
+			$temp_salaryDetails_DD = array();
+			foreach ($salaryDetails_DD as $key_DD => $value_DD) {
+				$c = '';
+				foreach ($value_DD as $key_sid_DD => $amount_DD) {
+					$c += $amount_DD;
+				}
+				$temp_salaryDetails_DD[$key_DD] = $c;
+			}
+
+			if(count($salary_det) != '0') {
+				for ($i = 0; $i < count($salary_det); $i++) {
+					if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0') {
+						$tot1 += $temp_salaryDetails[$salary_det[$i]->Salarayid];
+					}
+				}
+			}
+			if(count($salary_ded) != '0') {
+				for ($j = 0; $j < count($salary_ded); $j++) {
+					if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0') {
+						$tot2 += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid];
+						if ($salary_ded[$j]->Name == "Deduction" || $salary_ded[$j]->nick_name == "Deduction") {
+							$deduction = $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid];
+						}
+					}
+				} 
+			}
+
+			// Insurance
+			$total = '0';
+			$InsuranceTotal = SalaryCalcplus::fnGetInsuranceTotal($request);
+			$k = 0;
+			$get_emp_det = array();
+			foreach ($InsuranceTotal as $key => $value) {
+				$get_emp_det[$k]['Amounts'] = $value->Amounts;
+				$get_emp_det[$k]['Months'] = $value->months;
+				$k++;
+			}
+			if(count($get_emp_det) != '0') {
+				for ($i = 0; $i < count($get_emp_det); $i++) {
+					if(strlen($get_emp_det[$i]['Amounts'] > 2)){
+						$AmountVal = explode(",",$get_emp_det[$i]['Amounts']);
+						$Month = explode(",",$get_emp_det[$i]['Months']);
+						$Amount = array();
+						foreach ($AmountVal as $key => $value) {
+							if (array_key_exists($Month[$key], $Amount)) {
+								$Amount[$Month[$key]] += $value;
+							} else {
+								$Amount[$Month[$key]] = $value;
+							}
+							$total += $value;
+						}
+					}
+				}
+			}
+
 			$objPHPExcel->setActiveSheetIndex(0);
 			// $objPHPExcel->getActiveSheet()->setCellValue("E9", $return_address);
 			// $objPHPExcel->getActiveSheet()->setCellValue("E10", ($companyDetails[0]->companyName) ? $companyDetails[0]->companyName : "");
@@ -2095,7 +2264,9 @@ Class SalarycalcplusController extends Controller {
 			$objPHPExcel->getActiveSheet()->setCellValue("E18", ".");
 			$objPHPExcel->getActiveSheet()->setCellValue("F18", ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("J18", $MotherDOB);
-
+			$objPHPExcel->getActiveSheet()->setCellValue("V21", $tot1);
+			$objPHPExcel->getActiveSheet()->setCellValue("X21", $deduction);
+			$objPHPExcel->getActiveSheet()->setCellValue("P49", $total);
 			$objPHPExcel->setActiveSheetIndex(0);
           	$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
 		})->setFilename($excel_name)->download('xlsx');
