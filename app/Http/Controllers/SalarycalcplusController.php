@@ -2073,11 +2073,11 @@ Class SalarycalcplusController extends Controller {
 			$address = $return_address." ".$firstname." ".$lastname; 
 			
 			$objPHPExcel->setActiveSheetIndex(0);
-			$objPHPExcel->getActiveSheet()->setCellValue("E9", $return_address);
-			$objPHPExcel->getActiveSheet()->setCellValue("E10", ($companyDetails[0]->companyName) ? $companyDetails[0]->companyName : "");
-			$objPHPExcel->getActiveSheet()->setCellValue("E11", ($companyDetails[0]->companyNumber) ? $companyDetails[0]->companyNumber : "");
-			$objPHPExcel->getActiveSheet()->setCellValue("E12", ($companyDetails[0]->TEL) ? $companyDetails[0]->TEL : "");
-			$objPHPExcel->getActiveSheet()->setCellValue("I13", ($companyDetails[0]->referencenumber) ? $companyDetails[0]->referencenumber : "");
+			// $objPHPExcel->getActiveSheet()->setCellValue("E9", $return_address);
+			// $objPHPExcel->getActiveSheet()->setCellValue("E10", ($companyDetails[0]->companyName) ? $companyDetails[0]->companyName : "");
+			// $objPHPExcel->getActiveSheet()->setCellValue("E11", ($companyDetails[0]->companyNumber) ? $companyDetails[0]->companyNumber : "");
+			// $objPHPExcel->getActiveSheet()->setCellValue("E12", ($companyDetails[0]->TEL) ? $companyDetails[0]->TEL : "");
+			// $objPHPExcel->getActiveSheet()->setCellValue("I13", ($companyDetails[0]->referencenumber) ? $companyDetails[0]->referencenumber : "");
 
 			$objPHPExcel->getActiveSheet()->setCellValue("M11", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("N11", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
