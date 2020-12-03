@@ -146,7 +146,7 @@
 				@endif
 			</div>
 			<div id="salesDiv" class="CMN_sub_gmenu">
-			@if (isset($request->mainmenu) && ($request->mainmenu == "salarycalc" || $request->mainmenu == "salarycalcplus" || $request->mainmenu == "basic_calc" || $request->mainmenu == "leave"))
+			@if (isset($request->mainmenu) && ($request->mainmenu == "salarycalc" || $request->mainmenu == "salarycalcplus" || $request->mainmenu == "basic_calc" || $request->mainmenu == "leave" || $request->mainmenu == "gensendtls"))
 			<!-- Expenses Sub -->
 				@if(Session::get('userclassification') == 4)
 				<div id="expenses_sub_1">
@@ -168,6 +168,12 @@
 					<a href="{{ url('Leavedtls/index?mainmenu=leave&time='.date('Ymdhis')) }}" 
 					style="text-decoration:none;color:white;">
 					{{ trans('messages.lbl_leave_details') }}
+					</a>
+				</div>
+				<div id="expenses_sub_6">
+					<a href="{{ url('Gensendtls/index?mainmenu=gensendtls&time='.date('Ymdhis')) }}" 
+					style="text-decoration:none;color:white;">
+					{{ trans('messages.lbl_gensen') }}
 					</a>
 				</div>
 				@endif
