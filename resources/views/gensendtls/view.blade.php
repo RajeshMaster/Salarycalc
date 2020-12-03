@@ -94,8 +94,11 @@
 						<label>{{ trans('messages.lbl_dob') }}</label>
 					</div>
 					<div>
-					{{ ($staffdetail[0]->DOB != "") ? $staffdetail[0]->DOB : 'Nill'}}
-					<span class="box100per fwb">({{ birthday(($staffdetail[0]->DOB != "") ? $staffdetail[0]->DOB : 'Nill') }})</span>
+					@if($staffdetail[0]->DOB!="" && $staffdetail[0]->DOB!="0000-00-00")
+						{{ $staffdetail[0]->DOB }} <span class="fwb">({{ birthday($staffdetail[0]->DOB) }})</span>
+					@else
+						{{ "Nill" }}
+					@endif
 					</div>
 				</div>
 				<div class="col-xs-12">
@@ -140,73 +143,87 @@
 		</div>
 		<div class="col-xs-6 mt10">
 		<fieldset>
-			<div class="CMN_display_block mb90">
+			<div class="CMN_display_block mb190">
 				<div class="col-xs-12 mt10">
 					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_company_number') }}</label>
+						<label>{{ trans('messages.lbl_year') }}</label>
 					</div>
-					<div>
-						{{ ($companyDetails[0]->companyNumber != "") ? $companyDetails[0]->companyNumber : 'Nill'}}
-					</div>
-				</div>
-				<div class="col-xs-12">
-					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_companyname') }}</label>
-					</div>
-					<div>
-						{{ ($companyDetails[0]->companyName != "") ? $companyDetails[0]->companyName : 'Nill'}}
+					<div style="color: #d92027;font-weight: bold;">
+						{{ $request->selYear }}
 					</div>
 				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_branch_name') }}</label>
+						<label>{{ trans('messages.lbl_totpay_amt') }}</label>
 					</div>
-					<div>
-						{{ ($companyDetails[0]->companyBranch != "") ? $companyDetails[0]->companyBranch : 'Nill'}}
+					<div style="color: #d92027;font-weight: bold;">
+						@php
+							$tot1 = 0;
+							if(count($salary_det) != 0) { 
+								for ($j = 0; $j < count($salary_det); $j++) {
+									if(isset($temp_salaryDetails[$salary_det[$j]->Salarayid]) && $temp_salaryDetails[$salary_det[$j]->Salarayid] != '0'){
+										$tot1 += $temp_salaryDetails[$salary_det[$j]->Salarayid];
+									}
+								}
+							}
+							if(isset($tot1)){
+								echo '<td class="tar" style="color: #d92027;font-weight: bold;">'.number_format($tot1).'</td>';
+							} else {
+								echo '<td></td>';
+							}
+						@endphp	
 					</div>
 				</div>
 				<div class="col-xs-12">
 					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_company_capital') }}</label>
+						<label>{{ trans('messages.lbl_totded_amt') }}</label>
 					</div>
-					<div>
-						{{ ($companyDetails[0]->capital != "") ? $companyDetails[0]->capital : 'Nill'}}
-					</div>
-				</div>
-
-				<div class="col-xs-12">
-					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_address') }}</label>
-					</div>
-					<div>
-						{{ ($companyDetails[0]->address != "") ? $companyDetails[0]->address : 'Nill'}}
-					</div>
-				</div>
-
-				<div class="col-xs-12">
-					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_tel') }}</label>
-					</div>
-					<div>
-						{{ ($companyDetails[0]->TEL != "") ? $companyDetails[0]->TEL : 'Nill'}}
+					<div style="color: #d92027;font-weight: bold;">
+						@php
+							$tot2 = 0;
+							if(count($salary_ded) != 0) { 
+								for ($k = 0; $k < count($salary_ded); $k++) {
+									if(isset($temp_salaryDetails_DD[$salary_ded[$k]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$k]->Salarayid] != '0'){
+										$tot2 += $temp_salaryDetails_DD[$salary_ded[$k]->Salarayid];
+									}
+								}
+							}
+							if(isset($tot2)){
+								echo '<td class="tar" style="color: #d92027;font-weight: bold;">'.number_format($tot2).'</td>';
+							} else {
+								echo '<td></td>';
+							}
+						@endphp
 					</div>
 				</div>
-
 				<div class="col-xs-12">
 					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_ceo') }}</label>
+						<label>{{ trans('messages.lbl_insurence') }}</label>
 					</div>
-					<div>
-						{{ ($companyDetails[0]->CEO != "") ? $companyDetails[0]->CEO : 'Nill'}}
-					</div>
-				</div>
-
-				<div class="col-xs-12">
-					<div class="col-xs-3 text-right clr_blue box40per">
-						<label>{{ trans('messages.lbl_reference_number') }}</label>
-					</div>
-					<div>
-						{{ ($companyDetails[0]->referencenumber != "") ? $companyDetails[0]->referencenumber : 'Nill'}}
+					<div style="color: #d92027;font-weight: bold;">
+						@php 
+							$total = 0;
+							$Amount = array();
+							if(isset($get_emp_det['Amounts'])) { 
+							if(strlen($get_emp_det['Amounts'] > 2)){
+								$AmountVal = explode(",",$get_emp_det['Amounts']);
+								$Month = explode(",",$get_emp_det['Months']);
+								foreach ($AmountVal as $key => $value) {
+									if (array_key_exists($Month[$key], $Amount)) {
+										$Amount[$Month[$key]] += $value;
+									} else {
+										$Amount[$Month[$key]] = $value;
+									}
+									$total += $value;
+								}
+							}
+							}
+							if(isset($total)){
+								echo '<td>'.number_format($total).'</td>';
+							} else {
+								echo '<td></td>';
+							}
+						@endphp
 					</div>
 				</div>
 			</div>
