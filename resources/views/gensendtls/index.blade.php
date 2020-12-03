@@ -56,8 +56,7 @@
 			<colgroup>
 				<col width="7%">
 				<col width="13%">
-				<col width="40%">
-				<col width="10%">
+				<col width="50%">
 				<col width="10%">
 				<col width="10%">
 				<col width="10%">
@@ -69,7 +68,6 @@
 					<th class="vam">{{ trans('messages.lbl_name') }}</th>
 					<th class="vam">{{ trans('messages.lbl_totpay_amt') }}</th>
 					<th class="vam">{{ trans('messages.lbl_totded_amt') }}</th>
-					<th class="vam">{{ trans('messages.lbl_travel_exp') }}</th>
 					<th class="vam">{{ trans('messages.lbl_insurence') }}</th>
 				</tr>
 			</thead>
@@ -118,15 +116,6 @@
 								echo '<td></td>';
 							}
 						@endphp
-						@php
-							$travel_amt = 0;
-							if(isset($tot_travel_amt[$get_emp_det[$i]['Emp_ID']]) && $tot_travel_amt[$get_emp_det[$i]['Emp_ID']] != "") {
-								$travel_amt = $tot_travel_amt[$get_emp_det[$i]['Emp_ID']];
-								echo '<td class="tar" style="color: #d92027;font-weight: bold;">'.number_format($tot_travel_amt[$get_emp_det[$i]['Emp_ID']]).'</td>';
-							} else {
-								echo '<td class="tar" style="color: #d92027;font-weight: bold;">'.$travel_amt.'</td>';
-							}
-						@endphp
 						@php 
 							$total = 0;
 							$Amount = array();
@@ -154,7 +143,7 @@
 				@endfor
 				@else
 					<tr>
-						<td class="text-center colred" colspan="7">
+						<td class="text-center colred" colspan="6">
 							{{ trans('messages.lbl_nodatafound') }}
 						</td>
 					</tr>
