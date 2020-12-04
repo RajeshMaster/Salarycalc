@@ -109,7 +109,7 @@
 						@endphp
 						{{ $DOB_eraDate['japerainjap'] }}
 						{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-						{{ $staffdetail[0]->DOB }} <span class="fwb">({{ birthday($staffdetail[0]->DOB) }}歳)</span>
+						{{ $staffdetail[0]->DOB }} 
 					@else
 						{{ "Nill" }}
 					@endif
@@ -281,7 +281,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-								{{ $staffdetail[0]->FatherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->FatherDOB) }}歳)</span>
+								{{ $staffdetail[0]->FatherDOB }}
 							@else
 								{{ "" }}
 							@endif
@@ -308,7 +308,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-								{{ $staffdetail[0]->MotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->MotherDOB) }}歳)</span>
+								{{ $staffdetail[0]->MotherDOB }}
 							@else
 								{{ "" }}
 							@endif
@@ -334,7 +334,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-								{{ $staffdetail[0]->GrandFatherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->GrandFatherDOB) }}歳)</span>
+								{{ $staffdetail[0]->GrandFatherDOB }}
 							@else
 								{{ "" }}
 							@endif
@@ -360,7 +360,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-								{{ $staffdetail[0]->GrandMotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->GrandMotherDOB) }}歳)</span>
+								{{ $staffdetail[0]->GrandMotherDOB }}
 							@else
 								{{ "" }}
 							@endif
@@ -472,7 +472,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-								{{ $staffdetail[0]->$ElderBrotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$ElderBrotherDOB) }}歳)
+								{{ $staffdetail[0]->$ElderBrotherDOB }}
 							@else
 								{{ "" }}
 							@endif
@@ -534,7 +534,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-								{{ $staffdetail[0]->$YoungerBrotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$YoungerBrotherDOB) }}歳)
+								{{ $staffdetail[0]->$YoungerBrotherDOB }}
 							@else
 								{{ "" }}
 							@endif
@@ -595,7 +595,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-							{{ $staffdetail[0]->$ElderSisterDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$ElderSisterDOB) }}歳)
+							{{ $staffdetail[0]->$ElderSisterDOB }}
 						@else
 							{{ "" }}
 						@endif
@@ -656,7 +656,7 @@
 								@endphp
 								{{ $DOB_eraDate['japerainjap'] }}
 								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
-							{{ $staffdetail[0]->$YoungerSisterDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$YoungerSisterDOB) }}歳)
+							{{ $staffdetail[0]->$YoungerSisterDOB }}
 						@else
 							{{ "" }}
 						@endif

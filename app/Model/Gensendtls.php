@@ -225,9 +225,7 @@ class Gensendtls extends Model {
 							'Deduction' => $request->selected[$i],
 							'delflg' => 0,
 							'year' => $request->selYear,
-							'create_date' => date('Y-m-d H:i:s'),
 							'create_by' => Auth::user()->username,
-							'update_date' => date('Y-m-d H:i:s'),
 							'update_by' => Auth::user()->username);
 		}
 
