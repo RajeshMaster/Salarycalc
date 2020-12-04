@@ -73,7 +73,8 @@ class GensendtlsController extends Controller {
 			}
 			// Salary Payament
 			$salary_det = Gensendtls::getsalaryDetailsnodelflg($request,'1');
-			$salary_ded = Gensendtls::getsalaryDetailsnodelflg($request,'2');
+			// $salary_ded = Gensendtls::getsalaryDetailsnodelflg($request,'2');
+			$salary_ded = Gensendtls::getAllSelDedDtls($request);
 
 			// Total For Salary Details
 			$salquery = Gensendtls::salaryDetailhistory($request,1,$value->Emp_ID);
@@ -260,7 +261,8 @@ class GensendtlsController extends Controller {
 		}
 		// Salary Payament
 		$salary_det = Gensendtls::getsalaryDetailsnodelflg($request,'1');
-		$salary_ded = Gensendtls::getsalaryDetailsnodelflg($request,'2');
+		// $salary_ded = Gensendtls::getsalaryDetailsnodelflg($request,'2');
+		$salary_ded = Gensendtls::getAllSelDedDtls($request);
 
 		// Total For Salary Details
 		$salquery = Gensendtls::salaryDetailhistory($request,1,$request->Emp_ID);

@@ -172,7 +172,9 @@ class Gensendtls extends Model {
 	}
 
 	public static function getAllDeselDedDtls($request) {
-
+		if ($request->year == "") {
+			$request->year = date('Y');
+		}
 		$db = DB::connection('mysql');
 		$selectedEmployees = $db->table('salaryplus_deduction')
 								->SELECT('Deduction')
@@ -196,10 +198,12 @@ class Gensendtls extends Model {
 	}
 
 	public static function getAllSelDedDtls($request) {
-
+		if ($request->year == "") {
+			$request->year = date('Y');
+		}
 		$db = DB::connection('mysql');
 		$selectedEmployees = $db->table('salaryplus_deduction')
-					->SELECT('Deduction','mstsalaryplus.Name')
+					->SELECT('Deduction','mstsalaryplus.Name','mstsalaryplus.Salarayid')
 					->LEFTJOIN('mstsalaryplus', 'mstsalaryplus.Salarayid','=','salaryplus_deduction.Deduction')
 					->WHERE('year','=', $request->year)
 					->ORDERBY('Deduction', 'ASC')
@@ -208,7 +212,9 @@ class Gensendtls extends Model {
 	}
 
 	public static function insSelDedDtls($request) {
-
+		if ($request->year == "") {
+			$request->year = date('Y');
+		}
 		$db = DB::connection('mysql');
 		$deldetails = $db->TABLE('salaryplus_deduction')
 						->WHERE('year', '=', $request->year)
@@ -226,7 +232,7 @@ class Gensendtls extends Model {
 		}
 
 		DB::TABLE('salaryplus_deduction')->INSERT($rows);
-		
+
 		return true;
 	}
 
