@@ -172,13 +172,13 @@ class Gensendtls extends Model {
 	}
 
 	public static function getAllDeselDedDtls($request) {
-		if ($request->year == "") {
-			$request->year = date('Y');
+		if ($request->selYear == "") {
+			$request->selYear = date('Y');
 		}
 		$db = DB::connection('mysql');
 		$selectedEmployees = $db->table('salaryplus_deduction')
 								->SELECT('Deduction')
-								->WHERE('year','=', $request->year)
+								->WHERE('year','=', $request->selYear)
 								->ORDERBY('Deduction', 'ASC')
 				 	 			->GET();
  	 	$hdn_deduction = array();
@@ -198,33 +198,33 @@ class Gensendtls extends Model {
 	}
 
 	public static function getAllSelDedDtls($request) {
-		if ($request->year == "") {
-			$request->year = date('Y');
+		if ($request->selYear == "") {
+			$request->selYear = date('Y');
 		}
 		$db = DB::connection('mysql');
 		$selectedEmployees = $db->table('salaryplus_deduction')
 					->SELECT('Deduction','mstsalaryplus.Name','mstsalaryplus.Salarayid')
 					->LEFTJOIN('mstsalaryplus', 'mstsalaryplus.Salarayid','=','salaryplus_deduction.Deduction')
-					->WHERE('year','=', $request->year)
+					->WHERE('year','=', $request->selYear)
 					->ORDERBY('Deduction', 'ASC')
 	 	 			->GET();
  	 	return $selectedEmployees;
 	}
 
 	public static function insSelDedDtls($request) {
-		if ($request->year == "") {
-			$request->year = date('Y');
+		if ($request->selYear == "") {
+			$request->selYear = date('Y');
 		}
 		$db = DB::connection('mysql');
 		$deldetails = $db->TABLE('salaryplus_deduction')
-						->WHERE('year', '=', $request->year)
+						->WHERE('year', '=', $request->selYear)
 						->DELETE();
 		$rows = array();
 		for ($i = 0;$i < count($request->selected); $i++) {
 			$rows[] = array('id' => '',
 							'Deduction' => $request->selected[$i],
 							'delflg' => 0,
-							'year' => $request->year,
+							'year' => $request->selYear,
 							'create_date' => date('Y-m-d H:i:s'),
 							'create_by' => Auth::user()->username,
 							'update_date' => date('Y-m-d H:i:s'),

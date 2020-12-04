@@ -25,7 +25,7 @@
 			'method' => 'POST')) }}
 
 		{{ Form::hidden('mainmenu', $request->mainmenu ,array('id' => 'mainmenu')) }}
-		{{ Form::hidden('year', $request->year ,array('id' => 'year')) }}
+		{{ Form::hidden('selYear', $request->selYear ,array('id' => 'selYear')) }}
 
 		<div class="modal-body" style="padding: 1px !important;">
 			<div class="form-group" style="min-height: 300px;">

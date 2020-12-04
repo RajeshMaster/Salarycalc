@@ -468,7 +468,7 @@ class GensendtlsController extends Controller {
 			Session::flash('type', 'Salary Deduction Selected Unsucessfully!!');
 			Session::flash('type', 'alert-danger'); 
 		}
-		Session::flash('selYear', $request->year); 
+		Session::flash('selYear', $request->selYear); 
 
 		return Redirect::to('Gensendtls/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
 	}

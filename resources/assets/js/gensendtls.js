@@ -73,9 +73,9 @@ function fngodownloadgensen() {
 
 function salarydeduction() {
 	var mainmenu = $('#mainmenu').val();
-	var year = $('#selYear').val();
+	var selYear = $('#selYear').val();
 	popupopenclose(1);
-	$('#salarydeductionpopup').load('../Gensendtls/salarydeductionpopup?mainmenu='+mainmenu+'&year='+year);
+	$('#salarydeductionpopup').load('../Gensendtls/salarydeductionpopup?mainmenu='+mainmenu+'&selYear='+selYear);
 	$("#salarydeductionpopup").modal({
 		backdrop: 'static',
 		keyboard: false
