@@ -1,5 +1,6 @@
 @extends('layouts.app')
 @section('content')
+@php use App\Http\eradate @endphp
 {{ HTML::script('resources/assets/js/gensendtls.js') }}
 {{ HTML::script('resources/assets/js/lib/lightbox.js') }}
 {{ HTML::style('resources/assets/css/lib/lightbox.css') }}
@@ -103,7 +104,12 @@
 					</div>
 					<div>
 					@if($staffdetail[0]->DOB!="" && $staffdetail[0]->DOB!="0000-00-00")
-						{{ $staffdetail[0]->DOB }} <span class="fwb">({{ birthday($staffdetail[0]->DOB) }})</span>
+						@php
+							$DOB_eraDate = getEraDate($staffdetail[0]->DOB);
+						@endphp
+						{{ $DOB_eraDate['japerainjap'] }}
+						{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+						{{ $staffdetail[0]->DOB }} <span class="fwb">({{ birthday($staffdetail[0]->DOB) }}歳)</span>
 					@else
 						{{ "Nill" }}
 					@endif
@@ -197,6 +203,7 @@
 								}
 							}
 							if(isset($tot2)){
+								$tot2 = preg_replace("/[^0-9]/", "", $tot2);
 								echo '<td class="tar" style="color: #d92027;font-weight: bold;">'.number_format($tot2).'</td>';
 							} else {
 								echo '<td></td>';
@@ -251,7 +258,7 @@
 						{{ trans('messages.lbl_name') }}</th>
 					<th class="text-center" width="15%" height="25px">
 						{{ trans('messages.lbl_kananame') }}</th>
-					<th class="text-center" width="6%" height="25px">
+					<th class="text-center" width="12%" height="25px">
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
@@ -269,7 +276,12 @@
 						</td>
 						<td width="6%" height="25px" align="center">
 							@if($staffdetail[0]->FatherDOB!="" && $staffdetail[0]->FatherDOB!="0000-00-00")
-								{{ $staffdetail[0]->FatherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->FatherDOB) }})</span>
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->FatherDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+								{{ $staffdetail[0]->FatherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->FatherDOB) }}歳)</span>
 							@else
 								{{ "" }}
 							@endif
@@ -291,7 +303,12 @@
 						</td>
 						<td width="6%" height="25px" align="center">
 							@if($staffdetail[0]->MotherDOB!="" && $staffdetail[0]->MotherDOB!="0000-00-00")
-								{{ $staffdetail[0]->MotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->MotherDOB) }})</span>
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->MotherDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+								{{ $staffdetail[0]->MotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->MotherDOB) }}歳)</span>
 							@else
 								{{ "" }}
 							@endif
@@ -312,7 +329,12 @@
 						</td>
 						<td width="6%" height="25px" align="center">
 							@if($staffdetail[0]->GrandFatherDOB!="" && $staffdetail[0]->GrandFatherDOB!="0000-00-00")
-								{{ $staffdetail[0]->GrandFatherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->GrandFatherDOB) }})</span>
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->GrandFatherDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+								{{ $staffdetail[0]->GrandFatherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->GrandFatherDOB) }}歳)</span>
 							@else
 								{{ "" }}
 							@endif
@@ -333,7 +355,12 @@
 						</td>
 						<td width="6%" height="25px" align="center">
 							@if($staffdetail[0]->GrandMotherDOB!="" && $staffdetail[0]->GrandMotherDOB!="0000-00-00")
-								{{ $staffdetail[0]->GrandMotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->GrandMotherDOB) }})</span>
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->GrandMotherDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+								{{ $staffdetail[0]->GrandMotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->GrandMotherDOB) }}歳)</span>
 							@else
 								{{ "" }}
 							@endif
@@ -409,7 +436,7 @@
 						{{ trans('messages.lbl_name') }}</th>
 					<th class="text-center" width="15%" height="25px">
 						{{ trans('messages.lbl_kananame') }}</th>
-					<th class="text-center" width="6%" height="25px">
+					<th class="text-center" width="12%" height="25px">
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
@@ -440,7 +467,12 @@
 						<td width="6%" height="25px" align="center">
 							@php $ElderBrotherDOB='ElderBrother'.$idx.'DOB'; @endphp
 							@if($staffdetail[0]->$ElderBrotherDOB!="" && $staffdetail[0]->$ElderBrotherDOB!="0000-00-00")
-								{{ $staffdetail[0]->$ElderBrotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$ElderBrotherDOB) }})
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->$ElderBrotherDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+								{{ $staffdetail[0]->$ElderBrotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$ElderBrotherDOB) }}歳)
 							@else
 								{{ "" }}
 							@endif
@@ -467,7 +499,7 @@
 						{{ trans('messages.lbl_name') }}</th>
 					<th class="text-center" width="15%" height="25px">
 						{{ trans('messages.lbl_kananame') }}</th>
-					<th class="text-center" width="6%" height="25px">
+					<th class="text-center" width="12%" height="25px">
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
@@ -497,7 +529,12 @@
 						<td width="6%" height="25px" align="center">
 							@php $YoungerBrotherDOB='YoungerBrother'.$idx.'DOB'; @endphp
 							@if($staffdetail[0]->$YoungerBrotherDOB!="" && $staffdetail[0]->$YoungerBrotherDOB!="0000-00-00")
-								{{ $staffdetail[0]->$YoungerBrotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$YoungerBrotherDOB) }})
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->$YoungerBrotherDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+								{{ $staffdetail[0]->$YoungerBrotherDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$YoungerBrotherDOB) }}歳)
 							@else
 								{{ "" }}
 							@endif
@@ -523,7 +560,7 @@
 						{{ trans('messages.lbl_name') }}</th>
 					<th class="text-center" width="15%" height="25px">
 						{{ trans('messages.lbl_kananame') }}</th>
-					<th class="text-center" width="6%" height="25px">
+					<th class="text-center" width="12%" height="25px">
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
@@ -553,7 +590,12 @@
 					<td width="6%" height="25px" align="center">
 						@php $ElderSisterDOB='ElderSister'.$idx.'DOB'; @endphp
 						@if($staffdetail[0]->$ElderSisterDOB!="" && $staffdetail[0]->$ElderSisterDOB!="0000-00-00")
-							{{ $staffdetail[0]->$ElderSisterDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$ElderSisterDOB) }})
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->$ElderSisterDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+							{{ $staffdetail[0]->$ElderSisterDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$ElderSisterDOB) }}歳)
 						@else
 							{{ "" }}
 						@endif
@@ -579,7 +621,7 @@
 						{{ trans('messages.lbl_name') }}</th>
 					<th class="text-center" width="15%" height="25px">
 						{{ trans('messages.lbl_kananame') }}</th>
-					<th class="text-center" width="6%" class="text-center"height="25px">
+					<th class="text-center" width="12%" class="text-center"height="25px">
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
@@ -609,7 +651,12 @@
 					<td width="6%" height="25px" align="center">
 						@php $YoungerSisterDOB='YoungerSister'.$idx.'DOB'; @endphp
 						@if($staffdetail[0]->$YoungerSisterDOB!="" && $staffdetail[0]->$YoungerSisterDOB!="0000-00-00")
-							{{ $staffdetail[0]->$YoungerSisterDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$YoungerSisterDOB) }})
+								@php
+									$DOB_eraDate = getEraDate($staffdetail[0]->$YoungerSisterDOB);
+								@endphp
+								{{ $DOB_eraDate['japerainjap'] }}
+								{{ $DOB_eraDate['japeraineng'] }}&nbsp;
+							{{ $staffdetail[0]->$YoungerSisterDOB }} <span class="fwb">({{ birthday($staffdetail[0]->$YoungerSisterDOB) }}歳)
 						@else
 							{{ "" }}
 						@endif
@@ -638,4 +685,24 @@
 </article>
 </div>
 <div class="CMN_display_block pb10"></div>
+@php
+	function getEraDate($dobDate){
+		$eraDate = array();
+		$empjapancalender = Eradate::geteradate($dobDate, 6);
+		$empdobdate = explode('/', $empjapancalender);
+			if (isset($empdobdate[3])) {
+			$empdobdate[3] = $empdobdate[3];
+		} else {
+			$empdobdate[3] = "";
+		}
+		if (isset($empdobdate[0])) {
+			$empdobdate[0] = $empdobdate[0];
+		} else {
+			$empdobdate[0] = "";
+		}
+		$eraDate['japerainjap'] = $empdobdate[3];
+		$eraDate['japeraineng'] = $empdobdate[0];
+		return $eraDate;
+	}
+@endphp
 @endsection

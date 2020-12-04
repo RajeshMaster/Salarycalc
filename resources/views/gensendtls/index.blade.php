@@ -111,6 +111,7 @@
 								}
 							}
 							if(isset($tot2)){
+								$tot2 = preg_replace("/[^0-9]/", "", $tot2);
 								echo '<td class="tar" style="color: #d92027;font-weight: bold;">'.number_format($tot2).'</td>';
 							} else {
 								echo '<td></td>';

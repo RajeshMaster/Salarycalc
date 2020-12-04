@@ -391,10 +391,10 @@ class GensendtlsController extends Controller {
 	}
 
 	public function gensenDownload(Request $request) {
-
-
-		$template_name = 'resources/assets/uploadandtemplates/templates/gensen_details.xlsx';
-		$excel_name = 'gensen';
+		ini_set('max_execution_time', '300'); 
+		ini_set('memory_limit', '300M'); 
+		$template_name = 'resources/assets/uploadandtemplates/templates/gensen.xlsx';
+		$excel_name = 'Gensen_'.$request->empid;
 
 		Excel::load($template_name, function($objPHPExcel) use($request) {
 
