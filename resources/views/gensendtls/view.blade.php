@@ -247,8 +247,6 @@
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
-					<th class="text-center" width="10%" height="25px">
-						{{ trans('messages.lbl_workanualincome') }}</th>
 					</tr>
 					<tr width="100%">
 						<td class="pl5" width="6%" height="25px">
@@ -271,16 +269,6 @@
 						<td width="3%" height="25px" class="text-center">
 							{{ Form::checkbox('father', '1',$staffdetail[0]->Father, array('id'=>'father','class' => '','disabled'=>'disabled')) }}
 						</td>
-						@if($staffdetail[0]->FatherWorkIncome !=0)
-							<td width="4%" height="25px" class="text-right pr10">
-								{{ Form::checkbox('name', '1', 'true', array('disabled'=>'disabled')) }}
-								<span class="fwb">{{ "Rs. ".moneyFormatIND($staffdetail[0]->FatherWorkIncome) }}</span>
-							</td>
-						@else
-							<td width="4%" height="25px" class="text-center">
-								{{ "---" }}
-							</td>
-						@endif
 			  		</tr>
 					<tr width="100%">
 						<td class="pl5" width="6%" height="25px">
@@ -303,16 +291,6 @@
 						<td width="3%" height="25px" class="text-center">
 							{{ Form::checkbox('Mother', '1',$staffdetail[0]->Mother, array('id'=>'Mother','class' => '','disabled'=>'disabled')) }}
 						</td>
-						@if($staffdetail[0]->MotherWorkIncome !=0)
-							<td width="4%" height="25px" class="text-right pr10">
-								{{ Form::checkbox('name', '1', 'true', array('disabled'=>'disabled')) }}
-								<span class="fwb">{{ "Rs. ".moneyFormatIND($staffdetail[0]->MotherWorkIncome) }}</span>
-							</td>
-						@else
-							<td width="4%" height="25px" class="text-center">
-								{{ "---" }}
-							</td>
-						@endif
 			 		</tr>
 					<tr width="100%">
 						<td class="pl5" width="6%" height="25px">
@@ -334,9 +312,6 @@
 						<td width="3%" height="25px" class="text-center">
 							{{ Form::checkbox('GrandFather', '1',$staffdetail[0]->GrandFather, array('id'=>'GrandFather','class' => '','disabled'=>'disabled')) }}
 						</td>
-						<td width="4%" height="25px" class="text-center">
-							{{ "---" }}
-						</td>
 					</tr>
 					<tr width="100%">
 						<td class="pl5" width="6%" height="25px">
@@ -357,9 +332,6 @@
 						</td>
 						<td width="3%" height="25px" class="text-center">
 							{{ Form::checkbox('GrandMother', '1',$staffdetail[0]->GrandMother, array('id'=>'GrandMother','class' => '','disabled'=>'disabled')) }}
-						</td>
-						<td width="4%" height="25px" class="text-center">
-							{{ "---" }}
 						</td>
 					</tr>
 				</table>
@@ -433,8 +405,6 @@
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
-					<th class="text-center" width="10%" height="25px">
-						{{ trans('messages.lbl_workanualincome') }}</th>
 				</tr>
 				@for($idx=1;$idx<=$staffdetail[0]->ElderBrother;$idx++)
 					<tr width="100%">
@@ -471,16 +441,6 @@
 							@php $ElderBrother='ElderBrother'.$idx; @endphp
 							{{ Form::checkbox('father', '1',$staffdetail[0]->$ElderBrother, array('id'=>'father','class' => '','disabled'=>'disabled')) }}
 						</td>
-						@php $ElderBrotherWorkIncome='ElderBrother'.$idx.'WorkIncome'; @endphp
-						@if($staffdetail[0]->$ElderBrotherWorkIncome !=0)
-							<td width="4%" height="25px" class="text-right pr10">
-								{{ Form::checkbox('name', '1', 'true', array('disabled'=>'disabled')) }} <span class="fwb">{{ "Rs. ".moneyFormatIND($staffdetail[0]->$ElderBrotherWorkIncome) }}</span>
-							</td>
-						@else
-							<td width="4%" height="25px" class="text-center">
-								{{ "---" }}
-							</td>
-						@endif
 					</tr>
 				@endfor
 			</table>
@@ -503,8 +463,6 @@
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
-					<th class="text-center" width="10%" height="25px">
-						{{ trans('messages.lbl_workanualincome') }}</th>
 				</tr>
 				@for($idx=1;$idx<=$staffdetail[0]->YoungerBrother;$idx++)
 					<tr width="100%">
@@ -540,19 +498,6 @@
 							@php $YoungerBrother='YoungerBrother'.$idx; @endphp
 							{{ Form::checkbox('YoungerBrother', '1',$staffdetail[0]->$YoungerBrother, array('id'=>'YoungerBrother','class' => '','disabled'=>'disabled')) }}
 						</td>
-						@php
-						$YoungerBrotherWorkIncome='YoungerBrother'.$idx.'WorkIncome';
-						@endphp
-						@if($staffdetail[0]->$YoungerBrotherWorkIncome !=0)
-							<td width="4%" height="25px" class="text-right pr10">
-								{{ Form::checkbox('name', '1', 'true', array('disabled'=>'disabled')) }}
-								<span class="fwb">{{ "Rs. ".moneyFormatIND($staffdetail[0]->$YoungerBrotherWorkIncome) }}</span>
-							</td>
-						@else
-							<td width="4%" height="25px" class="text-center">
-								{{ "---" }}
-							</td>
-						@endif
 					</tr>
 				@endfor
 			</table>
@@ -574,8 +519,6 @@
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
-					<th class="text-center" width="10%" height="25px">
-						{{ trans('messages.lbl_workanualincome') }}</th>
 				</tr>
 				@for($idx=1;$idx<=$staffdetail[0]->ElderSister;$idx++)
 				<tr width="100%">
@@ -611,17 +554,6 @@
 						@php $ElderSister='ElderSister'.$idx; @endphp
 					  	{{ Form::checkbox('ElderSister', '1',$staffdetail[0]->$ElderSister, array('id'=>'ElderSister','class' => '','disabled'=>'disabled')) }}
 					</td>
-					@php $ElderSisterWorkIncome='ElderSister'.$idx.'WorkIncome'; @endphp
-					@if($staffdetail[0]->$ElderSisterWorkIncome !=0)
-						<td width="4%" height="25px" class="text-right pr10">
-							{{ Form::checkbox('name', '1', 'true', array('disabled'=>'disabled')) }}
-							<span class="fwb">{{ "Rs. ".moneyFormatIND($staffdetail[0]->$ElderSisterWorkIncome) }}</span>
-						</td>
-					@else
-						<td width="4%" height="25px" class="text-center">
-						{{ "---" }}
-						</td>
-					@endif
 				</tr>
 				@endfor
 			</table>
@@ -643,8 +575,6 @@
 						{{ trans('messages.lbl_dob') }}</th>
 					<th class="text-center" width="5%" height="25px">
 						{{ trans('messages.lbl_alive') }}</th>
-					<th class="text-center" width="10%" height="25px">
-						{{ trans('messages.lbl_workanualincome') }}</th>
 				</tr>
 				@for($idx=1;$idx<=$staffdetail[0]->YoungerSister;$idx++)
 				<tr width="100%">
@@ -680,18 +610,6 @@
 						@php $YoungerSister='YoungerSister'.$idx; @endphp
 						{{ Form::checkbox('YoungerSister', '1',$staffdetail[0]->$YoungerSister, array('id'=>'YoungerSister','class' => '','disabled'=>'disabled')) }}
 					</td>
-					@php $YoungerSisterWorkIncome='YoungerSister'.$idx.'WorkIncome'; 
-					@endphp
-					@if($staffdetail[0]->$YoungerSisterWorkIncome !=0)
-						<td width="4%" height="25px" class="text-right pr10">
-							{{ Form::checkbox('name', '1', 'true', array('disabled'=>'disabled')) }}
-							<span class="fwb">{{ "Rs. ".moneyFormatIND($staffdetail[0]->$YoungerSisterWorkIncome) }}</span>
-						</td>
-					@else
-						<td width="4%" height="25px" class="text-center">
-							{{ "---" }}
-						</td>
-					@endif
 				</tr>
 				@endfor
 			</table>
