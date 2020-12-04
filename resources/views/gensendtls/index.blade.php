@@ -44,13 +44,30 @@
 		<div class="mt30 mb15">
           {{ Helpers::displayYear($prev_yrs,$cur_year,$total_yrs,$curtime) }}
         </div>
+
+        <!-- Session msg -->
+		@if(Session::has('success'))
+			<div align="center" class="alertboxalign" role="alert">
+				<p class="alert {{ Session::get('alert', Session::get('type') ) }}">
+					{{ Session::get('success') }}
+				</p>
+			</div>
+		@endif
+		<!-- Session msg -->
+		
 		<div class="box100per pr10 pl10 mt6">
+			<a class="pull-left" href="javascript:salarydeduction();">
+				<img class="box19" src="{{ URL::asset('resources/assets/images/edit.png') }}"></a>
+				<a href="javascript:salarydeduction();" class="pull-left pr10 ml5 anchorstyle" title="{{ trans('messages.lbl_salary_ded') }}">
+				{{ trans('messages.lbl_salary_ded') }}
+			</a>
 			{{ Form::select('basicsort', $array, $request->basicsort,
 						array('class' => 'form-control'.' ' .$request->sortstyle.' '.'CMN_sorting pull-right mt10 mb15',
 								'id' => 'basicsort',
 								'name' => 'basicsort'))
 			}}
 		</div>
+
 		<div class="pt10 minh340">
 		<table class="tablealternate CMN_tblfixed">
 			<colgroup>
@@ -165,5 +182,12 @@
 		</div>
 		{{ Form::close() }}
 	</article>
+</div>
+<div id="salarydeductionpopup" class="modal fade">
+	<div id="login-overlay">
+		<div class="modal-content">
+			<!-- Popup will be loaded here -->
+		</div>
+	</div>
 </div>
 @endsection

@@ -171,4 +171,63 @@ class Gensendtls extends Model {
 
 	}
 
+	public static function getAllDeselDedDtls($request) {
+
+		$db = DB::connection('mysql');
+		$selectedEmployees = $db->table('salaryplus_deduction')
+								->SELECT('Deduction')
+								->WHERE('year','=', $request->year)
+								->ORDERBY('Deduction', 'ASC')
+				 	 			->GET();
+ 	 	$hdn_deduction = array();
+ 		foreach ($selectedEmployees as $k => $v) {
+			$hdn_deduction[$k] = $v->Deduction;
+		}
+
+		$query = $db->TABLE('mstsalaryplus')
+							->SELECT('Name','Salarayid')
+							->WHERE('delflg', '=', 0)
+							->WHERE('location', '=', 2)
+							->where('Salarayid', 'NOT LIKE', '%SD%')
+							->whereNotIn('Salarayid', $hdn_deduction);
+		$query = $query ->orderBy('Name', 'ASC')
+							->get();
+		return $query;
+	}
+
+	public static function getAllSelDedDtls($request) {
+
+		$db = DB::connection('mysql');
+		$selectedEmployees = $db->table('salaryplus_deduction')
+					->SELECT('Deduction','mstsalaryplus.Name')
+					->LEFTJOIN('mstsalaryplus', 'mstsalaryplus.Salarayid','=','salaryplus_deduction.Deduction')
+					->WHERE('year','=', $request->year)
+					->ORDERBY('Deduction', 'ASC')
+	 	 			->GET();
+ 	 	return $selectedEmployees;
+	}
+
+	public static function insSelDedDtls($request) {
+
+		$db = DB::connection('mysql');
+		$deldetails = $db->TABLE('salaryplus_deduction')
+						->WHERE('year', '=', $request->year)
+						->DELETE();
+		$rows = array();
+		for ($i = 0;$i < count($request->selected); $i++) {
+			$rows[] = array('id' => '',
+							'Deduction' => $request->selected[$i],
+							'delflg' => 0,
+							'year' => $request->year,
+							'create_date' => date('Y-m-d H:i:s'),
+							'create_by' => Auth::user()->username,
+							'update_date' => date('Y-m-d H:i:s'),
+							'update_by' => Auth::user()->username);
+		}
+
+		DB::TABLE('salaryplus_deduction')->INSERT($rows);
+		
+		return true;
+	}
+
 }

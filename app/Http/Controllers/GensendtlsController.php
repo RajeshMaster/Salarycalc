@@ -33,9 +33,12 @@ class GensendtlsController extends Controller {
 			$request->sortOrder = "asc";
 		}
 		if ($request->sortOrder == "asc") {  
-			$request->sortstyle="sort_asc";
+			$request->sortstyle = "sort_asc";
 		} else {  
-			$request->sortstyle="sort_desc";
+			$request->sortstyle = "sort_desc";
+		}
+		if (Session::get('selYear') != "") {
+			$request->selYear = Session::get('selYear');
 		}
 	 
 		$array = array("Emp_Id"=>trans('messages.lbl_empid'));
@@ -440,4 +443,32 @@ class GensendtlsController extends Controller {
 			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
 		})->setFilename($excel_name)->download('xlsx');
 	}
+
+	public static function salarydeductionpopup(Request $request) {
+
+		$deductionUnselect = Gensendtls::getAllDeselDedDtls($request);
+		$deductionSelect = Gensendtls::getAllSelDedDtls($request);
+
+		return view('gensendtls.salarydeductionpopup',[
+									'deductionUnselect' => $deductionUnselect,
+									'deductionSelect' => $deductionSelect,
+									'request' => $request
+								]);
+	}
+
+	public static function deductionselectprocess(Request $request) {
+
+		$insert = Gensendtls::insSelDedDtls($request);
+		if($insert){
+			Session::flash('success', 'Salary Deduction Selected Sucessfully!');
+			Session::flash('type', 'alert-success'); 
+		} else {
+			Session::flash('type', 'Salary Deduction Selected Unsucessfully!!');
+			Session::flash('type', 'alert-danger'); 
+		}
+		Session::flash('selYear', $request->year); 
+
+		return Redirect::to('Gensendtls/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+	}
+
 }

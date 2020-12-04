@@ -70,3 +70,33 @@ function fngodownloadgensen() {
 		$("#frmgensenstaffview").submit();
 	}
 }
+
+function salarydeduction() {
+	var mainmenu = $('#mainmenu').val();
+	var year = $('#selYear').val();
+	popupopenclose(1);
+	$('#salarydeductionpopup').load('../Gensendtls/salarydeductionpopup?mainmenu='+mainmenu+'&year='+year);
+	$("#salarydeductionpopup").modal({
+		backdrop: 'static',
+		keyboard: false
+	});
+	$('#salarydeductionpopup').modal('show');
+}
+
+
+function deductionselectbypopupclick() {
+	var length = $("#to option").length;
+	if(length == 0) {
+		alert("Please Select atleast One Deduction")
+		return false;
+	}
+	var Emp_selection = "Do You Want To Add?";
+	if(confirm(Emp_selection)) {
+		$('#to option').prop('selected', true);
+		$('#from option').prop('selected', true);
+		document.deductionselectform.submit();
+		return true;
+	} else {
+		return false;
+	}
+}
