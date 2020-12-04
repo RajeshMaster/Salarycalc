@@ -26,8 +26,9 @@
 						'url' => 'Gensendtls/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
 						'files'=>true,
 						'method' => 'POST')) }}
-	{{ Form::hidden('selYear', $request->selYear, array('id' => 'selYear')) }}
 	{{ Form::hidden('mainmenu', '', array('id' => 'mainmenu')) }}
+	{{ Form::hidden('empid', $request->Emp_ID , array('id' => 'empid')) }}
+	{{ Form::hidden('selYear', $request->selYear, array('id' => 'selYear')) }}
 	
 	<!-- Start Heading -->
 	<div class="row hline pm0">
@@ -41,7 +42,14 @@
 	
 	<div class="pl5 pr5">
 		<div class="pull-left ml5">
-			<a href="javascript:goindexpage('{{ $request->selYear }}');" class="pageload btn btn-info box80"><span class="fa fa-arrow-left"></span> {{ trans('messages.lbl_back') }}</a>
+			<a href="javascript:goindexpage('{{ $request->selYear }}');" 
+				class="pageload btn btn-info box80">
+				<span class="fa fa-arrow-left"></span> 
+				{{ trans('messages.lbl_back') }}</a>
+			<a onclick="javascript:fngodownloadgensen();"
+				class="btn btn-success box190">
+				<span class="fa fa-file-excel-o"></span>&emsp;{{ trans('messages.lbl_gensen_download') }}
+			</a>
 		</div>
 	</div>
 	

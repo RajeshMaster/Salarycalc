@@ -8,6 +8,14 @@ use Input;
 use Redirect;
 use Session;
 use Illuminate\Support\Facades\Validator;
+// use Excel;
+use PHPExcel_Style_Border;
+use PHPExcel_Style_Alignment;
+use PHPExcel_Style_Fill;
+use PHPExcel_Cell;
+use PHPExcel_Style_Conditional;
+use PHPExcel_Style_Color;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GensendtlsController extends Controller {
 
@@ -380,5 +388,56 @@ class GensendtlsController extends Controller {
 									'salary_ded' => $salary_ded,
 									'temp_salaryDetails_DD' => $temp_salaryDetails_DD,
 								]);
+	}
+
+	public function gensenDownload(Request $request) {
+
+
+		$template_name = 'resources/assets/uploadandtemplates/templates/gensen_details.xlsx';
+		$excel_name = 'gensen';
+
+		Excel::load($template_name, function($objPHPExcel) use($request) {
+
+			$companyDetails = Gensendtls::fnGetCompanyDetails($request);
+			$empdetail = Gensendtls::fnGetEmpDetail($request);
+			$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
+			$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
+			$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
+			$FatherDOB = str_replace("-","/",($empdetail[0]->FatherDOB) ? $empdetail[0]->FatherDOB : "");
+			$MotherDOB = str_replace("-","/",($empdetail[0]->MotherDOB) ? $empdetail[0]->MotherDOB : "");
+
+			$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
+			if (is_numeric(trim($return_address))) {
+				$oldAddress = Gensendtls::fnGetAddressMB($return_address);
+				if (isset($oldAddress[0])) {
+					$return_address = '〒'.$oldAddress[0]->pincode.' '.$oldAddress[0]->jpstate.$oldAddress[0]->jpaddress.' - '.$oldAddress[0]->roomno;
+				} else {
+					$return_address = '';
+				}
+			} else {
+				$return_address = $return_address;
+			}
+
+			$address = $return_address." ".$firstname." ".$lastname; 
+			
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPExcel->getActiveSheet()->setCellValue("M11", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("N11", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("M12", $firstname);
+			$objPHPExcel->getActiveSheet()->setCellValue("N12", $lastname);
+			$objPHPExcel->getActiveSheet()->setCellValue("O12", $DOB);
+			$objPHPExcel->getActiveSheet()->getStyle("M13")->getAlignment()->setWrapText(true);
+			$objPHPExcel->getActiveSheet()->setCellValue("M13", $address);
+			$objPHPExcel->getActiveSheet()->setCellValue("D17", ($empdetail[0]->FatherName) ? $empdetail[0]->FatherName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("E17", ".");
+			$objPHPExcel->getActiveSheet()->setCellValue("F17", ($empdetail[0]->FatherkanaName) ? $empdetail[0]->FatherkanaName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("J17", $FatherDOB);
+			$objPHPExcel->getActiveSheet()->setCellValue("D18", ($empdetail[0]->MotherName) ? $empdetail[0]->MotherName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("E18", ".");
+			$objPHPExcel->getActiveSheet()->setCellValue("F18", ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("J18", $MotherDOB);
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
+		})->setFilename($excel_name)->download('xlsx');
 	}
 }

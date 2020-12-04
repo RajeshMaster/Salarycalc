@@ -224,7 +224,7 @@ Route::group(['prefix'=>'Gensendtls','middleware' => 'auth'], function() {
 	Route::get('changelanguage', 'AjaxController@index');
 	Route::any('index', 'GensendtlsController@index');
 	Route::any('view', 'GensendtlsController@view');
-
+	Route::any('gensenDownload', 'GensendtlsController@gensenDownload');
 });
 
 Route::group(['prefix'=>'Visa', 'middleware' => 'auth'], function()

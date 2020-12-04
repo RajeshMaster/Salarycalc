@@ -150,4 +150,25 @@ class Gensendtls extends Model {
 	  return $query;
 	}
 
+	public static function fnGetEmpDetail($request){
+		$db = DB::connection('mysql_MB');
+		$query = $db->table('emp_mstemployees'.' AS emp')
+					->SELECT('emp.*')
+					->LEFTJOIN('mstaddress AS ma', 'ma.id' ,'=','emp.Address1')
+					->where('Emp_ID', '=', $request->empid)
+					->get();
+		return $query;
+	}
+
+	public static function fnGetAddressMB($address) {
+		$db = DB::connection('mysql_MB');
+		$query= $db->table('mstaddress')
+						->SELECT('*')
+						->WHERE('id', '=', $address)
+						->limit(1)
+						->get();
+		return $query;
+
+	}
+
 }
