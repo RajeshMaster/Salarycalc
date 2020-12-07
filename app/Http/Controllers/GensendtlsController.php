@@ -552,7 +552,7 @@ class GensendtlsController extends Controller {
 	}
 
 	public function gensenDwld(Request $request) {
-		$template_name='resources/assets/uploadandtemplates/templates/gensen_Name.xlsx';
+		$template_name='resources/assets/uploadandtemplates/templates/gensen_TEMP.xlsx';
 		if ($request->selYear == "") {
 			$selYear = date('Y');
 		}
