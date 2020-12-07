@@ -25,8 +25,7 @@ class Gensendtls extends Model {
 			$query = $query->orderBy($request->basicsort, $request->sortOrder)
 							->paginate($request->plimit);
 		} else {
-			$query = $query->orderBy('year','DESC')
-							->orderBy('month','DESC')
+			$query = $query->orderBy('Emp_ID','ASC')
 							->get();
 		}
 		return $query;

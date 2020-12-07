@@ -76,10 +76,10 @@ function fndwldgensen(flg) {
 	var mainmenu = $('#mainmenu').val();
 	if(confirmprocess_download) {
 		if (flg == 1) {
-			$('#gensenIndex').attr('action','../Gensendtls/gensenDwld?mainmenu='+mainmenu+'&time='+datetime);
+			$('#gensenIndex').attr('action','../Gensendtls/gensenindexDwld?mainmenu='+mainmenu+'&time='+datetime);
 			$("#gensenIndex").submit();
 		} else {
-			$('#frmgensenstaffview').attr('action','../Gensendtls/gensenDwld?mainmenu='+mainmenu+'&time='+datetime);
+			$('#frmgensenstaffview').attr('action','../Gensendtls/gensenViewDwld?mainmenu='+mainmenu+'&time='+datetime);
 			$("#frmgensenstaffview").submit();
 		}
 	}

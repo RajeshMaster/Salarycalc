@@ -551,19 +551,239 @@ class GensendtlsController extends Controller {
 		return Redirect::to('Gensendtls/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
 	}
 
-	public function gensenDwld(Request $request) {
+	public function gensenViewDwld(Request $request) {
+		$template_name='resources/assets/uploadandtemplates/templates/gensen_TEMP.xlsx';
+		$excel_name = 'Gensen_'.$request->selYear."_".$request->empid;
+		
+		Excel::load($template_name, function($objPHPExcel) use($request) {
+
+			$empdetail = Gensendtls::fnGetEmpDetail($request);
+			$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
+			$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
+			$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
+			$FatherDOB = str_replace("-","/",($empdetail[0]->FatherDOB) ? $empdetail[0]->FatherDOB : "");
+			$MotherDOB = str_replace("-","/",($empdetail[0]->MotherDOB) ? $empdetail[0]->MotherDOB : "");
+			$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
+
+			if (is_numeric(trim($return_address))) {
+				$oldAddress = Gensendtls::fnGetAddressMB($return_address);
+				if (isset($oldAddress[0])) {
+					$return_address = '〒'.$oldAddress[0]->pincode.' '.$oldAddress[0]->jpstate.$oldAddress[0]->jpaddress.' - '.$oldAddress[0]->roomno;
+				} else {
+					$return_address = '';
+				}
+			} else {
+				$return_address = $return_address;
+			}
+
+			$address = $return_address." ".$firstname." ".$lastname; 
+			
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPExcel->getActiveSheet()->setCellValue("C6", $request->empid);
+			$objPHPExcel->getActiveSheet()->setCellValue("C9", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("D9", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("E9", "生年月日");
+			$objPHPExcel->getActiveSheet()->setCellValue("C10", $firstname);
+			$objPHPExcel->getActiveSheet()->setCellValue("D10", $lastname);
+			$objPHPExcel->getActiveSheet()->setCellValue("E10", $DOB);
+			$objPHPExcel->getActiveSheet()->getStyle("C11")->getAlignment()->setWrapText(true);
+			$objPHPExcel->getActiveSheet()->setCellValue("C11", $address);
+			$objPHPExcel->getActiveSheet()->setCellValue("C15", ($empdetail[0]->FatherName) ? $empdetail[0]->FatherName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("D15", ($empdetail[0]->FatherkanaName) ? $empdetail[0]->FatherkanaName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("E15", $FatherDOB);
+			$objPHPExcel->getActiveSheet()->setCellValue("C16", ($empdetail[0]->MotherName) ? $empdetail[0]->MotherName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("D16", ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("E16", $MotherDOB);
+
+			$SalaryPaytot = 0;
+			$SalaryDedtot = 0;
+			// Salary Payament
+			$salary_det = Gensendtls::getsalaryDetailsnodelflg($request,'1');
+			$salary_ded = Gensendtls::getAllSelDedDtls($request);
+			// Total For Salary Details
+			$salquery = Gensendtls::salaryDetailhistory($request,1,$request->empid);
+			$a = 0;
+			$get_master_tot = array();
+			$get_master_tot1 = array();
+			foreach ($salquery as $salkey => $salvalue) {
+				//For Salary Details
+				$arr1 = array();
+				$arr2 = array();
+				$sal_arr = array();
+				$val1 = '';
+				if ($salvalue->Salary != '') {
+					$Salary = explode('##', mb_substr($salvalue->Salary, 0, -2));
+					foreach ($Salary as $key => $value_key) {
+						$sal_final = explode('$', $value_key);
+						$arr1[$key] = $sal_final[0];
+						$arr2[$sal_final[0]] = $sal_final[1];
+					}
+				}
+				if(count($salary_det) != "") {
+					foreach ($salary_det as $key1 => $value1) {
+						$sal_arr[$value1->Salarayid] = $value1->Salarayid;
+					}
+				}
+				$salresult_a = array_intersect($sal_arr,$arr1);
+				$salresult_b = array_diff($sal_arr,$arr1);
+				$salresult = array_merge($salresult_a,$salresult_b);
+				ksort($salresult);
+				if(count($salary_det) != "" && is_array($salresult)) {
+					$x = 0;
+					foreach ($salresult as $key2 => $value2) {
+						if ($key2 != '') {
+							if($key2 == isset($arr2[$key2])) {
+								$val1 += $arr2[$key2];
+								$get_master_tot[$a][$key2] = $arr2[$key2];
+							} else {
+								$get_master_tot[$a][$key2] = 0;
+							}
+						}
+						$x++;
+					}
+				}
+				// Salary Deduction
+				$arr3 = array();
+				$arr4 = array();
+				$ded_arr = array();
+				$val2 = '';
+				if ($salvalue->Deduction != '') {
+					$Deduction = explode('##', mb_substr($salvalue->Deduction, 0, -2));
+					foreach ($Deduction as $key => $value1) {
+						$ded_final = explode('$', $value1);
+						$arr3[$key] = $ded_final[0];
+						$arr4[$ded_final[0]] = $ded_final[1];
+					}
+				}
+				if(count($salary_ded) != 0) {
+					foreach ($salary_ded as $key2 => $value2) {
+						$ded_arr[$value2->Salarayid] = $value2->Salarayid;
+					}
+				}
+				$dedresult_a = array_intersect($ded_arr,$arr3);
+				$dedresult_b = array_diff($ded_arr,$arr3);
+				$dedresult = array_merge($dedresult_a,$dedresult_b);
+				ksort($dedresult);
+				if(count($salary_ded) != 0) {
+					$y = 0;
+					foreach ($dedresult as $key2 => $value2) {
+						if ($key2 != '') {
+							if($key2 == isset($arr4[$key2])) {
+								$val2 += $arr4[$key2];
+								$get_master_tot1[$a][$key2] = $arr4[$key2];
+							}
+						}
+						$y++;
+					}
+				}
+				$a++;
+			}
+
+			// Salary Details
+			$salaryDetails = array();
+			foreach ($get_master_tot as $totkey => $totvalue) {
+				foreach ($totvalue as $key_sid => $amount) {
+					$salaryDetails[$key_sid][] = $amount;
+				}
+			}
+			$temp_salaryDetails = array();
+			foreach ($salaryDetails as $tempkey => $tempvalue) {
+				$b = '';
+				foreach ($tempvalue as $key_sid => $amount) {
+					$b += $amount;
+				}
+				$temp_salaryDetails[$tempkey] = $b;
+			}
+
+			// Salary Deduction
+			$salaryDetails_DD = array();
+			foreach ($get_master_tot1 as $totkey_DD => $totvalue_DD) {
+				foreach ($totvalue_DD as $key_sid_DD => $amount_DD) {
+					$salaryDetails_DD[$key_sid_DD][] = $amount_DD;
+				}
+			}
+			$temp_salaryDetails_DD = array();
+			foreach ($salaryDetails_DD as $tempkey_DD => $tempvalue_DD) {
+				$c = '';
+				foreach ($tempvalue_DD as $key_sid_DD => $amount_DD) {
+					$c += $amount_DD;
+				}
+				$temp_salaryDetails_DD[$tempkey_DD] = $c;
+			}
+
+			if(count($salary_det) != '0') {
+				for ($i = 0; $i < count($salary_det); $i++) {
+					if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0') {
+						$tot1 += $temp_salaryDetails[$salary_det[$i]->Salarayid];
+					}
+				}
+			}
+			if(count($salary_ded) != '0') {
+				for ($j = 0; $j < count($salary_ded); $j++) {
+					if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0') {
+						$tot2 += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid];
+					}
+				} 
+			}
+
+			// Insurance
+			$insuranceTot = 0;
+			$k = 0;
+			$get_ins_det = array();
+			$insuranceTotal = Gensendtls::fnGetInstotDtls($request,$request->empid);
+			if (isset($insuranceTotal[0])) {
+				$get_ins_det[$k]['Amounts'] = $insuranceTotal[0]->Amounts;
+				$get_ins_det[$k]['Months'] = $insuranceTotal[0]->months;
+			}
+			if(count($get_ins_det) != '0') {
+				for ($k = 0; $k < count($get_ins_det); $k++) {
+					if(strlen($get_ins_det[$k]['Amounts'] > 2)){
+						$AmountVal = explode(",",$get_ins_det[$k]['Amounts']);
+						$Month = explode(",",$get_ins_det[$k]['Months']);
+						$Amount = array();
+						foreach ($AmountVal as $key => $value) {
+							if (array_key_exists($Month[$key], $Amount)) {
+								$Amount[$Month[$key]] += $value;
+							} else {
+								$Amount[$Month[$key]] = $value;
+							}
+							$insuranceTot += $value;
+						}
+					}
+				}
+			}
+			
+			$objPHPExcel->getActiveSheet()->setCellValue("B19", $SalaryPaytot);
+			$objPHPExcel->getActiveSheet()->setCellValue("C19", $SalaryDedtot);
+			$objPHPExcel->getActiveSheet()->setCellValue("D19", $insuranceTot);
+
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
+		})->setFilename($excel_name)->download('xlsx');
+	}
+
+	public function gensenindexDwld(Request $request) {
+
 		$template_name='resources/assets/uploadandtemplates/templates/gensen_TEMP.xlsx';
 		if ($request->selYear == "") {
 			$selYear = date('Y');
 		}
 		$excel_name = 'Gensen_'.$request->selYear;
+
 		Excel::load($template_name, function($objPHPExcel) use($request) {
-			if ($request->empid != "") {
-				$excel_name = 'Gensen_'.$request->selYear."_".$request->empid;
+
+			$gensenDtls = Gensendtls::getGensenDetail($request,1);
+			$i = 6;
+
+			foreach ($gensenDtls as $key => $value) {
+
+				$request->empid = $value->Emp_ID;
 				$empdetail = Gensendtls::fnGetEmpDetail($request);
 				$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
 				$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
 				$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
+				$FatherDOB = str_replace("-","/",($empdetail[0]->FatherDOB) ? $empdetail[0]->FatherDOB : "");
+				$MotherDOB = str_replace("-","/",($empdetail[0]->MotherDOB) ? $empdetail[0]->MotherDOB : "");
 				$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
 				if (is_numeric(trim($return_address))) {
 					$oldAddress = Gensendtls::fnGetAddressMB($return_address);
@@ -577,87 +797,208 @@ class GensendtlsController extends Controller {
 				}
 
 				$address = $return_address." ".$firstname." ".$lastname; 
-				
+
 				$objPHPExcel->setActiveSheetIndex(0);
-				$objPHPExcel->getActiveSheet()->setCellValue("C6", $request->empid);
-				$objPHPExcel->getActiveSheet()->setCellValue("C9", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
-				$objPHPExcel->getActiveSheet()->setCellValue("D9", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
-				$objPHPExcel->getActiveSheet()->setCellValue("E9", "生年月日");
-				$objPHPExcel->getActiveSheet()->setCellValue("C10", $firstname);
-				$objPHPExcel->getActiveSheet()->setCellValue("D10", $lastname);
-				$objPHPExcel->getActiveSheet()->setCellValue("E10", $DOB);
-				$objPHPExcel->getActiveSheet()->setCellValue("C11", $address);
-			} else {
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Emp no");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $request->empid);
+				$i = $i + 3;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Kana");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
+				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "生年月日");
+				$i = $i + 1;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Name");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $firstname);
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $lastname);
+				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $DOB);
+				$i = $i + 1;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Address");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $address);
+				$i = $i + 3;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Person");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "Name");
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Kana Name");
+				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "DOB");
+				$i = $i + 1;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Father");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->FatherName) ? $empdetail[0]->FatherName : "");
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->FatherkanaName) ? $empdetail[0]->FatherkanaName : "");
+				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $FatherDOB);
+				$i = $i + 1;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Mother");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->MotherName) ? $empdetail[0]->MotherName : "");
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
+				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $MotherDOB);
 
-				$gensenDtls = Gensendtls::getGensenDetail($request,1);
-				$i = 6;
-				foreach ($gensenDtls as $key => $value) {
-					$request->empid = $value->Emp_ID;
-					$empdetail = Gensendtls::fnGetEmpDetail($request);
-					$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
-					$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
-					$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
-					$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
-					if (is_numeric(trim($return_address))) {
-						$oldAddress = Gensendtls::fnGetAddressMB($return_address);
-						if (isset($oldAddress[0])) {
-							$return_address = '〒'.$oldAddress[0]->pincode.' '.$oldAddress[0]->jpstate.$oldAddress[0]->jpaddress.' - '.$oldAddress[0]->roomno;
-						} else {
-							$return_address = '';
+
+				$SalaryPaytot = 0;
+				$SalaryDedtot = 0;
+				// Salary Payament
+				$salary_det = Gensendtls::getsalaryDetailsnodelflg($request,'1');
+				$salary_ded = Gensendtls::getAllSelDedDtls($request);
+				// Total For Salary Details
+				$salquery = Gensendtls::salaryDetailhistory($request,1,$request->empid);
+				$a = 0;
+				$get_master_tot = array();
+				$get_master_tot1 = array();
+				foreach ($salquery as $salkey => $salvalue) {
+					//For Salary Details
+					$arr1 = array();
+					$arr2 = array();
+					$sal_arr = array();
+					$val1 = '';
+					if ($salvalue->Salary != '') {
+						$Salary = explode('##', mb_substr($salvalue->Salary, 0, -2));
+						foreach ($Salary as $key => $value_key) {
+							$sal_final = explode('$', $value_key);
+							$arr1[$key] = $sal_final[0];
+							$arr2[$sal_final[0]] = $sal_final[1];
 						}
-					} else {
-						$return_address = $return_address;
 					}
-
-					$address = $return_address." ".$firstname." ".$lastname; 
-
-					$objPHPExcel->setActiveSheetIndex(0);
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Emp no");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $request->empid);
-					$i = $i + 3;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "生年月日");
-					$i = $i + 1;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Name");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $firstname);
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $lastname);
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $DOB);
-					$i = $i + 1;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Address");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $address);
-					$i = $i + 3;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Person");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "First");
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Last");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "first kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "Last kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "DOB");
-					$i = $i + 1;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Father");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "First");
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Last");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "first kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "Last kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "DOB");
-					$i = $i + 1;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Mother");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "First");
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Last");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "first kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "Last kana");
-					$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "DOB");
-					$i = $i + 2;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Salary");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "Deduction");
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "insurance");
-					$i = $i + 1;
-					$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Salary");
-					$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "Deduction");
-					$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "insurance");
-					$i = $i + 3;
+					if(count($salary_det) != "") {
+						foreach ($salary_det as $key1 => $value1) {
+							$sal_arr[$value1->Salarayid] = $value1->Salarayid;
+						}
+					}
+					$salresult_a = array_intersect($sal_arr,$arr1);
+					$salresult_b = array_diff($sal_arr,$arr1);
+					$salresult = array_merge($salresult_a,$salresult_b);
+					ksort($salresult);
+					if(count($salary_det) != "" && is_array($salresult)) {
+						$x = 0;
+						foreach ($salresult as $key2 => $value2) {
+							if ($key2 != '') {
+								if($key2 == isset($arr2[$key2])) {
+									$val1 += $arr2[$key2];
+									$get_master_tot[$a][$key2] = $arr2[$key2];
+								} else {
+									$get_master_tot[$a][$key2] = 0;
+								}
+							}
+							$x++;
+						}
+					}
+					// Salary Deduction
+					$arr3 = array();
+					$arr4 = array();
+					$ded_arr = array();
+					$val2 = '';
+					if ($salvalue->Deduction != '') {
+						$Deduction = explode('##', mb_substr($salvalue->Deduction, 0, -2));
+						foreach ($Deduction as $key => $value1) {
+							$ded_final = explode('$', $value1);
+							$arr3[$key] = $ded_final[0];
+							$arr4[$ded_final[0]] = $ded_final[1];
+						}
+					}
+					if(count($salary_ded) != 0) {
+						foreach ($salary_ded as $key2 => $value2) {
+							$ded_arr[$value2->Salarayid] = $value2->Salarayid;
+						}
+					}
+					$dedresult_a = array_intersect($ded_arr,$arr3);
+					$dedresult_b = array_diff($ded_arr,$arr3);
+					$dedresult = array_merge($dedresult_a,$dedresult_b);
+					ksort($dedresult);
+					if(count($salary_ded) != 0) {
+						$y = 0;
+						foreach ($dedresult as $key2 => $value2) {
+							if ($key2 != '') {
+								if($key2 == isset($arr4[$key2])) {
+									$val2 += $arr4[$key2];
+									$get_master_tot1[$a][$key2] = $arr4[$key2];
+								}
+							}
+							$y++;
+						}
+					}
+					$a++;
 				}
+
+				// Salary Details
+				$salaryDetails = array();
+				foreach ($get_master_tot as $totkey => $totvalue) {
+					foreach ($totvalue as $key_sid => $amount) {
+						$salaryDetails[$key_sid][] = $amount;
+					}
+				}
+				$temp_salaryDetails = array();
+				foreach ($salaryDetails as $tempkey => $tempvalue) {
+					$b = '';
+					foreach ($tempvalue as $key_sid => $amount) {
+						$b += $amount;
+					}
+					$temp_salaryDetails[$tempkey] = $b;
+				}
+
+				// Salary Deduction
+				$salaryDetails_DD = array();
+				foreach ($get_master_tot1 as $totkey_DD => $totvalue_DD) {
+					foreach ($totvalue_DD as $key_sid_DD => $amount_DD) {
+						$salaryDetails_DD[$key_sid_DD][] = $amount_DD;
+					}
+				}
+				$temp_salaryDetails_DD = array();
+				foreach ($salaryDetails_DD as $tempkey_DD => $tempvalue_DD) {
+					$c = '';
+					foreach ($tempvalue_DD as $key_sid_DD => $amount_DD) {
+						$c += $amount_DD;
+					}
+					$temp_salaryDetails_DD[$tempkey_DD] = $c;
+				}
+
+				if(count($salary_det) != '0') {
+					for ($l = 0; $l < count($salary_det); $l++) {
+						if(isset($temp_salaryDetails[$salary_det[$l]->Salarayid]) && $temp_salaryDetails[$salary_det[$l]->Salarayid] != '0') {
+							$SalaryPaytot += $temp_salaryDetails[$salary_det[$l]->Salarayid];
+						}
+					}
+				}
+				if(count($salary_ded) != '0') {
+					for ($j = 0; $j < count($salary_ded); $j++) {
+						if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0') {
+							$SalaryDedtot += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid];
+						}
+					} 
+				}
+
+				// Insurance
+				$insuranceTot = 0;
+				$k = 0;
+				$get_ins_det = array();
+				$insuranceTotal = Gensendtls::fnGetInstotDtls($request,$request->empid);
+				if (isset($insuranceTotal[0])) {
+					$get_ins_det[$k]['Amounts'] = $insuranceTotal[0]->Amounts;
+					$get_ins_det[$k]['Months'] = $insuranceTotal[0]->months;
+				}
+				if(count($get_ins_det) != '0') {
+					for ($k = 0; $k < count($get_ins_det); $k++) {
+						if(strlen($get_ins_det[$k]['Amounts'] > 2)){
+							$AmountVal = explode(",",$get_ins_det[$k]['Amounts']);
+							$Month = explode(",",$get_ins_det[$k]['Months']);
+							$Amount = array();
+							foreach ($AmountVal as $key => $value) {
+								if (array_key_exists($Month[$key], $Amount)) {
+									$Amount[$Month[$key]] += $value;
+								} else {
+									$Amount[$Month[$key]] = $value;
+								}
+								$insuranceTot += $value;
+							}
+						}
+					}
+				}
+
+				$i = $i + 2;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Salary");
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "Deduction");
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Insurance");
+				$i = $i + 1;
+				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, $SalaryPaytot);
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $SalaryDedtot);
+				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $insuranceTot);
+				$i = $i + 3;
 			}
 			$objPHPExcel->setActiveSheetIndex(0);
 			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
