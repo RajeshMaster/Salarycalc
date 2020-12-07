@@ -51,6 +51,10 @@
 				class="btn btn-success box190">
 				<span class="fa fa-file-excel-o"></span>&emsp;{{ trans('messages.lbl_gensen_download') }}
 			</a>
+			<a onclick="javascript:fndwldgensen();"
+				class="btn btn-success box110">
+				<span class="fa fa-file-excel-o"></span>&emsp;{{ trans('messages.lbl_gensen') }}
+			</a>
 		</div>
 	</div>
 	

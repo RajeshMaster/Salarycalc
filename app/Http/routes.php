@@ -227,6 +227,7 @@ Route::group(['prefix'=>'Gensendtls','middleware' => 'auth'], function() {
 	Route::any('gensenDownload', 'GensendtlsController@gensenDownload');
 	Route::any('salarydeductionpopup', 'GensendtlsController@salarydeductionpopup');
 	Route::any('deductionselectprocess', 'GensendtlsController@deductionselectprocess');
+	Route::any('gensenDwld', 'GensendtlsController@gensenDwld');
 });
 
 Route::group(['prefix'=>'Visa', 'middleware' => 'auth'], function()

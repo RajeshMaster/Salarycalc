@@ -89,7 +89,7 @@ class Gensendtls extends Model {
 		return $query;
 	}
 
-	public static function salaryDetailhistory($request, $flg,$Emp_ID) {
+	public static function salaryDetailhistory($request,$flg,$Emp_ID) {
 		$db = DB::connection('mysql');
 		$query = $db->table('inv_salaryplus_main')
 					 ->select('*')

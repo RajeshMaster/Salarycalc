@@ -71,6 +71,15 @@ function fngodownloadgensen() {
 	}
 }
 
+function fndwldgensen() {
+	var confirmprocess_download = confirm("Do You Want To Download?");
+	var mainmenu = $('#mainmenu').val();
+	if(confirmprocess_download) {
+		$('#frmgensenstaffview').attr('action','../Gensendtls/gensenDwld?mainmenu='+mainmenu+'&time='+datetime);
+		$("#frmgensenstaffview").submit();
+	}
+}
+
 function salarydeduction() {
 	var mainmenu = $('#mainmenu').val();
 	var selYear = $('#selYear').val();

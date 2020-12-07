@@ -398,7 +398,7 @@ class GensendtlsController extends Controller {
 	public function gensenDownload(Request $request) {
 		ini_set('max_execution_time', '300'); 
 		ini_set('memory_limit', '300M'); 
-		$template_name = 'resources/assets/uploadandtemplates/templates/gensen.xlsx';
+		$template_name = 'resources/assets/uploadandtemplates/templates/gensen_details.xlsx';
 		$excel_name = 'Gensen_'.$request->empid;
 
 		Excel::load($template_name, function($objPHPExcel) use($request) {
@@ -424,6 +424,83 @@ class GensendtlsController extends Controller {
 			}
 
 			$address = $return_address." ".$firstname." ".$lastname; 
+
+			$tot1 = 0;
+			$salary_det = Gensendtls::getsalaryDetailsnodelflg($request,'1');
+			// Total For Salary Details
+			$g_query1 = Gensendtls::salaryDetailhistory($request,1,$request->empid);
+			$a = 0;
+			$get_master_tot = array();
+			$tot_travel_amt = '';
+			foreach ($g_query1 as $key => $value) {
+				//For Travel,Salary Amount & Transferred Details
+				if ($value->Travel != '') {
+					$tot_travel_amt += $value->Travel;
+				}
+				//For Salary Details
+				$arr1 = array();
+				$arr2 = array();
+				$sal_arr = array();
+				$val1 = '';
+				if ($value->Salary != '') {
+					$Salary = explode('##', mb_substr($value->Salary, 0, -2));
+					foreach ($Salary as $key => $value_key) {
+						$sal_final = explode('$', $value_key);
+						$arr1[$key] = $sal_final[0];
+						$arr2[$sal_final[0]] = $sal_final[1];
+					}
+				}
+				if(count($salary_det) != "") {
+					foreach ($salary_det as $key1 => $value1) {
+						$sal_arr[$value1->Salarayid] = $value1->Salarayid;
+					}
+				}
+				$salresult_a = array_intersect($sal_arr,$arr1);
+				$salresult_b = array_diff($sal_arr,$arr1);
+				$salresult = array_merge($salresult_a,$salresult_b);
+				ksort($salresult);
+				if(count($salary_det) != "" && is_array($salresult)) {
+					$x = 0;
+					foreach ($salresult as $key2 => $value2) {
+						if ($key2 != '') {
+							if($key2 == isset($arr2[$key2])) {
+								$val1 += $arr2[$key2];
+								$get_master_tot[$a][$key2] = $arr2[$key2];
+							} else {
+								$get_master_tot[$a][$key2] = 0;
+							}
+						}
+						$x++;
+					}
+				}
+				$a++;
+			}
+			
+			// Salary Details
+			$salaryDetails = array();
+			foreach ($get_master_tot as $key => $value) {
+				foreach ($value as $key_sid => $amount) {
+					$salaryDetails[$key_sid][] = $amount;
+				}
+			}
+
+			$temp_salaryDetails = array();
+			foreach ($salaryDetails as $key => $value) {
+				$b = '';
+				foreach ($value as $key_sid => $amount) {
+					$b += $amount;
+				}
+				$temp_salaryDetails[$key] = $b;
+			}
+
+			if(count($salary_det) != '0') {
+				for ($i = 0; $i < count($salary_det); $i++) {
+					if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0') {
+						$tot1 += $temp_salaryDetails[$salary_det[$i]->Salarayid];
+					}
+				}
+			}
+			
 			
 			$objPHPExcel->setActiveSheetIndex(0);
 			$objPHPExcel->getActiveSheet()->setCellValue("M11", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
@@ -441,6 +518,7 @@ class GensendtlsController extends Controller {
 			$objPHPExcel->getActiveSheet()->setCellValue("E18", ".");
 			$objPHPExcel->getActiveSheet()->setCellValue("F18", ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("J18", $MotherDOB);
+			$objPHPExcel->getActiveSheet()->setCellValue("V21", $tot1);
 			$objPHPExcel->setActiveSheetIndex(0);
 			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
 		})->setFilename($excel_name)->download('xlsx');
@@ -471,6 +549,42 @@ class GensendtlsController extends Controller {
 		Session::flash('selYear', $request->selYear); 
 
 		return Redirect::to('Gensendtls/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+	}
+
+	public function gensenDwld(Request $request) {
+		$template_name='resources/assets/uploadandtemplates/templates/gensen_Name.xlsx';
+		$excel_name = 'gensen_Name'.$request->empid;
+
+		Excel::load($template_name, function($objPHPExcel) use($request) {
+			$empdetail = Gensendtls::fnGetEmpDetail($request);
+			$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
+			$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
+			$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
+			$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
+			if (is_numeric(trim($return_address))) {
+				$oldAddress = Gensendtls::fnGetAddressMB($return_address);
+				if (isset($oldAddress[0])) {
+					$return_address = '〒'.$oldAddress[0]->pincode.' '.$oldAddress[0]->jpstate.$oldAddress[0]->jpaddress.' - '.$oldAddress[0]->roomno;
+				} else {
+					$return_address = '';
+				}
+			} else {
+				$return_address = $return_address;
+			}
+
+			$address = $return_address." ".$firstname." ".$lastname; 
+			
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPExcel->getActiveSheet()->setCellValue("B9", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("C9", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
+			$objPHPExcel->getActiveSheet()->setCellValue("D9", "生年月日");
+			$objPHPExcel->getActiveSheet()->setCellValue("B10", $firstname);
+			$objPHPExcel->getActiveSheet()->setCellValue("C10", $lastname);
+			$objPHPExcel->getActiveSheet()->setCellValue("D10", $DOB);
+			$objPHPExcel->getActiveSheet()->setCellValue("B11", $address);
+			$objPHPExcel->setActiveSheetIndex(0);
+			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
+		})->setFilename($excel_name)->download('xlsx');
 	}
 
 }

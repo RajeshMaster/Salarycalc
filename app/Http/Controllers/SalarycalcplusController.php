@@ -2048,7 +2048,7 @@ Class SalarycalcplusController extends Controller {
 
 		ini_set('max_execution_time', '300'); 
 		ini_set('memory_limit', '300M'); 
-		$template_name = 'resources/assets/uploadandtemplates/templates/gensen.xlsx';
+		$template_name = 'resources/assets/uploadandtemplates/templates/gensen_details.xlsx';
 		$excel_name ='Gensen_'.strtoupper($request->lastname).'_'.$request->selYear;
 		Excel::load($template_name, function($objPHPExcel) use($request) {
 			
@@ -2267,8 +2267,8 @@ Class SalarycalcplusController extends Controller {
 			$objPHPExcel->getActiveSheet()->setCellValue("F18", ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("J18", $MotherDOB);
 			$objPHPExcel->getActiveSheet()->setCellValue("V21", $tot1);
-			$objPHPExcel->getActiveSheet()->setCellValue("X21", $deduction);
-			$objPHPExcel->getActiveSheet()->setCellValue("P49", $total);
+			// $objPHPExcel->getActiveSheet()->setCellValue("X21", $deduction);
+			// $objPHPExcel->getActiveSheet()->setCellValue("P49", $total);
 			$objPHPExcel->setActiveSheetIndex(0);
           	$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
 		})->setFilename($excel_name)->download('xlsx');
