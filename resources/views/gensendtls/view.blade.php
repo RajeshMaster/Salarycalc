@@ -166,7 +166,7 @@
 					<div class="col-xs-3 text-right clr_blue box40per">
 						<label>{{ trans('messages.lbl_year') }}</label>
 					</div>
-					<div style="color: #d92027;font-weight: bold;">
+					<div style="color: black;font-weight: bold;">
 						{{ $request->selYear }}
 					</div>
 				</div>
