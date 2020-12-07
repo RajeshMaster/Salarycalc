@@ -714,14 +714,14 @@ class GensendtlsController extends Controller {
 			if(count($salary_det) != '0') {
 				for ($i = 0; $i < count($salary_det); $i++) {
 					if(isset($temp_salaryDetails[$salary_det[$i]->Salarayid]) && $temp_salaryDetails[$salary_det[$i]->Salarayid] != '0') {
-						$tot1 += $temp_salaryDetails[$salary_det[$i]->Salarayid];
+						$SalaryPaytot += $temp_salaryDetails[$salary_det[$i]->Salarayid];
 					}
 				}
 			}
 			if(count($salary_ded) != '0') {
 				for ($j = 0; $j < count($salary_ded); $j++) {
 					if(isset($temp_salaryDetails_DD[$salary_ded[$j]->Salarayid]) && $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid] != '0') {
-						$tot2 += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid];
+						$SalaryDedtot += $temp_salaryDetails_DD[$salary_ded[$j]->Salarayid];
 					}
 				} 
 			}
