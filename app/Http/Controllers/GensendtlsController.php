@@ -552,7 +552,7 @@ class GensendtlsController extends Controller {
 	}
 
 	public function gensenViewDwld(Request $request) {
-		$template_name='resources/assets/uploadandtemplates/templates/gensen_TEMP.xlsx';
+		$template_name='resources/assets/uploadandtemplates/templates/gensen_Payment.xlsx';
 		$excel_name = 'Gensen_'.$request->selYear."_".$request->empid;
 		
 		Excel::load($template_name, function($objPHPExcel) use($request) {
@@ -582,7 +582,6 @@ class GensendtlsController extends Controller {
 			$objPHPExcel->getActiveSheet()->setCellValue("C6", $request->empid);
 			$objPHPExcel->getActiveSheet()->setCellValue("C9", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("D9", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
-			$objPHPExcel->getActiveSheet()->setCellValue("E9", "生年月日");
 			$objPHPExcel->getActiveSheet()->setCellValue("C10", $firstname);
 			$objPHPExcel->getActiveSheet()->setCellValue("D10", $lastname);
 			$objPHPExcel->getActiveSheet()->setCellValue("E10", $DOB);
@@ -764,7 +763,7 @@ class GensendtlsController extends Controller {
 
 	public function gensenindexDwld(Request $request) {
 
-		$template_name='resources/assets/uploadandtemplates/templates/gensen_TEMP.xlsx';
+		$template_name='resources/assets/uploadandtemplates/templates/gensen_Payment.xlsx';
 		if ($request->selYear == "") {
 			$selYear = date('Y');
 		}
@@ -800,37 +799,74 @@ class GensendtlsController extends Controller {
 
 				$objPHPExcel->setActiveSheetIndex(0);
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Emp no");
+				$objPHPExcel->getActiveSheet()->getStyle('B'.$i, "Emp no")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle('B'.$i, "Emp no")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $request->empid);
+				$objPHPExcel->getActiveSheet()->getStyle('C'.$i, $request->empid)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle('C'.$i, $request->empid)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 3;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Kana");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Kana")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Kana")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "生年月日");
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, "生年月日")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, "生年月日")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 1;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Name");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Name")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Name")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $firstname);
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, $firstname)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $lastname);
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, $lastname)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $DOB);
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, $DOB)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 1;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Address");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Address")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Address")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
+				$objPHPExcel->getActiveSheet()->mergeCells('C'.$i.':E'.$i);
+				$objPHPExcel->getActiveSheet()->getRowDimension($i)->setRowHeight(28);
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, $address)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $address);
 				$i = $i + 3;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Person");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Person")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Person")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "Name");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, "Name")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, "Name")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Kana Name");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, "Kana Name")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, "Kana Name")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "DOB");
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, "DOB")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, "DOB")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 1;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Father");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Father")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Father")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->FatherName) ? $empdetail[0]->FatherName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, ($empdetail[0]->FatherName) ? $empdetail[0]->FatherName : "")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->FatherkanaName) ? $empdetail[0]->FatherkanaName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, ($empdetail[0]->FatherkanaName) ? $empdetail[0]->FatherkanaName : "")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $FatherDOB);
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, $FatherDOB)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 1;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Mother");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Mother")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Mother")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->MotherName) ? $empdetail[0]->MotherName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, ($empdetail[0]->MotherName) ? $empdetail[0]->MotherName : "")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $MotherDOB);
-
+				$objPHPExcel->getActiveSheet()->getStyle("E".$i, $MotherDOB)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 				$SalaryPaytot = 0;
 				$SalaryDedtot = 0;
@@ -992,12 +1028,21 @@ class GensendtlsController extends Controller {
 
 				$i = $i + 2;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Salary");
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, "Salary")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle('B'.$i, "Salary")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, "Deduction");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, "Deduction")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, "Deduction")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, "Insurance");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, "Insurance")->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, "Insurance")->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 1;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, $SalaryPaytot);
+				$objPHPExcel->getActiveSheet()->getStyle("B".$i, $SalaryPaytot)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $SalaryDedtot);
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i, $SalaryDedtot)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $insuranceTot);
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i, $insuranceTot)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 3;
 			}
 			$objPHPExcel->setActiveSheetIndex(0);
