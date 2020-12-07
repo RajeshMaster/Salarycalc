@@ -57,15 +57,20 @@
 		
 		<div class="box100per pr10 pl10 mt6">
 			<a class="pull-left" href="javascript:salarydeduction();">
-				<img class="box19" src="{{ URL::asset('resources/assets/images/edit.png') }}"></a>
-				<a href="javascript:salarydeduction();" class="pull-left pr10 ml5 anchorstyle" title="{{ trans('messages.lbl_salary_ded') }}">
+				<img class="box19 mt10" src="{{ URL::asset('resources/assets/images/edit.png') }}"></a>
+				<a href="javascript:salarydeduction();" class="pull-left ml5 anchorstyle mt5" title="{{ trans('messages.lbl_salary_ded') }}">
 				{{ trans('messages.lbl_salary_ded') }}
 			</a>
 			{{ Form::select('basicsort', $array, $request->basicsort,
-						array('class' => 'form-control'.' ' .$request->sortstyle.' '.'CMN_sorting pull-right mt10 mb15',
+						array('class' => 'form-control'.' ' .$request->sortstyle.' '.'CMN_sorting pull-right mb15',
 								'id' => 'basicsort',
 								'name' => 'basicsort'))
 			}}
+			<a onclick="javascript:fndwldgensen(1);"
+				class="btn btn-success box110 pull-right mr10">
+				<span class="fa fa-file-excel-o"></span>&emsp;{{ trans('messages.lbl_gensen') }}
+			</a>
+			
 		</div>
 
 		<div class="pt10 minh340">

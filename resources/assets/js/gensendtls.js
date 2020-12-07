@@ -71,12 +71,17 @@ function fngodownloadgensen() {
 	}
 }
 
-function fndwldgensen() {
+function fndwldgensen(flg) {
 	var confirmprocess_download = confirm("Do You Want To Download?");
 	var mainmenu = $('#mainmenu').val();
 	if(confirmprocess_download) {
-		$('#frmgensenstaffview').attr('action','../Gensendtls/gensenDwld?mainmenu='+mainmenu+'&time='+datetime);
-		$("#frmgensenstaffview").submit();
+		if (flg == 1) {
+			$('#gensenIndex').attr('action','../Gensendtls/gensenDwld?mainmenu='+mainmenu+'&time='+datetime);
+			$("#gensenIndex").submit();
+		} else {
+			$('#frmgensenstaffview').attr('action','../Gensendtls/gensenDwld?mainmenu='+mainmenu+'&time='+datetime);
+			$("#frmgensenstaffview").submit();
+		}
 	}
 }
 
