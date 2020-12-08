@@ -581,7 +581,7 @@ class GensendtlsController extends Controller {
 			$address = $return_address." ".$firstname." ".$lastname; 
 			
 			$objPHPExcel->setActiveSheetIndex(0);
-			$objPHPExcel->getActiveSheet()->setCellValue("C6", $request->empid);
+			$objPHPExcel->getActiveSheet()->setCellValue("C6", $request->empid." - ".$lastname);
 			$objPHPExcel->getActiveSheet()->setCellValue("C9", ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("D9", ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
 			$objPHPExcel->getActiveSheet()->setCellValue("C10", $firstname);
