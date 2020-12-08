@@ -7,6 +7,8 @@ use DB;
 use Input;
 use Redirect;
 use Session;
+use App\Http\Helpers;
+use App\Http\Eradate;
 use Illuminate\Support\Facades\Validator;
 // use Excel;
 use PHPExcel_Style_Border;
@@ -778,12 +780,72 @@ class GensendtlsController extends Controller {
 
 				$request->empid = $value->Emp_ID;
 				$empdetail = Gensendtls::fnGetEmpDetail($request);
-				$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
-				$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
-				$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
-				$FatherDOB = str_replace("-","/",($empdetail[0]->FatherDOB) ? $empdetail[0]->FatherDOB : "");
-				$MotherDOB = str_replace("-","/",($empdetail[0]->MotherDOB) ? $empdetail[0]->MotherDOB : "");
-				$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
+				if (isset($empdetail[0])) {
+					$firstname = $empdetail[0]->FirstName;
+					$lastname = $empdetail[0]->LastName;
+					if ($empdetail[0]->DOB != "" && $empdetail[0]->DOB != "0000-00-00") {
+						$EmpDobCal = Eradate::geteradate($empdetail[0]->DOB, 6);
+						$EmpDobdate = explode('/', $EmpDobCal);
+						$EmpDobdate = explode('/', $EmpDobCal);
+						if (isset($EmpDobdate[3])) {
+							$EmpDobdate[3] = $EmpDobdate[3];
+						} else {
+							$EmpDobdate[3] = "";
+						}
+						if (isset($EmpDobdate[0])) {
+							$EmpDobdate[0] = $EmpDobdate[0];
+						} else {
+							$EmpDobdate[0] = "";
+						}
+						$DOB = $EmpDobdate[3].' ( '.$EmpDobdate[0].' ) '." ".$empdetail[0]->DOB;
+					} else {
+						$DOB = "";
+					}
+					if ($empdetail[0]->FatherDOB != "" && $empdetail[0]->FatherDOB != "0000-00-00") {
+						$FatEmpDobCal = Eradate::geteradate($empdetail[0]->FatherDOB, 6);
+						$FatEmpDobdate = explode('/', $FatEmpDobCal);
+						$FatEmpDobdate = explode('/', $FatEmpDobCal);
+						if (isset($FatEmpDobdate[3])) {
+							$FatEmpDobdate[3] = $FatEmpDobdate[3];
+						} else {
+							$FatEmpDobdate[3] = "";
+						}
+						if (isset($FatEmpDobdate[0])) {
+							$FatEmpDobdate[0] = $FatEmpDobdate[0];
+						} else {
+							$FatEmpDobdate[0] = "";
+						}
+						$FatherDOB = $FatEmpDobdate[3].' ( '.$FatEmpDobdate[0].' ) '." ".$empdetail[0]->FatherDOB;
+					} else {
+						$FatherDOB = "";
+					}
+					if ($empdetail[0]->MotherDOB != "" && $empdetail[0]->MotherDOB != "0000-00-00") {
+						$MotEmpDobCal = Eradate::geteradate($empdetail[0]->MotherDOB, 6);
+						$MotEmpDobdate = explode('/', $MotEmpDobCal);
+						$MotEmpDobdate = explode('/', $MotEmpDobCal);
+						if (isset($MotEmpDobdate[3])) {
+							$MotEmpDobdate[3] = $MotEmpDobdate[3];
+						} else {
+							$MotEmpDobdate[3] = "";
+						}
+						if (isset($MotEmpDobdate[0])) {
+							$MotEmpDobdate[0] = $MotEmpDobdate[0];
+						} else {
+							$MotEmpDobdate[0] = "";
+						}
+						$MotherDOB = $MotEmpDobdate[3].' ( '.$MotEmpDobdate[0].' ) '." ".$empdetail[0]->MotherDOB;
+					} else {
+						$MotherDOB = "";
+					}
+					$return_address = $empdetail[0]->Address1;
+				} else {
+					$firstname = "";
+					$lastname = "";
+					$DOB = "";
+					$FatherDOB = "";
+					$MotherDOB = "";
+					$return_address = "" ;
+				}
 				if (is_numeric(trim($return_address))) {
 					$oldAddress = Gensendtls::fnGetAddressMB($return_address);
 					if (isset($oldAddress[0])) {
@@ -801,16 +863,18 @@ class GensendtlsController extends Controller {
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Emp no");
 				$objPHPExcel->getActiveSheet()->getStyle('B'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 				$objPHPExcel->getActiveSheet()->getStyle('B'.$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $request->empid);
-				$objPHPExcel->getActiveSheet()->getStyle('C'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
+				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $request->empid." - ".$lastname);
+				$objPHPExcel->getActiveSheet()->getStyle('C'.$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('ed8f13');
 				$objPHPExcel->getActiveSheet()->getStyle('C'.$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$i = $i + 3;
 				$objPHPExcel->getActiveSheet()->setCellValue("B".$i, "Kana");
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->KanaFirstName) ? $empdetail[0]->KanaFirstName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->KanaLastName) ? $empdetail[0]->KanaLastName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, "生年月日");
 				$objPHPExcel->getActiveSheet()->getStyle("E".$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
@@ -820,8 +884,10 @@ class GensendtlsController extends Controller {
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $firstname);
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $lastname);
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $DOB);
 				$objPHPExcel->getActiveSheet()->getStyle("E".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
@@ -831,6 +897,7 @@ class GensendtlsController extends Controller {
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->mergeCells('C'.$i.':E'.$i);
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getRowDimension("C".$i)->setRowHeight(28);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, $address);
@@ -852,8 +919,10 @@ class GensendtlsController extends Controller {
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->FatherName) ? $empdetail[0]->FatherName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->FatherkanaName) ? $empdetail[0]->FatherkanaName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $FatherDOB);
 				$objPHPExcel->getActiveSheet()->getStyle("E".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
@@ -862,8 +931,10 @@ class GensendtlsController extends Controller {
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 				$objPHPExcel->getActiveSheet()->getStyle("B".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("C".$i, ($empdetail[0]->MotherName) ? $empdetail[0]->MotherName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, ($empdetail[0]->MotherkanaName) ? $empdetail[0]->MotherkanaName : "");
+				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getAlignment()->setWrapText(true);
 				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("E".$i, $MotherDOB);
 				$objPHPExcel->getActiveSheet()->getStyle("E".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
@@ -1043,7 +1114,9 @@ class GensendtlsController extends Controller {
 				$objPHPExcel->getActiveSheet()->getStyle("C".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 				$objPHPExcel->getActiveSheet()->setCellValue("D".$i, $insuranceTot);
 				$objPHPExcel->getActiveSheet()->getStyle("D".$i)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-				$i = $i + 3;
+				$i = $i + 1;
+				$objPHPExcel->getActiveSheet()->getStyle("A".$i.":N".$i)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+				$i = $i + 2;
 			}
 			$objPHPExcel->setActiveSheetIndex(0);
 			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
