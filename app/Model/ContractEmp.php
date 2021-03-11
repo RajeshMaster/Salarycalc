@@ -41,7 +41,7 @@ class ContractEmp extends Model{
 
 		foreach ($getempdetails as $key => $value) {
 			$empid = $value->Emp_ID;
-			$insert=DB::table('inv_contractemp_main_emp')
+			$insert = DB::table('inv_contractemp_main_emp')
 					->insert(array('id'	=>	'', 
 									'Emp_Id'	=>	$empid, 
 									'delflg'	=>	'0', 
@@ -273,8 +273,8 @@ class ContractEmp extends Model{
 			$rows[] = array('id' => '',
 							'Emp_Id' => $request->selected[$i],
 							'delflg' => 0,
-							'year' => $request->year,
-							'month' => $request->month,
+							'year' => $request->selectedyear,
+							'month' => $request->selectedmonth,
 							'create_date' => date('Y-m-d H:i:s'),
 							'create_by' => Auth::user()->username,
 							'update_date' => date('Y-m-d H:i:s'),
@@ -396,13 +396,63 @@ class ContractEmp extends Model{
 
 	public static function fnGetDataExistsCheck($request) {
 		$db = DB::connection('mysql');
-		$query = $db->table('inv_salaryplus_main')
+		$query = $db->table('inv_contractemp_main')
 					->select('*')
 					->where('Emp_ID','=',$request->Emp_ID)
 					->where('year','=',$request->selYear)
 					->where('month','=',$request->month)
 					->get();
 		return $query;
+	}
+
+		public static function fnsalarycalcadd($request,$salary_det,$salary_ded) {
+		$name = Session::get('FirstName').' '.Session::get('LastName');
+		$salary_final = '';
+		foreach ($salary_det as $key => $value) {
+			$detail = 'salary_'.$value->Salarayid;
+			$salaryDet = $request->$detail;
+			if ($salaryDet != '') {
+				$salary_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDet).'##';
+			}
+		}
+		$deduction_final = '';
+		foreach ($salary_ded as $key => $value) {
+			$detail1 = 'deduction_'.$value->Salarayid;
+			$salaryDed = $request->$detail1;
+			if ($salaryDed != '') {
+				$deduction_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDed).'##';
+			}
+		}
+		$Travel = str_replace(",", "", $request->Travel);
+		$salamt = str_replace(",", "", $request->salamt);
+		if ($salary_final !="" || $deduction_final != "" || $Travel != "" || $salamt != "") {
+			$insert=DB::table('inv_contractemp_main')
+				->insert(
+					['id' => '',
+					'Emp_ID' => $request->Emp_ID,
+					'date' => $request->date,
+					'Salary' => !empty($salary_final) ? $salary_final : '',
+					'Deduction' => !empty($deduction_final) ? $deduction_final : '',
+					'Travel' => !empty($Travel) ? $Travel : '',
+					'salamt' => !empty($salamt) ? $salamt : '',
+					'year' => $request->selYear,
+					'month' => $request->month,
+					'year_mon' => $request->selYear.'-'.$request->month.'-10',
+					'remarks' => $request->remarks,
+					'delFlg' => 0,
+					'CreatedDateTime' => date('Y-m-d H:i:s'),
+					'UpdatedDateTime' => date('Y-m-d H:i:s'),
+					'CreatedBy' => $name,
+					'UpdatedBy' => $name]
+			);
+		}
+		return $insert;
+	}
+
+	public static function fngetid() {
+		$Details = DB::TABLE('inv_contractemp_main')
+						->max('id');
+		return $Details;
 	}
 
 	public static function multiadd($request,$salary_det,$salary_ded) {
@@ -449,49 +499,7 @@ class ContractEmp extends Model{
 		return $insert;
 	}
 
-	public static function fnsalarycalcadd($request,$salary_det,$salary_ded) {
-		$name = Session::get('FirstName').' '.Session::get('LastName');
-		$salary_final = '';
-		foreach ($salary_det as $key => $value) {
-			$detail = 'salary_'.$value->Salarayid;
-			$salaryDet = $request->$detail;
-			if ($salaryDet != '') {
-				$salary_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDet).'##';
-			}
-		}
-		$deduction_final = '';
-		foreach ($salary_ded as $key => $value) {
-			$detail1 = 'deduction_'.$value->Salarayid;
-			$salaryDed = $request->$detail1;
-			if ($salaryDed != '') {
-				$deduction_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDed).'##';
-			}
-		}
-		$Travel = str_replace(",", "", $request->Travel);
-		$salamt = str_replace(",", "", $request->salamt);
-		if ($salary_final !="" || $deduction_final != "" || $Travel != "" || $salamt != "") {
-			$insert=DB::table('inv_salaryplus_main')
-				->insert(
-					['id' => '',
-					'Emp_ID' => $request->Emp_ID,
-					'date' => $request->date,
-					'Salary' => !empty($salary_final) ? $salary_final : '',
-					'Deduction' => !empty($deduction_final) ? $deduction_final : '',
-					'Travel' => !empty($Travel) ? $Travel : '',
-					'salamt' => !empty($salamt) ? $salamt : '',
-					'year' => $request->selYear,
-					'month' => $request->month,
-					'year_mon' => $request->selYear.'-'.$request->month.'-10',
-					'remarks' => $request->remarks,
-					'delFlg' => 0,
-					'CreatedDateTime' => date('Y-m-d H:i:s'),
-					'UpdatedDateTime' => date('Y-m-d H:i:s'),
-					'CreatedBy' => $name,
-					'UpdatedBy' => $name]
-			);
-		}
-		return $insert;
-	}
+
 
 	public static function fnsalarycalcupd($request,$salary_det,$salary_ded) {
 		$name = Session::get('FirstName').' '.Session::get('LastName');
@@ -531,13 +539,6 @@ class ContractEmp extends Model{
 		);
 		return $update;
 	}
-
-	public static function fngetid() {
-		$Details = DB::TABLE('inv_salaryplus_main')
-						->max('id');
-		return $Details;
-	}
-
 	
 
 	public static function getbasichraDetails($empid,$yearmonth) {

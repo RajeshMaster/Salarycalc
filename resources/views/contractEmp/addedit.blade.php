@@ -400,7 +400,8 @@
 								<i class="fa fa-plus" aria-hidden="true"></i> {{ trans('messages.lbl_register') }}
 							</button>
 						@endif
-						<a onclick="javascript:gotoindex('index','{{$request->mainmenu}}');" class="btn btn-danger box120 white"><i class="fa fa-times" aria-hidden="true"></i> {{trans('messages.lbl_cancel')}}
+						<a onclick="javascript:gotoindex('index','{{$request->mainmenu}}');" class="btn btn-danger box120 white">
+							<i class="fa fa-times" aria-hidden="true"></i> {{trans('messages.lbl_cancel')}}
 						</a>
 						@if($request->editcheck == 0)
 						<a onclick="javascript:getlastmonthdetails();" class="btn btn-primary box170 white"> {{trans('Get Last Month Details')}}

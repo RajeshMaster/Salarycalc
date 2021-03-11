@@ -36,15 +36,15 @@ Class ContractEmpController extends Controller {
 			$request->plimit = 50;
 		}
 		$getdetailsemp = ContractEmp::fnGetdetailsfromemp();
-		if ($getdetailsemp == 0) {
-			$insertdetailsemp = ContractEmp::fninsertdetailsfromemp($request);
-		}
+		// if ($getdetailsemp == 0) {
+		// 	$insertdetailsemp = ContractEmp::fninsertdetailsfromemp($request);
+		// }
 
 		//START PREVIOUS CURRENT YEAR MONTH RECORD CHECK AND REGISTER
-		$temp_count = ContractEmp::getTempDetails($request);
-		if ($temp_count == 0) {
-			$empdetails = ContractEmp::getEmpDetailsId($request);
-		}
+		// $temp_count = ContractEmp::getTempDetails($request);
+		// if ($temp_count == 0) {
+		// 	$empdetails = ContractEmp::getEmpDetailsId($request);
+		// }
 		//END PREVIOUS CURRENT YEAR MONTH RECORD CHECK AND REGISTER
 
 		$year_month = array();
@@ -928,6 +928,22 @@ Class ContractEmpController extends Controller {
 		}
 	}
 
+	public function getdataExists(Request $request) {
+
+		$dataExist = ContractEmp::fnGetDataExistsCheck($request);
+		$countdata = count($dataExist);
+		print_r($countdata);exit();
+  	}
+
+  	public function dataReg(Request $request) {
+
+  		$salary_det = ContractEmp::getsalaryDetails($request,'1');
+		$salary_ded = ContractEmp::getsalaryDetails($request,'2');
+		$dataReg = ContractEmp::fnsalarycalcadd($request,$salary_det,$salary_ded);
+		$getid = ContractEmp::fngetid();
+		print_r($getid);exit();
+  	}
+
 	public function getajaxtotamt(Request $request) {
 
 		$salary_det = SalaryCalc::getsalaryDetails($request,'1');
@@ -1108,24 +1124,6 @@ Class ContractEmpController extends Controller {
 	    	return $keys[$found_index-1];
 	    }
 	}
-
-	
-
-	public function getdataExists(Request $request) {
-
-		$dataExist = SalaryCalcplus::fnGetDataExistsCheck($request);
-		$countdata = count($dataExist);
-		print_r($countdata);exit();
-  	}
-
-  	public function dataReg(Request $request) {
-
-  		$salary_det=SalaryCalcplus::getsalaryDetails($request,'1');
-		$salary_ded=SalaryCalcplus::getsalaryDetails($request,'2');
-		$dataReg = SalaryCalcplus::fnsalarycalcadd($request,$salary_det,$salary_ded);
-		$getid = SalaryCalcplus::fngetid();
-		print_r($getid);exit();
-  	}
 
 	public function addeditprocess(Request $request) {
 

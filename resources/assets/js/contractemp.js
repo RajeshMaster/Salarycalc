@@ -15,7 +15,7 @@ $(document).ready(function() {
 		}
 	});
 	$('.addeditprocess').click(function () {
-        $("#addeditsalarycalc").validate({
+        $("#addeditcontractemp").validate({
             showErrors: function(errorMap, errorList) {
             // Clean up any tooltips for valid elements
                 $.each(this.validElements(), function (index, element) {
