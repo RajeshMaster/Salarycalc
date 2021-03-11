@@ -157,6 +157,7 @@ Route::group(['prefix'=>'contractEmp','middleware' => 'auth'], function() {
 	Route::any('addedit', 'ContractEmpController@addedit');
 	Route::any('edit', 'ContractEmpController@edit');
 	Route::any('addeditprocess', 'ContractEmpController@addeditprocess');
+	Route::any('getTransferedAmount', 'ContractEmpController@getTransferedAmount');
 	Route::any('getdataExists', 'ContractEmpController@getdataExists');
 	Route::any('dataReg', 'ContractEmpController@dataReg');
 	Route::get('getlastmonthdet', 'ContractEmpController@getlastmonthdet');
@@ -164,7 +165,6 @@ Route::group(['prefix'=>'contractEmp','middleware' => 'auth'], function() {
 	Route::any('multiregister', 'ContractEmpController@multiregister');
 	Route::any('mailsendprocess', 'ContractEmpController@mailsendprocess');
 	Route::get('getsalamount', 'ContractEmpController@getajaxtotamt');
-	Route::any('getTransferedAmount', 'ContractEmpController@getTransferedAmount');
 	// Download Process
 	Route::any('transferdetailsdownload', 'ContractEmpController@transferdetailsdownload');
 	Route::any('salaryplusdownload', 'ContractEmpController@salaryplusdownload');

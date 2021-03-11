@@ -416,7 +416,7 @@ function getTransferedAmount() {
 	$.ajax({
         type: 'GET',
         url: 'getTransferedAmount',
-        data: $('#addeditsalarycalc').serialize(),
+        data: $('#addeditcontractemp').serialize(),
         success: function(resp) {
         	var diff_amt = parseInt(Number(resp.trim().replace(/[, ]+/g, ""))) - parseInt(Number(totalamount.trim().replace(/[, ]+/g, "")));
         	var diff_amnt = '<span style="font-weight: bold;">'+lbl_amount_difference+'</span>&nbsp;<span style="color: red;">' + diff_amt.toLocaleString() + '</span>';

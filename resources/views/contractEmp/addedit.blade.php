@@ -1,6 +1,6 @@
 @extends('layouts.app')
 @section('content')
-{{ HTML::script('resources/assets/js/salarycalcplus.js') }}
+{{ HTML::script('resources/assets/js/contractemp.js') }}
 {{ HTML::script('resources/assets/js/lib/bootstrap-datetimepicker.js') }}
 {{ HTML::script('resources/assets/js/lib/lightbox.js') }}
 {{ HTML::style('resources/assets/css/lib/bootstrap-datetimepicker.min.css') }}
@@ -82,7 +82,6 @@
 		var totalamount = $('#totamt').data('totalamt');
 		var salamount = $('#salamt').val();
 		var diff_amt = parseInt(Number(salamount.trim().replace(/[, ]+/g, ""))) - parseInt(Number(totalamount.trim().replace(/[, ]+/g, "")));
-		// alert(diff_amt);
 		var diff_amnt = '<span style="font-weight: bold;">'+lbl_amount_difference+'</span>&nbsp;<span style="color: red;">' + diff_amt.toLocaleString() + '</span>';
 		$("#difference_amount").html(diff_amnt);
 	}
