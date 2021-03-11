@@ -146,7 +146,7 @@
 				@endif
 			</div>
 			<div id="salesDiv" class="CMN_sub_gmenu">
-			@if (isset($request->mainmenu) && ($request->mainmenu == "salarycalc" || $request->mainmenu == "salarycalcplus" || $request->mainmenu == "basic_calc" || $request->mainmenu == "leave" || $request->mainmenu == "gensendtls"))
+			@if (isset($request->mainmenu) && ($request->mainmenu == "salarycalc" || $request->mainmenu == "salarycalcplus" || $request->mainmenu == "contractEmp" || $request->mainmenu == "basic_calc" || $request->mainmenu == "leave" || $request->mainmenu == "gensendtls"))
 			<!-- Expenses Sub -->
 				@if(Session::get('userclassification') == 4)
 				<div id="expenses_sub_1">
@@ -158,6 +158,11 @@
 					<a href="{{ url('salarycalcplus/index?mainmenu=salarycalcplus&time='.date('Ymdhis')) }}" 
 					style="text-decoration:none;color:white;">
 					{{ trans('messages.lbl_salary_calplus') }}</a>
+				</div>
+				<div id="expenses_sub_7">
+					<a href="{{ url('contractEmp/index?mainmenu=contractEmp&time='.date('Ymdhis')) }}" 
+					style="text-decoration:none;color:white;">
+					{{ trans('messages.lbl_conEmployee') }}</a>
 				</div>
 				<div id="expenses_sub_4">
 					<a href="{{ url('BasicCalc/index?mainmenu=basic_calc&time='.date('Ymdhis')) }}" 

@@ -90,6 +90,13 @@
 				</div>
 				<div class="alinkEng ml20 mt5">
 					<a class="pageload csrp btn-link" 
+					href="{{ url('contractEmp/index?mainmenu=contractEmp&time='.date('Ymdhis')) }}" 
+					style="color:blue;font-size: 13px;">
+						{{ trans('messages.lbl_conEmployee') }}
+					</a>
+				</div>
+				<div class="alinkEng ml20 mt5">
+					<a class="pageload csrp btn-link" 
 					href="{{ url('BasicCalc/index?mainmenu=basic_calc&time='.date('Ymdhis')) }}" 
 					style="color:blue;font-size: 13px;">
 						{{ trans('messages.lbl_basic_cal') }}

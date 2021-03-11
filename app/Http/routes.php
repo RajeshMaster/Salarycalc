@@ -145,6 +145,35 @@ Route::group(['prefix'=>'salarycalcplus','middleware' => 'auth'], function() {
 	// End Madasamy Code 22/05/20
 });
 
+//Staff -> Contract Employee Sastha
+Route::group(['prefix'=>'contractEmp','middleware' => 'auth'], function() {
+	Route::get('changelanguage', 'AjaxController@index');
+	Route::any('index', 'ContractEmpController@index');
+	Route::any('contractemppopup', 'ContractEmpController@contractemppopup');
+	Route::any('empselectprocess', 'ContractEmpController@empselectprocess');
+	Route::any('history', 'ContractEmpController@history');
+	Route::any('historyTotal', 'ContractEmpController@historyTotal');
+	Route::any('view', 'ContractEmpController@view');
+	Route::any('addedit', 'ContractEmpController@addedit');
+	Route::any('edit', 'ContractEmpController@edit');
+	Route::any('addeditprocess', 'ContractEmpController@addeditprocess');
+	Route::any('multieditprocess', 'ContractEmpController@multieditprocess');
+	Route::any('multiregister', 'ContractEmpController@multiregister');
+	Route::any('mailsendprocess', 'ContractEmpController@mailsendprocess');
+	Route::any('getdataExists', 'ContractEmpController@getdataExists');
+	Route::any('dataReg', 'ContractEmpController@dataReg');
+	Route::get('getsalamount', 'ContractEmpController@getajaxtotamt');
+	Route::get('getlastmonthdet', 'ContractEmpController@getlastmonthdet');
+	Route::any('getTransferedAmount', 'ContractEmpController@getTransferedAmount');
+	// Download Process
+	Route::any('transferdetailsdownload', 'ContractEmpController@transferdetailsdownload');
+	Route::any('salaryplusdownload', 'ContractEmpController@salaryplusdownload');
+	Route::any('salarypluspdfdownload', 'ContractEmpController@salarypluspdfdownload');
+	Route::any('salarydownloadprocess', 'ContractEmpController@salarydownloadprocess');
+	Route::any('salaryplusPayrollSingleDownload', 'ContractEmpController@salaryplusPayrollSingleDownload');
+	Route::any('gensenDownload', 'ContractEmpController@gensenDownload');
+});
+
 // Salary Bank
 Route::group(['prefix'=>'SalBank','middleware' => 'auth'], function() {
 	Route::get('changelanguage', 'AjaxController@index');
