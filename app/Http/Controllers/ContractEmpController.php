@@ -1715,7 +1715,7 @@ Class ContractEmpController extends Controller {
 			$request->selMonth = $date_month[1];
 		}
 		$template_name = 'resources/assets/uploadandtemplates/templates/salary_details.xls';
-		$tempname = "Salary+_".$request->selMonth.'_'.$request->selYear;
+		$tempname = "contractEmp_".$request->selMonth.'_'.$request->selYear;
 		$excel_name = $tempname;
 
 		Excel::load($template_name, function($objTpl) use($request, $hdn_empid) {
@@ -1799,7 +1799,7 @@ Class ContractEmpController extends Controller {
     	$template_name = 'resources/assets/uploadandtemplates/templates/salary_details_plus_index.xls';
     	if (!isset($request->payrollExcel)) {
     		// for historyTotal page payroll
-        	$excel_name='Salary+_'.$request->selYear.urlencode('分給料明細');
+        	$excel_name='contractEmp_'.$request->selYear.urlencode('分給料明細');
     	} else {
     		// for index page payroll
     		if ($request->get_prev_yr == 1) {
@@ -1809,7 +1809,7 @@ Class ContractEmpController extends Controller {
 				$request->selYear = $date_month[0];
 				$request->selMonth = $date_month[1];
 			}
-    		$excel_name='Salary+_'.$request->selYear.'_'.$request->selMonth.urlencode('分給料明細');
+    		$excel_name='contractEmp_'.$request->selYear.'_'.$request->selMonth.urlencode('分給料明細');
     	}
 		Excel::load($template_name, function($objTpl) use($request, $hdn_empid) {
 			
@@ -2141,7 +2141,7 @@ Class ContractEmpController extends Controller {
 		$hdn_empid = explode(',', $request->hdn_empid_arr);
 		if (!isset($request->payrollPdf)) {
 			// for historyTotal page payroll
-			$pdfName = 'Salary+_'.$request->selYear.urlencode('分給料明細');
+			$pdfName = 'contractEmp_'.$request->selYear.urlencode('分給料明細');
 		} else {
 			// for index page payroll
 			if ($request->get_prev_yr == 1) {
@@ -2151,7 +2151,7 @@ Class ContractEmpController extends Controller {
 				$request->selYear = $date_month[0];
 				$request->selMonth = $date_month[1];
 			}
-			$pdfName = 'Salary+_'.$request->selYear.'_'.$request->selMonth.urlencode('分給料明細');
+			$pdfName = 'contractEmp_'.$request->selYear.'_'.$request->selMonth.urlencode('分給料明細');
 		}
 		if (!isset($request->payrollPdf)) {
 			$salPlus = self::getSalaryDetailsTotal($hdn_empid,$request->selYear);
@@ -2187,7 +2187,7 @@ Class ContractEmpController extends Controller {
 			$request->selYear = $date_month[0];
 			$request->selMonth = $date_month[1];
 		}
-    	$excel_name='Salary+_History_'.strtoupper($request->lastname).'_'.$request->selYear;
+    	$excel_name='contractEmp_History_'.strtoupper($request->lastname).'_'.$request->selYear;
 		Excel::load($template_name, function($objTpl) use($request) {
 
 			$objTpl->setActiveSheetIndex(0);

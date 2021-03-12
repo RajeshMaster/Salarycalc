@@ -72,7 +72,7 @@
 	<article id="expenses" class="DEC_flex_wrapper " data-category="expenses expenses_sub_7">
 		{{ Form::open(array('name'=>'contractemphistory',
 							'id'=>'contractemphistory',
-							'url'=>'salarycalcplus/history?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
+							'url'=>'contractEmp/history?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
 							'files'=>true,
 							'method' => 'POST' )) }}
 			{{ Form::hidden('mainmenu', $request->mainmenu, array('id' => 'mainmenu')) }}
