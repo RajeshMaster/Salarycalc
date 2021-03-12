@@ -385,7 +385,7 @@ class ContractEmp extends Model{
 
 	public static function inv_salary_main_transferedamt($request) {
 		$db = DB::connection('mysql');
-		$query = $db->table('inv_contractemp_main')
+		$query = $db->table('inv_salary_main')
 					->SELECT('Transferred')
 					->WHERE('Emp_ID', '=', $request->Emp_ID)
 					->WHERE('year', '=', $request->selYear)
@@ -405,7 +405,8 @@ class ContractEmp extends Model{
 		return $query;
 	}
 
-		public static function fnsalarycalcadd($request,$salary_det,$salary_ded) {
+	public static function fnsalarycalcadd($request,$salary_det,$salary_ded) {
+
 		$name = Session::get('FirstName').' '.Session::get('LastName');
 		$salary_final = '';
 		foreach ($salary_det as $key => $value) {
@@ -426,9 +427,9 @@ class ContractEmp extends Model{
 		$Travel = str_replace(",", "", $request->Travel);
 		$salamt = str_replace(",", "", $request->salamt);
 		if ($salary_final !="" || $deduction_final != "" || $Travel != "" || $salamt != "") {
-			$insert=DB::table('inv_contractemp_main')
-				->insert(
-					['id' => '',
+			$insert = DB::table('inv_contractemp_main')
+				->insert([
+					'id' => '',
 					'Emp_ID' => $request->Emp_ID,
 					'date' => $request->date,
 					'Salary' => !empty($salary_final) ? $salary_final : '',
@@ -443,8 +444,8 @@ class ContractEmp extends Model{
 					'CreatedDateTime' => date('Y-m-d H:i:s'),
 					'UpdatedDateTime' => date('Y-m-d H:i:s'),
 					'CreatedBy' => $name,
-					'UpdatedBy' => $name]
-			);
+					'UpdatedBy' => $name
+				]);
 		}
 		return $insert;
 	}
@@ -455,53 +456,8 @@ class ContractEmp extends Model{
 		return $Details;
 	}
 
-	public static function multiadd($request,$salary_det,$salary_ded) {
-		$insert = '';
-		$name = Session::get('FirstName').' '.Session::get('LastName');
-		for ($i=0; $i < $request->count; $i++) {
-			$Emp_ID = 'Emp_ID'.$i;
-			$transferred = 'transferred_'.$request->$Emp_ID;
-			$transferred_new = str_replace(",", "", $request->$transferred);
-			$salary_final = '';
-			foreach ($salary_det as $key => $value) {
-				$detail = 'salary_'.$request->$Emp_ID.'_'.$value->Salarayid;
-				$salaryDet = $request->$detail;
-				if ($salaryDet != '') {
-					$salary_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDet).'##';
-				}
-			}
-			$deduction_final = '';
-			foreach ($salary_ded as $key => $value) {
-				$detail1 = 'Deduction_'.$request->$Emp_ID.'_'.$value->Salarayid;
-				$salaryDed = $request->$detail1;
-				if ($salaryDed != '') {
-					$deduction_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDed).'##';
-				}
-			}
-			if ($salary_final !="" || $deduction_final != "") {
-				$insert=DB::table('inv_salaryplus_main')
-					->insert(
-						['id' => '',
-						'Emp_ID' => $request->$Emp_ID,
-						'date' => $request->txt_startdate,
-						'Salary' => !empty($salary_final) ? $salary_final : '',
-						'Deduction' => !empty($deduction_final) ? $deduction_final : '',
-						'Transferred' => !empty($transferred_new) ? $transferred_new : 0,
-						'year' => $request->selYear,
-						'month' => $request->month,
-						'delFlg' => 0,
-						'CreatedBy' => $name,
-						'UpdatedBy' => $name,
-						'CreatedDateTime' => date('Y-m-d H:i:s'),
-						'UpdatedDateTime' => date('Y-m-d H:i:s')]);
-			}
-		}
-		return $insert;
-	}
-
-
-
 	public static function fnsalarycalcupd($request,$salary_det,$salary_ded) {
+
 		$name = Session::get('FirstName').' '.Session::get('LastName');
 		$salary_final = '';
 		foreach ($salary_det as $key => $value) {
@@ -521,10 +477,10 @@ class ContractEmp extends Model{
 		}
 		$Travel = str_replace(",", "", $request->Travel);
 		$salamt = str_replace(",", "", $request->salamt);
-		$update=DB::table('inv_salaryplus_main')
+		$update=DB::table('inv_contractemp_main')
 			->where('id',$request->id)
-			->update(
-				['date' => $request->date,
+			->update([
+				'date' => $request->date,
 				'Salary' => !empty($salary_final) ? $salary_final : '',
 				'Deduction' => !empty($deduction_final) ? $deduction_final : '',
 				'Travel' => !empty($Travel) ? $Travel : '',
@@ -535,52 +491,38 @@ class ContractEmp extends Model{
 				'year_mon' => $request->selYear.'-'.$request->month.'-10',
 				'mailFlg' => '0',
 				'UpdatedDateTime' => date('Y-m-d H:i:s'),
-				'UpdatedBy' => $name]
-		);
+				'UpdatedBy' => $name
+			]);
 		return $update;
-	}
-	
-
-	public static function getbasichraDetails($empid,$yearmonth) {
-		$db = DB::connection('mysql');
-		$query = $db->table('inv_basic_salary as basic')
-					->select('basic.*',DB::raw('(basic.basic_amount + basic.increment_amount) as tot_basicAmount'))
-					->where('basic.activeFlg','=', 0)
-					->where('basic.Emp_ID','=', $empid)
-					->WHERERAW("SUBSTRING(basic.year_month_from,1,7) <='$yearmonth'")
-					->WHERERAW("SUBSTRING(basic.year_month_to,1,7) >='$yearmonth'")
-    				->get();
-		return $query;
 	}
 
 	public static function salaryDetail_Empid($request) {
+
 		$db = DB::connection('mysql');
-		$query = $db->table('inv_salaryplus_main')
-					 ->select('*')
-					 ->where('Emp_ID','=', $request->Emp_ID)
-					 ->orderBy('year','DESC')
-					 ->orderBy('month','DESC')
-    				 ->get();
+		$query = $db->table('inv_contractemp_main')
+					->select('*')
+					->where('Emp_ID','=', $request->Emp_ID)
+					->orderBy('year','DESC')
+					->orderBy('month','DESC')
+					->get();
 		return $query;
 	}
 
-	// vengad 06/07/2020
-    public static function fnGetCompanyDetails($request){
-      
-      $db = DB::connection('mysql');
-      $query = $db->table('company_details')
-          ->select('id',
-                    'companyNumber',
-                    'companyName',
-                    'companyBranch',
-                    'capital',
-                    'address',
-                    'TEL',
-                    'CEO',
-                    'referencenumber')
-          ->where('id', '=', 1)
-          ->get();
-      return $query;
+	public static function fnGetCompanyDetails($request){
+		$db = DB::connection('mysql');
+		$query = $db->table('company_details')
+					->select('id',
+							'companyNumber',
+							'companyName',
+							'companyBranch',
+							'capital',
+							'address',
+							'TEL',
+							'CEO',
+							'referencenumber')
+					->where('id', '=', 1)
+					->get();
+		return $query;
     }
 
     public static function fnGetEmpDetail($request){

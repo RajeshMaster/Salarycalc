@@ -1,8 +1,9 @@
 @extends('layouts.app')
 @section('content')
-{{ HTML::script('resources/assets/js/salarycalcplus.js') }}
+{{ HTML::script('resources/assets/js/contractemp.js') }}
 <script type="text/javascript">
 	var datetime = '<?php echo date('Ymdhis'); ?>';
+	var mainmenu = '<?php echo $request->mainmenu; ?>';
 </script>
 <style type="text/css">
 	.clr_brown{
@@ -45,10 +46,10 @@
 </style>
 <div class="CMN_display_block" id="main_contents">
 	<!-- article to select the main&sub menu -->
-	<article id="expenses" class="DEC_flex_wrapper " data-category="expenses expenses_sub_3">
-		{{ Form::open(array('name'=>'addeditsalarycalc', 
-						'id'=>'addeditsalarycalc', 
-						'url' => 'salarycalc/addeditprocess?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
+	<article id="expenses" class="DEC_flex_wrapper " data-category="expenses expenses_sub_7">
+		{{ Form::open(array('name'=>'addeditcontractemp', 
+						'id'=>'addeditcontractemp', 
+						'url' => 'contractEmp/addeditprocess?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
 						'files' => true,
 						'method' => 'POST')) }}
 			{{ Form::hidden('selMonth', $request->selMonth, array('id' => 'selMonth')) }}

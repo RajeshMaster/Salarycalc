@@ -744,7 +744,7 @@ Class ContractEmpController extends Controller {
 			$request->selMonth =  Session::get('selMonth');
 		}
 		if (!isset($request->Emp_ID)) {
-			return Redirect::to('salarycalcplus/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+			return Redirect::to('contractEmp/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
 		}
 		if ($request->get_prev_yr == 1) {
 			$prev_month_ts = strtotime($request->selYear.'-'.$request->selMonth.' -1 month');
@@ -933,119 +933,21 @@ Class ContractEmpController extends Controller {
 		$dataExist = ContractEmp::fnGetDataExistsCheck($request);
 		$countdata = count($dataExist);
 		print_r($countdata);exit();
-  	}
+	}
 
-  	public function dataReg(Request $request) {
+	public function dataReg(Request $request) {
 
-  		$salary_det = ContractEmp::getsalaryDetails($request,'1');
+		$salary_det = ContractEmp::getsalaryDetails($request,'1');
 		$salary_ded = ContractEmp::getsalaryDetails($request,'2');
 		$dataReg = ContractEmp::fnsalarycalcadd($request,$salary_det,$salary_ded);
 		$getid = ContractEmp::fngetid();
 		print_r($getid);exit();
-  	}
-
-	public function getajaxtotamt(Request $request) {
-
-		$salary_det = SalaryCalc::getsalaryDetails($request,'1');
-		$salary_ded = SalaryCalc::getsalaryDetails($request,'2');
-		$request->selMonth = $request->month;
-		$detedit = SalaryCalc::salarycalcview_tot($request);
-		$arr1 = array();
-		$arr2 = array();
-		$arr3 = array();
-		$arr4 = array();
-		$sal_arr = array();
-		$ded_arr = array();
-		$sal_arr_name = array();
-		$ded_arr_name = array();
-		$val1 = '';
-		$val2 = '';
-		$val3 = '';
-		// For Salary Details
-		if (!empty($detedit)) {
-			if ($detedit[0]->Basic != '') {
-				$val1 += $detedit[0]->Basic;
-			}
-			if ($detedit[0]->hra != '') {
-				$val1 += $detedit[0]->hra;
-			}
-			if ($detedit[0]->train_daily != '') {
-				$val1 += $detedit[0]->train_daily;
-			}
-			if ($detedit[0]->others != '') {
-				$val1 += $detedit[0]->others;
-			}
-			if ($detedit[0]->Salary != '') {
-				$Salary = explode('##', mb_substr($detedit[0]->Salary, 0, -2));
-				foreach ($Salary as $key => $value) {
-					$sal_final = explode('$', $value);
-					$arr1[$key] = $sal_final[0];
-					$arr2[$sal_final[0]] = $sal_final[1];
-				}
-			}
-			if(count($salary_det) != "") {
-	    		foreach ($salary_det as $key1 => $value1) {
-	    			$sal_arr[$value1->Salarayid] = $value1->Salarayid;
-	    			$sal_arr_name[$value1->Salarayid] = $value1->Name;
-	    		}
-			}
-			$salresult_a=array_intersect($sal_arr,$arr1);
-			$salresult_b=array_diff($sal_arr,$arr1);
-			$salresult = array_merge($salresult_a,$salresult_b);
-			sort($salresult);
-			if(count($salary_det)!="") {
-				foreach ($salresult as $key2 => $value2) {
-					foreach ($sal_arr_name as $key3 => $value3) {
-						if($key3 == $value2) {
-							$val1 += isset($arr2[$key3])?$arr2[$key3]:'';
-						}
-					}
-				}
-			}
-			
-			// For Deduction Details
-			if ($detedit[0]->Deduction != '') {
-				$Deduction = explode('##', mb_substr($detedit[0]->Deduction, 0, -2));
-				foreach ($Deduction as $key => $value) {
-					$ded_final = explode('$', $value);
-					$arr3[$key] = $ded_final[0];
-					$arr4[$ded_final[0]] = $ded_final[1];
-				}
-			}
-			if(count($salary_ded) != "") {
-				foreach ($salary_ded as $key1 => $value1) {
-					$ded_arr[$value1->Salarayid] = $value1->Salarayid;
-					$ded_arr_name[$value1->Salarayid] = $value1->Name;
-				}
-			}
-			$dedresult_a=array_intersect($ded_arr,$arr3);
-			$dedresult_b=array_diff($ded_arr,$arr3);
-			$dedresult = array_merge($dedresult_a,$dedresult_b);
-			sort($dedresult);
-			if(count($salary_ded)!="") {
-				foreach ($dedresult as $key2 => $value2) {
-					foreach ($ded_arr_name as $key3 => $value3) {
-						if($key3 == $value2) {
-							$val2 += isset($arr4[$key3])?$arr4[$key3]:'';
-						}
-					}
-				}
-			}
-			$val3 = $val1 + $val2;
-		}
-		if ($val3 != '') {
-			print_r(number_format($val3));exit();
-		} else {
-			print_r($val3);exit();
-		}
 	}
-
-	
 
 	public function edit(Request $request) {
 
 		if (!isset($request->Emp_ID)) {
-			return Redirect::to('salarycalcplus/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+			return Redirect::to('contractEmp/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
 		}
 
 		if ($request->get_prev_yr == 1) {
@@ -1066,7 +968,7 @@ Class ContractEmpController extends Controller {
 		}
 
 		$detedit = array();
-		$details = SalaryCalcplus::salarycalcview($request);
+		$details = ContractEmp::salarycalcview($request);
 		foreach ($details as $key => $value) {
 			$detedit['id'] = $value->id;
 			$detedit['Emp_ID'] = $value->Emp_ID;
@@ -1100,9 +1002,9 @@ Class ContractEmpController extends Controller {
 				$detedit['salamt'] = number_format($value->salamt);
 			}
 		}
-		$salary_det=SalaryCalcplus::getsalaryDetails($request,'1');
-		$salary_ded=SalaryCalcplus::getsalaryDetails($request,'2');
-		return view('salarycalcplus.addedit',['request' => $request,
+		$salary_det = ContractEmp::getsalaryDetails($request,'1');
+		$salary_ded = ContractEmp::getsalaryDetails($request,'2');
+		return view('contractEmp.addedit',['request' => $request,
 											'salary_det' => $salary_det,
 											'salary_ded' => $salary_ded,
 											'detedit' => $detedit]);
@@ -1110,27 +1012,27 @@ Class ContractEmpController extends Controller {
 
 	function getPrevKey($key, $operation, $hash = array()) {
 
-	    $keys = array_keys($hash);
-	    $keys1 = count($keys);
-	    $found_index = array_search($key, $keys);
+		$keys = array_keys($hash);
+		$keys1 = count($keys);
+		$found_index = array_search($key, $keys);
 		if ($keys1 === 1) {
 			return $keys[0];
 		}
-	    if ($found_index === false)
+		if ($found_index === false)
 		return false;
-	    if ($operation == 1) {
-	    	return $keys[$found_index+1];
-	    } else {
-	    	return $keys[$found_index-1];
-	    }
+		if ($operation == 1) {
+			return $keys[$found_index+1];
+		} else {
+			return $keys[$found_index-1];
+		}
 	}
 
 	public function addeditprocess(Request $request) {
 
-		$salary_det=SalaryCalcplus::getsalaryDetails($request,'1');
-		$salary_ded=SalaryCalcplus::getsalaryDetails($request,'2');
+		$salary_det = ContractEmp::getsalaryDetails($request,'1');
+		$salary_ded = ContractEmp::getsalaryDetails($request,'2');
 		if($request->editcheck == 1) {
-			$update = SalaryCalcplus::fnsalarycalcupd($request,$salary_det,$salary_ded);
+			$update = ContractEmp::fnsalarycalcupd($request,$salary_det,$salary_ded);
 			if($update) {
 				Session::flash('success', 'Updated Sucessfully!'); 
 				Session::flash('type', 'alert-success'); 
@@ -1140,8 +1042,8 @@ Class ContractEmpController extends Controller {
 			}
 			Session::flash('id', $request->id); 
 		} else {
-			$insert = SalaryCalcplus::fnsalarycalcadd($request,$salary_det,$salary_ded);
-			$getid = SalaryCalcplus::fngetid();
+			$insert = ContractEmp::fnsalarycalcadd($request,$salary_det,$salary_ded);
+			$getid = ContractEmp::fngetid();
 			if($insert) {
 				Session::flash('success', 'Inserted Sucessfully!'); 
 				Session::flash('type', 'alert-success'); 
@@ -1163,141 +1065,20 @@ Class ContractEmpController extends Controller {
 		Session::flash('account_val', $request->account_val); 
 		Session::flash('previou_next_year', $request->previou_next_year);
 		
-		return Redirect::to('salarycalcplus/view?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+		return Redirect::to('contractEmp/view?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
 	}
 	
-	function multieditprocess(Request $request){
-		
-		$get_det = array();
-		$detedit = array();
-
-		// Get Previous Month
-		/*if ($request->multiflg_reg == 1 && $request->no_flg == '') {
-			$prev_month_year_month=date("Y-m",strtotime("-1 month",strtotime(date($request->selYear."-".$request->selMonth,strtotime("now") ) )));
-			$prev_month_year_month_explode = explode("-", $prev_month_year_month);
-			$request->selYear = $prev_month_year_month_explode[0];
-			$request->selMonth = $prev_month_year_month_explode[1];
-
-		}*/
-		$emplimit_array = array('5'=>'5',
-								'10'=>'10',
-								'15'=>'15',
-								'20'=>'20',
-								'25'=>'25',
-								'50'=>'50');
-		if ($request->emp_limit=="") {
-			$request->emp_limit = 25;
-		}
-		if ($request->get_prev_yr == 1 && $request->no_flg == '') {
-			$prev_month_ts = strtotime($request->selYear.'-'.$request->selMonth.' -1 month');
-			$date_month = date('Y-m', $prev_month_ts);
-			$date_month = explode('-', $date_month);
-			$request->selYear = $date_month[0];
-			$request->selMonth = $date_month[1];
-		}
-		
-		$g_query = SalaryCalcplus::salaryDetail($request,$request->selYear,$request->selMonth,1);
-		$k = 0;
-		foreach ($g_query as $key => $value) {
-			if ($value->Salary == "" && $value->Deduction == "") {
-				if ($k < $request->emp_limit) {
-					$get_det[$k]['id'] = $value->id;
-					$get_det[$k]['Emp_ID'] = $value->Emp_ID;
-					$empName = SalaryCalcplus::fnGetEmpName($value->Emp_ID);
-					if (isset($empName[0])) {
-						$firstName = $empName[0]->FirstName;
-						$lastName = $empName[0]->LastName;
-					}
-					$get_det[$k]['FirstName'] = $firstName;
-					$get_det[$k]['LastName'] = $lastName;
-					$k++;
-				}
-			}
-		}
-
-		// For Previous Data Getting Process
-		/*if ($request->salflg == 1) {
-			$prev_month_ts = strtotime($request->selYear.'-'. substr("0" . $request->selMonth , -2).' -1 month');
-			$prev_month = date('Y-m', $prev_month_ts);
-			$last_month_year = explode('-', $prev_month);
-
-			$split_array = explode(',', $request->hdn_salid_arr);
-
-			foreach ($g_query as $key => $value) {
-				if ($value->Salary == "") {
-					$single_data = $g_query = SalaryCalc::salaryDetail($request,$last_month_year[0],$last_month_year[1],1,$value->Emp_ID);
-					foreach ($single_data as $key1 => $value1) {
-						$Salary = explode('##', mb_substr($value1->Salary, 0, -2));
-						foreach ($Salary as $key2 => $value2) {
-							$sal_final = explode('$', $value2);
-							for ($i=0; $i < count($split_array); $i++) { 
-								if ($split_array[$i] == $sal_final[0]) {
-									$detedit['salary_'.$value1->Emp_ID.'_'.$sal_final[0]] = (isset($sal_final[1]) && $sal_final[1] != '') ?number_format($sal_final[1]):'';
-								}
-							}
-						}
-						$Deduction = explode('##', mb_substr($value1->Deduction, 0, -2));
-						foreach ($Deduction as $key3 => $value3) {
-							$ded_final = explode('$', $value3);
-							for ($j=0; $j < count($split_array); $j++) { 
-								if ($split_array[$j] == $ded_final[0]) {
-									$detedit['Deduction_'.$value1->Emp_ID.'_'.$ded_final[0]] = (isset($ded_final[1]) && $ded_final[1] != '') ?number_format($ded_final[1]):'';
-								}
-							}
-						}
-					}
-				}
-			}
-		}*/
-
-		$salary_det=SalaryCalcplus::getsalaryDetails($request,'1');
-		$salary_ded=SalaryCalcplus::getsalaryDetails($request,'2');
-		return view('salarycalcplus.multiedit',[
-											'g_query'=>$g_query,
-											'salary_det'=>$salary_det,
-											'salary_ded'=>$salary_ded,
-											'get_det'=>$get_det,
-											'detedit'=>$detedit,
-											'emplimit_array'=>$emplimit_array,
-											'request' => $request]);
-	}
-
-	public function multiregister(Request $request) {	
-		
-		/*$query_date = $request->selYear.'-'.$request->selMonth.'-1';
-		$date = new DateTime($query_date);
-		// Last day of month
-		$date->modify('last day of this month');
-		$lastday = $date->format('Y-m-d');
-		$request->date_hdn = $lastday;*/
-
-		$salary_det=SalaryCalcplus::getsalaryDetails($request,'1');
-		$salary_ded=SalaryCalcplus::getsalaryDetails($request,'2');
-		$insert = SalaryCalcplus::multiadd($request,$salary_det,$salary_ded);
-		if($insert) {
-			Session::flash('success', 'Inserted Sucessfully!'); 
-			Session::flash('type', 'alert-success'); 
-		} else {
-			Session::flash('success', 'Inserted Unsucessfully!'); 
-			Session::flash('type', 'alert-danger'); 
-		}
-		$date = explode("-", $request->date_hdn);
-		Session::flash('selMonth', $request->month); 
-		Session::flash('selYear', $request->selYear);
-		return Redirect::to('salarycalcplus/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
-	}
-
 	function salarydownloadprocess(Request $request) {
 
 		$template_name = 'resources/assets/uploadandtemplates/templates/salary_plus_details.xls';
-	$tempname = strtoupper($request->lastname);
-        $excel_name=$tempname;
+		$tempname = strtoupper($request->lastname);
+		$excel_name = $tempname;
 		Excel::load($template_name, function($objTpl) use($request) {
 			$objTpl->setActiveSheetIndex(0);
-        	$objTpl->getActiveSheet(0)->setSelectedCells('A1');
-        	$g_query = SalaryCalcplus::salaryDetail_Empid($request);
-        	$salary_det=SalaryCalcplus::getsalaryDetailsnodelflg($request,'1');
-			$salary_ded=SalaryCalcplus::getsalaryDetailsnodelflg($request,'2');
+			$objTpl->getActiveSheet(0)->setSelectedCells('A1');
+			$g_query = ContractEmp::salaryDetail_Empid($request);
+			$salary_det = ContractEmp::getsalaryDetailsnodelflg($request,'1');
+			$salary_ded = ContractEmp::getsalaryDetailsnodelflg($request,'2');
 			$a = 1;
 			$break_arr = array();
 			$total_cnt = '';
@@ -1344,9 +1125,9 @@ Class ContractEmpController extends Controller {
 			$merge_sal_2_1 = 6;
 			$merge_sal_2_2 = 6;
 
-        	foreach ($g_query as $key => $value) {
-        		// print_r($value);echo "<BR>";echo "<BR>";
-        		if ($i % 2 == 0) {
+			foreach ($g_query as $key => $value) {
+				// print_r($value);echo "<BR>";echo "<BR>";
+				if ($i % 2 == 0) {
 					// For Even Values
 					// For Payment Slip Merge
 					$objTpl->getActiveSheet()->mergeCells('H'.$pay_row.':M'.$pay_row);
@@ -1395,14 +1176,14 @@ Class ContractEmpController extends Controller {
 						$objTpl->getActiveSheet()->getStyle('J'.$merge_sal_2_1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 						$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_1)->getFont()->setSize(9);
 						$objTpl->getActiveSheet()->getStyle('J'.$merge_sal_2_1)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        				$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_2_1)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        				$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_1)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_2_1)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_1)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 						//Set Name Field
 						$objTpl->getActiveSheet()->setCellValue('H'.$merge_sal_2_1, $value_sal->Name);
-	        			$objTpl->getActiveSheet()->getRowDimension($merge_sal_2_1)->setRowHeight(22.5);
-	        			// Set Amount Field
-	        			$objTpl->getActiveSheet()->setCellValue('J'.$merge_sal_2_1, (!empty($sal_final_arr[$value_sal->Salarayid]) && $sal_final_arr[$value_sal->Salarayid] != 0)?number_format($sal_final_arr[$value_sal->Salarayid]):'');
+						$objTpl->getActiveSheet()->getRowDimension($merge_sal_2_1)->setRowHeight(22.5);
+						// Set Amount Field
+						$objTpl->getActiveSheet()->setCellValue('J'.$merge_sal_2_1, (!empty($sal_final_arr[$value_sal->Salarayid]) && $sal_final_arr[$value_sal->Salarayid] != 0)?number_format($sal_final_arr[$value_sal->Salarayid]):'');
 						$amt1_2_sal += (!empty($sal_final_arr[$value_sal->Salarayid]) && $sal_final_arr[$value_sal->Salarayid] != 0)?$sal_final_arr[$value_sal->Salarayid]:'';
 						$merge_sal_2_1++;
 					}
@@ -1431,15 +1212,15 @@ Class ContractEmpController extends Controller {
 						$objTpl->getActiveSheet()->getStyle('J'.$merge_sal_2_2)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_2)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 						$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_2)->getFont()->setSize(9);
-	        			$objTpl->getActiveSheet()->getRowDimension($merge_sal_2_2)->setRowHeight(22.5);
-	        			$objTpl->getActiveSheet()->getStyle('J'.$merge_sal_2_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        				$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        				$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_2)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getRowDimension($merge_sal_2_2)->setRowHeight(22.5);
+						$objTpl->getActiveSheet()->getStyle('J'.$merge_sal_2_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+						$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getStyle('H'.$merge_sal_2_2)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 						$objTpl->getActiveSheet()->setCellValue('L'.$merge_sal_2_2, $value_ded->Name);
 						// Set Amount Field
 						$amt1_2_ded += (!empty($ded_final_arr[$value_ded->Salarayid]) && $ded_final_arr[$value_ded->Salarayid] != 0)?$ded_final_arr[$value_ded->Salarayid]:'';
-	        			$objTpl->getActiveSheet()->setCellValue('M'.$merge_sal_2_2, (!empty($ded_final_arr[$value_ded->Salarayid]) && $ded_final_arr[$value_ded->Salarayid] != 0)?number_format(substr($ded_final_arr[$value_ded->Salarayid],1)):'');
+						$objTpl->getActiveSheet()->setCellValue('M'.$merge_sal_2_2, (!empty($ded_final_arr[$value_ded->Salarayid]) && $ded_final_arr[$value_ded->Salarayid] != 0)?number_format(substr($ded_final_arr[$value_ded->Salarayid],1)):'');
 						$merge_sal_2_2++;
 					}
 					// Set Salary Deduction Total Amount
@@ -1448,7 +1229,7 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 					$objTpl->getActiveSheet()->getStyle('L'.$merge_sal_2_2)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 					$objTpl->getActiveSheet()->setCellValue('L'.$merge_sal_2_2, 'Total');
-        			$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 					if ($amt1_2_ded != '') {
 						$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 						$objTpl->getActiveSheet()->setCellValue('M'.$merge_sal_2_2, number_format(substr($amt1_2_ded, 1)));
@@ -1473,25 +1254,25 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->setCellValue('H'.$cnt_even, 'Taxable payment');
-        			$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        			$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($merge_sal_2_2 == $cnt_even) {
-        				$objTpl->getActiveSheet()->getStyle('L'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->setCellValue('H'.$cnt_even, 'Taxable payment');
+					$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($merge_sal_2_2 == $cnt_even) {
+						$objTpl->getActiveSheet()->getStyle('L'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 						$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			} else {
-        				$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					} else {
+						$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			}
-        			$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($amt1_2_sal != '') {
-        				$objTpl->getActiveSheet()->setCellValue('J'.$cnt_even, number_format($amt1_2_sal));
-        			}
-        			$cnt_even = $cnt_even + 1;
-        			// For Salary Details As Travel
+					}
+					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($amt1_2_sal != '') {
+						$objTpl->getActiveSheet()->setCellValue('J'.$cnt_even, number_format($amt1_2_sal));
+					}
+					$cnt_even = $cnt_even + 1;
+					// For Salary Details As Travel
 					$objTpl->getActiveSheet()->mergeCells('H'.$cnt_even.':I'.$cnt_even);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
@@ -1502,25 +1283,25 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->setCellValue('H'.$cnt_even, 'Travel');
-        			$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        			$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($merge_sal_2_2 == $cnt_even) {
-        				$objTpl->getActiveSheet()->getStyle('L'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->setCellValue('H'.$cnt_even, 'Travel');
+					$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($merge_sal_2_2 == $cnt_even) {
+						$objTpl->getActiveSheet()->getStyle('L'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 						$objTpl->getActiveSheet()->getStyle('M'.$merge_sal_2_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			} else {
-        				$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					} else {
+						$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			}
-        			$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($value->Travel != '' && $value->Travel != 0) {
-        				$objTpl->getActiveSheet()->setCellValue('J'.$cnt_even, number_format($value->Travel));
-        			}
-        			$cnt_even = $cnt_even + 1;
-        			// For Salary Details As Total payment
+					}
+					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($value->Travel != '' && $value->Travel != 0) {
+						$objTpl->getActiveSheet()->setCellValue('J'.$cnt_even, number_format($value->Travel));
+					}
+					$cnt_even = $cnt_even + 1;
+					// For Salary Details As Total payment
 					$objTpl->getActiveSheet()->mergeCells('H'.$cnt_even.':I'.$cnt_even);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
@@ -1531,44 +1312,44 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even.':J'.$cnt_even)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getFont()->setBold( true );
-        			$objTpl->getActiveSheet()->setCellValue('H'.$cnt_even, 'Total Payment');
-        			$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$tot_sum_2 = '';
-        			$tot_sum_2 = $amt1_2_sal + $value->Travel;
+					$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->getStyle('H'.$cnt_even)->getFont()->setBold( true );
+					$objTpl->getActiveSheet()->setCellValue('H'.$cnt_even, 'Total Payment');
+					$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$tot_sum_2 = '';
+					$tot_sum_2 = $amt1_2_sal + $value->Travel;
 
-        			if ($tot_sum_2 != '' && $tot_sum_2 != 0) {
-        				$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getFont()->setBold( true );
-        				$objTpl->getActiveSheet()->setCellValue('J'.$cnt_even, number_format($tot_sum_2));
-        			}
-        			$objTpl->getActiveSheet()->getStyle('K'.$cnt_even)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			// For Salary Details As Gross payment
+					if ($tot_sum_2 != '' && $tot_sum_2 != 0) {
+						$objTpl->getActiveSheet()->getStyle('J'.$cnt_even)->getFont()->setBold( true );
+						$objTpl->getActiveSheet()->setCellValue('J'.$cnt_even, number_format($tot_sum_2));
+					}
+					$objTpl->getActiveSheet()->getStyle('K'.$cnt_even)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					// For Salary Details As Gross payment
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even.':M'.$cnt_even)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getFont()->setBold( true );
-        			$objTpl->getActiveSheet()->setCellValue('L'.$cnt_even, 'Gross Payment');
-        			$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$gross_sum_2 = '';
-        			$gross_sum_2 = $tot_sum_2 + $amt1_2_ded;
+					$objTpl->getActiveSheet()->getRowDimension($cnt_even)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->getStyle('L'.$cnt_even)->getFont()->setBold( true );
+					$objTpl->getActiveSheet()->setCellValue('L'.$cnt_even, 'Gross Payment');
+					$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$gross_sum_2 = '';
+					$gross_sum_2 = $tot_sum_2 + $amt1_2_ded;
 
-        			if ($gross_sum_2 != '' && $gross_sum_2 != 0) {
-        				$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getFont()->setBold( true );
-        				$objTpl->getActiveSheet()->setCellValue('M'.$cnt_even, number_format($gross_sum_2));
-        			}
+					if ($gross_sum_2 != '' && $gross_sum_2 != 0) {
+						$objTpl->getActiveSheet()->getStyle('M'.$cnt_even)->getFont()->setBold( true );
+						$objTpl->getActiveSheet()->setCellValue('M'.$cnt_even, number_format($gross_sum_2));
+					}
 
-        			// Set Border
-        			$objTpl->getActiveSheet()->getStyle('H2')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('L3')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('L4')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('L5')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$merge_sal_2_1 += $cnt_even;
-        			$merge_sal_2_2 += $cnt_even;
+					// Set Border
+					$objTpl->getActiveSheet()->getStyle('H2')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('L3')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('L4')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('L5')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$merge_sal_2_1 += $cnt_even;
+					$merge_sal_2_2 += $cnt_even;
 				} else {
 					// For Odd Values
 					// For Payment Slip Merge
@@ -1616,14 +1397,14 @@ Class ContractEmpController extends Controller {
 						$objTpl->getActiveSheet()->getStyle('C'.$merge_sal_1_1)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 						$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_1)->getFont()->setSize(9);
 						$objTpl->getActiveSheet()->getStyle('C'.$merge_sal_1_1)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        				$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_1)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        				$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_1)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_1)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_1)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 						//Set Name Field
 						$objTpl->getActiveSheet()->setCellValue('A'.$merge_sal_1_1, $value_sal->Name);
-	        			$objTpl->getActiveSheet()->getRowDimension($merge_sal_1_1)->setRowHeight(22.5);
-	        			// Set Amount Field
-	        			$objTpl->getActiveSheet()->setCellValue('C'.$merge_sal_1_1, (!empty($sal_final_arr[$value_sal->Salarayid]) && $sal_final_arr[$value_sal->Salarayid] != 0)?number_format($sal_final_arr[$value_sal->Salarayid]):'');
+						$objTpl->getActiveSheet()->getRowDimension($merge_sal_1_1)->setRowHeight(22.5);
+						// Set Amount Field
+						$objTpl->getActiveSheet()->setCellValue('C'.$merge_sal_1_1, (!empty($sal_final_arr[$value_sal->Salarayid]) && $sal_final_arr[$value_sal->Salarayid] != 0)?number_format($sal_final_arr[$value_sal->Salarayid]):'');
 						$amt1_1_sal += (!empty($sal_final_arr[$value_sal->Salarayid]) && $sal_final_arr[$value_sal->Salarayid] != 0)?$sal_final_arr[$value_sal->Salarayid]:'';
 						$merge_sal_1_1++;
 					}
@@ -1652,15 +1433,15 @@ Class ContractEmpController extends Controller {
 						$objTpl->getActiveSheet()->getStyle('C'.$merge_sal_1_2)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_2)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 						$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_2)->getFont()->setSize(9);
-	        			$objTpl->getActiveSheet()->getRowDimension($merge_sal_1_2)->setRowHeight(22.5);
-	        			$objTpl->getActiveSheet()->getStyle('C'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        				$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        				$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_2)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getRowDimension($merge_sal_1_2)->setRowHeight(22.5);
+						$objTpl->getActiveSheet()->getStyle('C'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+						$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+						$objTpl->getActiveSheet()->getStyle('A'.$merge_sal_1_2)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 
 						$objTpl->getActiveSheet()->setCellValue('E'.$merge_sal_1_2, $value_ded->Name);
 						// Set Amount Field
 						$amt1_1_ded += (!empty($ded_final_arr[$value_ded->Salarayid]) && $ded_final_arr[$value_ded->Salarayid] != 0)?$ded_final_arr[$value_ded->Salarayid]:'';
-	        			$objTpl->getActiveSheet()->setCellValue('F'.$merge_sal_1_2, (!empty($ded_final_arr[$value_ded->Salarayid]) && $ded_final_arr[$value_ded->Salarayid] != 0)?number_format(substr($ded_final_arr[$value_ded->Salarayid],1)):'');
+						$objTpl->getActiveSheet()->setCellValue('F'.$merge_sal_1_2, (!empty($ded_final_arr[$value_ded->Salarayid]) && $ded_final_arr[$value_ded->Salarayid] != 0)?number_format(substr($ded_final_arr[$value_ded->Salarayid],1)):'');
 						$merge_sal_1_2++;
 					}
 					// Set Salary Deduction Total Amount
@@ -1668,8 +1449,8 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 					$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 					$objTpl->getActiveSheet()->setCellValue('E'.$merge_sal_1_2, 'Total');
-        			$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 					if ($amt1_1_ded != '') {
 						$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
 						$objTpl->getActiveSheet()->setCellValue('F'.$merge_sal_1_2, number_format(substr($amt1_1_ded, 1)));
@@ -1694,25 +1475,25 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->setCellValue('A'.$cnt_odd, 'Taxable payment');
-        			$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        			$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($merge_sal_1_2 == $cnt_odd) {
-        				$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->setCellValue('A'.$cnt_odd, 'Taxable payment');
+					$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($merge_sal_1_2 == $cnt_odd) {
+						$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 						$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			} else {
-        				$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					} else {
+						$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			}
-        			$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($amt1_1_sal != '') {
-        				$objTpl->getActiveSheet()->setCellValue('C'.$cnt_odd, number_format($amt1_1_sal));
-        			}
-        			$cnt_odd = $cnt_odd + 1;
-        			// For Salary Details As Travel
+					}
+					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($amt1_1_sal != '') {
+						$objTpl->getActiveSheet()->setCellValue('C'.$cnt_odd, number_format($amt1_1_sal));
+					}
+					$cnt_odd = $cnt_odd + 1;
+					// For Salary Details As Travel
 					$objTpl->getActiveSheet()->mergeCells('A'.$cnt_odd.':B'.$cnt_odd);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getLeft()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
@@ -1723,25 +1504,25 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->setCellValue('A'.$cnt_odd, 'Travel');
-        			$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
-        			$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($merge_sal_1_2 == $cnt_odd) {
-        				$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->setCellValue('A'.$cnt_odd, 'Travel');
+					$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($merge_sal_1_2 == $cnt_odd) {
+						$objTpl->getActiveSheet()->getStyle('E'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
 						$objTpl->getActiveSheet()->getStyle('F'.$merge_sal_1_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			} else {
-        				$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
+					} else {
+						$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 						$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			}
-        			$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			if ($value->Travel != '' && $value->Travel != 0) {
-        				$objTpl->getActiveSheet()->setCellValue('C'.$cnt_odd, number_format($value->Travel));
-        			}
-        			$cnt_odd = $cnt_odd + 1;
-        			// For Salary Details As Total payment
+					}
+					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getBorders()->getleft()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					if ($value->Travel != '' && $value->Travel != 0) {
+						$objTpl->getActiveSheet()->setCellValue('C'.$cnt_odd, number_format($value->Travel));
+					}
+					$cnt_odd = $cnt_odd + 1;
+					// For Salary Details As Total payment
 					$objTpl->getActiveSheet()->mergeCells('A'.$cnt_odd.':B'.$cnt_odd);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
@@ -1752,61 +1533,61 @@ Class ContractEmpController extends Controller {
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd.':C'.$cnt_odd)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getFont()->setBold( true );
-        			$objTpl->getActiveSheet()->setCellValue('A'.$cnt_odd, 'Total Payment');
-        			$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$tot_sum_1 = '';
-        			$tot_sum_1 = $amt1_1_sal + $value->Travel;
+					$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->getStyle('A'.$cnt_odd)->getFont()->setBold( true );
+					$objTpl->getActiveSheet()->setCellValue('A'.$cnt_odd, 'Total Payment');
+					$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$tot_sum_1 = '';
+					$tot_sum_1 = $amt1_1_sal + $value->Travel;
 
-        			if ($tot_sum_1 != '' && $tot_sum_1 != 0) {
-        				$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getFont()->setBold( true );
-        				$objTpl->getActiveSheet()->setCellValue('C'.$cnt_odd, number_format($tot_sum_1));
-        			}
-        			$objTpl->getActiveSheet()->getStyle('D'.$cnt_odd)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			// For Salary Details As Gross payment
+					if ($tot_sum_1 != '' && $tot_sum_1 != 0) {
+						$objTpl->getActiveSheet()->getStyle('C'.$cnt_odd)->getFont()->setBold( true );
+						$objTpl->getActiveSheet()->setCellValue('C'.$cnt_odd, number_format($tot_sum_1));
+					}
+					$objTpl->getActiveSheet()->getStyle('D'.$cnt_odd)->getBorders()->getBottom()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					// For Salary Details As Gross payment
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_HAIR);
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_CENTER);
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd.':F'.$cnt_odd)->getFill()->setFillType(PHPExcel_Style_Fill::FILL_SOLID)->getStartColor()->setRGB('BFBFBF');
 					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getFont()->setSize(9);
-        			$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
-        			$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getFont()->setBold( true );
-        			$objTpl->getActiveSheet()->setCellValue('E'.$cnt_odd, 'Gross Payment');
-        			$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
-        			$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$gross_sum_1 = '';
-        			$gross_sum_1 = $tot_sum_1 + $amt1_1_ded;
+					$objTpl->getActiveSheet()->getRowDimension($cnt_odd)->setRowHeight(22.5);
+					$objTpl->getActiveSheet()->getStyle('E'.$cnt_odd)->getFont()->setBold( true );
+					$objTpl->getActiveSheet()->setCellValue('E'.$cnt_odd, 'Gross Payment');
+					$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getAlignment()->setHorizontal(PHPExcel_Style_Alignment::HORIZONTAL_RIGHT);
+					$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$gross_sum_1 = '';
+					$gross_sum_1 = $tot_sum_1 + $amt1_1_ded;
 
-        			if ($gross_sum_1 != '' && $gross_sum_1 != 0) {
-        				$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getFont()->setBold( true );
-        				$objTpl->getActiveSheet()->setCellValue('F'.$cnt_odd, number_format($gross_sum_1));
-        			}
+					if ($gross_sum_1 != '' && $gross_sum_1 != 0) {
+						$objTpl->getActiveSheet()->getStyle('F'.$cnt_odd)->getFont()->setBold( true );
+						$objTpl->getActiveSheet()->setCellValue('F'.$cnt_odd, number_format($gross_sum_1));
+					}
 
-        			// Set Border
-        			$objTpl->getActiveSheet()->getStyle('A2')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('E3')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('E4')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$objTpl->getActiveSheet()->getStyle('E5')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-        			$no_of_lines_to_copy = $cnt_odd + 1;
-        			/*if ($total_cnt == 1) {
-        				print_r("Main");
-        				// Set Print Area
-        				$objTpl->getActiveSheet()->setBreak('A'.$cnt_odd, 1)->getPageSetup()->setFitToPage(true)->setFitToWidth(1)->setFitToHeight(0)->setPrintArea('A1:F'.$cnt_odd,$i_sub,'I');
-        			} else {
-        				print_r("SUB");*/
-	        			// Set Print Area
-	        			if ($i_sub == 1) {
-	        				$start_line = $cnt_odd;
-	        				$objTpl->getActiveSheet()->setBreak('A'.$cnt_odd, 1)->getPageSetup()->setFitToPage(true)->setFitToWidth(1)->setFitToHeight(0)->setPrintArea('A1:M'.$cnt_odd,$i_sub,'I');
-	        			} else{
-		        			$objTpl->getActiveSheet()->setBreak('A'.$cnt_odd, 1)->getPageSetup()->setFitToPage(true)->setFitToWidth(1)->setFitToHeight(0)->setPrintArea('A'.($cnt_odd - $start_line).':M'.$cnt_odd,$i_sub,'I');
-		        		}
-	        		// }
-        			if ($i == 1) {
-        				$cnt_odd_sub = $cnt_odd;
-        			}
-        			$i_sub++;
+					// Set Border
+					$objTpl->getActiveSheet()->getStyle('A2')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('E3')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('E4')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$objTpl->getActiveSheet()->getStyle('E5')->getBorders()->getRight()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
+					$no_of_lines_to_copy = $cnt_odd + 1;
+					/*if ($total_cnt == 1) {
+						print_r("Main");
+						// Set Print Area
+						$objTpl->getActiveSheet()->setBreak('A'.$cnt_odd, 1)->getPageSetup()->setFitToPage(true)->setFitToWidth(1)->setFitToHeight(0)->setPrintArea('A1:F'.$cnt_odd,$i_sub,'I');
+					} else {
+						print_r("SUB");*/
+						// Set Print Area
+						if ($i_sub == 1) {
+							$start_line = $cnt_odd;
+							$objTpl->getActiveSheet()->setBreak('A'.$cnt_odd, 1)->getPageSetup()->setFitToPage(true)->setFitToWidth(1)->setFitToHeight(0)->setPrintArea('A1:M'.$cnt_odd,$i_sub,'I');
+						} else{
+							$objTpl->getActiveSheet()->setBreak('A'.$cnt_odd, 1)->getPageSetup()->setFitToPage(true)->setFitToWidth(1)->setFitToHeight(0)->setPrintArea('A'.($cnt_odd - $start_line).':M'.$cnt_odd,$i_sub,'I');
+						}
+					// }
+					if ($i == 1) {
+						$cnt_odd_sub = $cnt_odd;
+					}
+					$i_sub++;
 				}
 
 				$reset = '';
@@ -1823,10 +1604,10 @@ Class ContractEmpController extends Controller {
 						self::copyPhpExcelWorkSheetRows($objTpl->getActiveSheet(),1,$no_of_lines_to_copy,$cnt_odd_sub,13);
 						$reset = '';
 						$merge_sal_1_1 = 6 + $cnt_odd;
-	        			$merge_sal_1_2 = 6 + $cnt_odd;
-	        			$merge_sal_2_1 = 6 + $cnt_odd;
-	        			$merge_sal_2_2 = 6 + $cnt_odd;
-	        			$merge_sal = $merge_sal_1_1;
+						$merge_sal_1_2 = 6 + $cnt_odd;
+						$merge_sal_2_1 = 6 + $cnt_odd;
+						$merge_sal_2_2 = 6 + $cnt_odd;
+						$merge_sal = $merge_sal_1_1;
 						// For Payment Slip
 						$pay_row = $cnt_odd + 2;
 						// For Payment Slip
@@ -1838,10 +1619,10 @@ Class ContractEmpController extends Controller {
 						self::copyPhpExcelWorkSheetRows($objTpl->getActiveSheet(),1,$no_of_lines_to_copy,$cnt_odd_sub,6);
 						$reset = '';
 						$merge_sal_1_1 = 6 + $cnt_odd;
-	        			$merge_sal_1_2 = 6 + $cnt_odd;
-	        			$merge_sal_2_1 = 6 + $cnt_odd;
-	        			$merge_sal_2_2 = 6 + $cnt_odd;
-	        			$merge_sal = $merge_sal_1_1;
+						$merge_sal_1_2 = 6 + $cnt_odd;
+						$merge_sal_2_1 = 6 + $cnt_odd;
+						$merge_sal_2_2 = 6 + $cnt_odd;
+						$merge_sal = $merge_sal_1_1;
 						// For Payment Slip
 						$pay_row = $cnt_odd + 2;
 						// For Payment Slip
@@ -1864,17 +1645,17 @@ Class ContractEmpController extends Controller {
 				}
 					
 				$i++;
-        	}
+			}
 
 			$objTpl->setActiveSheetIndex(0);
-        	$objTpl->getActiveSheet(0)->setSelectedCells('A1');
+			$objTpl->getActiveSheet(0)->setSelectedCells('A1');
 			$objTpl->getActiveSheet()->setTitle('Payment_Slip_'.strtoupper($request->lastname));
-        	$flpath='.xls';
-        	header('Content-Type: application/vnd.ms-excel');
-        	header('Content-Disposition: attachment;filename="'.$flpath.'"');
-        	header('Cache-Control: max-age=0');
-        	
-        })->setFilename($excel_name)->download('xls');
+			$flpath='.xls';
+			header('Content-Type: application/vnd.ms-excel');
+			header('Content-Disposition: attachment;filename="'.$flpath.'"');
+			header('Cache-Control: max-age=0');
+			
+		})->setFilename($excel_name)->download('xls');
 	}
 
 	/**
@@ -1887,8 +1668,8 @@ Class ContractEmpController extends Controller {
      * @param int $width Number of columns to copy
      */
     function copyPhpExcelWorkSheetRows ($sheet, $srcRow, $dstRow, $height, $width) {
-        for ($row = 0;$row<$height;$row ++) {
-            // cell format and value replication
+		for ($row = 0;$row<$height;$row ++) {
+			// cell format and value replication
             for ($col = 0;$col<$width;$col ++) {
                 $cell = $sheet->getCellByColumnAndRow ($col, $srcRow + $row);
                 $style = $sheet->getStyleByColumnAndRow ($col, $srcRow + $row);
@@ -2412,9 +2193,9 @@ Class ContractEmpController extends Controller {
 			$objTpl->setActiveSheetIndex(0);
         	$objTpl->getActiveSheet(0)->setSelectedCells('A1');
 
-        	$salary_det=SalaryCalcplus::getsalaryDetails($request,'1');
-		    $salary_ded=SalaryCalcplus::getsalaryDetails($request,'2');
-		    $g_query=SalaryCalcplus::salaryDetailhistory($request,1);
+        	$salary_det = ContractEmp::getsalaryDetails($request,'1');
+		    $salary_ded = ContractEmp::getsalaryDetails($request,'2');
+		    $g_query = ContractEmp::salaryDetailhistory($request,1);
 		    $k = 6;
 			$i = 1;
 			$fixed_column_1 = 4;
@@ -2734,7 +2515,7 @@ Class ContractEmpController extends Controller {
 		})->setFilename($excel_name)->download('xls');
     }
 
-    public function gensenDownload(Request $request) {
+	public function gensenDownload(Request $request) {
 
 		ini_set('max_execution_time', '300'); 
 		ini_set('memory_limit', '300M'); 
@@ -2742,8 +2523,8 @@ Class ContractEmpController extends Controller {
 		$excel_name ='Gensen_'.strtoupper($request->lastname).'_'.$request->selYear;
 		Excel::load($template_name, function($objPHPExcel) use($request) {
 			
-			$companyDetails = SalaryCalcplus::fnGetCompanyDetails($request);
-			$empdetail = SalaryCalcplus::fnGetEmpDetail($request);
+			$companyDetails = ContractEmp::fnGetCompanyDetails($request);
+			$empdetail = ContractEmp::fnGetEmpDetail($request);
 			$firstname = ($empdetail[0]->FirstName) ? $empdetail[0]->FirstName : "" ;
 			$lastname = ($empdetail[0]->LastName) ? $empdetail[0]->LastName : "" ;
 			$DOB = str_replace("-","/",($empdetail[0]->DOB) ? $empdetail[0]->DOB : "");
@@ -2751,7 +2532,7 @@ Class ContractEmpController extends Controller {
 			$MotherDOB = str_replace("-","/",($empdetail[0]->MotherDOB) ? $empdetail[0]->MotherDOB : "");
 			$return_address = ($empdetail[0]->Address1) ? $empdetail[0]->Address1 : "" ;
 			if (is_numeric(trim($return_address))) {
-				$oldAddress = SalaryCalcplus::fnGetAddressMB($return_address);
+				$oldAddress = ContractEmp::fnGetAddressMB($return_address);
 				if (isset($oldAddress[0])) {
 					$return_address = '〒'.$oldAddress[0]->pincode.' '.$oldAddress[0]->jpstate.$oldAddress[0]->jpaddress.' - '.$oldAddress[0]->roomno;
 				} else {
@@ -2768,10 +2549,10 @@ Class ContractEmpController extends Controller {
 			$tot2 = 0;
 			$deduction = 0;
 			$temp_salaryDetails = array();
-			$salary_det = SalaryCalcplus::getsalaryDetailsnodelflg($request,'1');
-			$salary_ded = SalaryCalcplus::getsalaryDetailsnodelflg($request,'2');
+			$salary_det = ContractEmp::getsalaryDetailsnodelflg($request,'1');
+			$salary_ded = ContractEmp::getsalaryDetailsnodelflg($request,'2');
 			// Total For Salary Details
-			$g_query1 = SalaryCalcplus::salaryDetailhistory($request,1);
+			$g_query1 = ContractEmp::salaryDetailhistory($request,1);
 			$a = 0;
 			$get_master_tot = array();
 			$get_master_tot1 = array();
@@ -2907,7 +2688,7 @@ Class ContractEmpController extends Controller {
 
 			// Insurance
 			$total = '0';
-			$InsuranceTotal = SalaryCalcplus::fnGetInsuranceTotal($request);
+			$InsuranceTotal = ContractEmp::fnGetInsuranceTotal($request);
 			$k = 0;
 			$get_emp_det = array();
 			foreach ($InsuranceTotal as $key => $value) {
@@ -2954,12 +2735,12 @@ Class ContractEmpController extends Controller {
 			// $objPHPExcel->getActiveSheet()->setCellValue("X21", $deduction);
 			// $objPHPExcel->getActiveSheet()->setCellValue("P49", $total);
 			$objPHPExcel->setActiveSheetIndex(0);
-          	$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
+			$objPHPExcel->getActiveSheet()->setSelectedCells("A1");
 		})->setFilename($excel_name)->download('xlsx');
 	}
 
-    function commonTotal($objTpl,$record,$k,$color=null) {
-    	$objTpl->getActiveSheet()->getStyle($record.$k)->getAlignment()->applyFromArray(
+	function commonTotal($objTpl,$record,$k,$color=null) {
+		$objTpl->getActiveSheet()->getStyle($record.$k)->getAlignment()->applyFromArray(
 									array('horizontal' => PHPExcel_Style_Alignment::HORIZONTAL_RIGHT,)
 								);
 		$objTpl->getActiveSheet()->getStyle($record.$k)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
@@ -2971,10 +2752,10 @@ Class ContractEmpController extends Controller {
 							)
 						)
 					);
-    }
+	}
 
-    function commonHeaders($objTpl,$record,$fixed_column_2,$Name,$color, $width) {
-    	$objTpl->getActiveSheet()->getColumnDimension($record)->setWidth($width);
+	function commonHeaders($objTpl,$record,$fixed_column_2,$Name,$color, $width) {
+		$objTpl->getActiveSheet()->getColumnDimension($record)->setWidth($width);
 		$objTpl->getActiveSheet()->setCellValue($record.$fixed_column_2, $Name);
 		$objTpl->getActiveSheet()->getStyle($record.$fixed_column_2)->getAlignment()->setWrapText(true); 
 		$objTpl->getActiveSheet()->getStyle($record.$fixed_column_2)->getAlignment()->applyFromArray(
@@ -2990,7 +2771,7 @@ Class ContractEmpController extends Controller {
 					);
 		$objTpl->getActiveSheet()->getStyle($record.$fixed_column_2)->getFont()->setBold( true );
 		$objTpl->getActiveSheet()->getStyle($record.$fixed_column_2)->getBorders()->getAllBorders()->setBorderStyle(PHPExcel_Style_Border::BORDER_THIN);
-    }
+ 	}
 
 	function num_to_letters($n) {
 		$n -= 1;
