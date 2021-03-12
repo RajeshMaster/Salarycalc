@@ -5,7 +5,7 @@
 <script type="text/javascript">
 	var datetime = '<?php echo date('Ymdhis'); ?>';
 	$(document).ready(function() {
-		$('#salarycalchistoryTotal input[type=checkbox]').attr('checked',false); 
+		$('#contractemphistoryTotal input[type=checkbox]').attr('checked',false); 
   		var ht;
   		var lastWindowHeight = $(window).height();
         ht= $(window).height();

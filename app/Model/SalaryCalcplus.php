@@ -70,7 +70,7 @@ class SalaryCalcplus extends Model{
 					->SELECT('*')
 					->where('month','=',$month)
 					->where('year','=',$year)
-					->where('delFLg','=',0)
+					->where('delflg','=',0)
 					->get();
 		$querycount = count($query);
 		return $querycount;
@@ -126,6 +126,7 @@ class SalaryCalcplus extends Model{
 					->SELECT('year_mon AS date','year','month')
 					->WHERE('year_mon','>=',$from_date,' AND','year_mon','<',$to_date)
 					->WHERE('delFlg','=',0)
+					->WHERE('empFlg','=',0)
 					->ORDERBY('year_mon', 'ASC')
 	 	 			->GET();
 	 	return $query;
@@ -137,6 +138,7 @@ class SalaryCalcplus extends Model{
 					->SELECT(DB::raw("SUBSTRING(year_mon, 1, 7) AS date"))
 					->WHERE('delFlg','=',0)
 					->WHERE('year_mon','<=',$from_date)
+					->WHERE('empFlg','=',0)
 					->ORDERBY('year_mon', 'ASC')
 	 	 			->GET();
 	 	return $query;
@@ -148,6 +150,7 @@ class SalaryCalcplus extends Model{
 					->SELECT(DB::raw("SUBSTRING(date, 1, 7) AS date"))
 					->WHERE('delFlg','=',0)
 					->WHERE('date','>=',$to_date)
+					->WHERE('empFlg','=',0)
 					->ORDERBY('date', 'ASC')
 	 	 			->GET();
 	 	return $query;
@@ -193,15 +196,27 @@ class SalaryCalcplus extends Model{
 		}
 
 		$db = DB::connection('mysql');
+		$conEmployees = $db->table('inv_salaryplus_main_emp')
+				->SELECT('Emp_ID')
+				->WHERE('year','=', $year)
+				->WHERE('month','=',$month)
+				->WHERE('empFlg','=',1)
+				->ORDERBY('Emp_ID', 'ASC')
+ 	 			->GET();
 		$selectedEmployees = $db->table('inv_salaryplus_main_emp')
 				->SELECT('Emp_ID')
 				->WHERE('year','=', $year)
 				->WHERE('month','=',$month)
+				->WHERE('empFlg','=',0)
 				->ORDERBY('Emp_ID', 'ASC')
  	 			->GET();
  	 	$hdn_empid = array();
  		foreach ($selectedEmployees as $k => $v) {
 			$hdn_empid[$k] = $v->Emp_ID;
+		}
+		$hdn_conempid = array();
+ 		foreach ($conEmployees as $m => $n) {
+			$hdn_conempid[$m] = $n->Emp_ID;
 		}
 
 		$db_mb = DB::connection('mysql_MB');
@@ -212,9 +227,11 @@ class SalaryCalcplus extends Model{
 							->WHERE('Title', '=', 2)
 							->where('Emp_ID', 'NOT LIKE', '%NST%');
 			if ($flg == 0) {
-				$employees = $employees ->whereNotIn('Emp_ID', $hdn_empid);
+				$employees = $employees->whereNotIn('Emp_ID', $hdn_conempid)
+										->whereNotIn('Emp_ID', $hdn_empid);
 			} else if ($flg == 1) {
-				$employees = $employees ->whereIn('Emp_ID', $hdn_empid);
+				$employees = $employees->whereNotIn('Emp_ID', $hdn_conempid)
+										->whereIn('Emp_ID', $hdn_empid);
 			}
 			$employees = $employees ->orderBy('Emp_ID', 'ASC')
 									->get();
@@ -223,19 +240,22 @@ class SalaryCalcplus extends Model{
 
 	public static function InsertEmpFlrDetails($request) {
 		$db = DB::connection('mysql');
-		$deldetails = $db->TABLE('inv_salaryplus_main_emp')->WHERE('year', '=', $request->year)
-						->WHERE('month', '=', $request->month)->DELETE();
+		$deldetails = $db->TABLE('inv_salaryplus_main_emp')
+						->WHERE('empFlg','=',0)
+						->WHERE('year', '=', $request->year)
+						->WHERE('month', '=', $request->month)
+						->DELETE();
 		$rows = array();
 		for ($i=0;$i<count($request->selected);$i++) {
 			$rows[] = array('id' => '',
-			'Emp_Id' => $request->selected[$i],
-			'delflg' => 0,
-			'year' => $request->year,
-			'month' => $request->month,
-			'create_date' => date('Y-m-d H:i:s'),
-			'create_by' => Auth::user()->username,
-			'update_date' => date('Y-m-d H:i:s'),
-			'update_by' => Auth::user()->username);
+							'Emp_Id' => $request->selected[$i],
+							'delflg' => 0,
+							'year' => $request->year,
+							'month' => $request->month,
+							'create_date' => date('Y-m-d H:i:s'),
+							'create_by' => Auth::user()->username,
+							'update_date' => date('Y-m-d H:i:s'),
+							'update_by' => Auth::user()->username);
 		}
 		DB::TABLE('inv_salaryplus_main_emp')->INSERT($rows);
 		return true;
@@ -284,50 +304,6 @@ class SalaryCalcplus extends Model{
 		return $query;
 	}
 
-	public static function multiadd($request,$salary_det,$salary_ded) {
-		$insert = '';
-		$name = Session::get('FirstName').' '.Session::get('LastName');
-		for ($i=0; $i < $request->count; $i++) {
-			$Emp_ID = 'Emp_ID'.$i;
-			$transferred = 'transferred_'.$request->$Emp_ID;
-			$transferred_new = str_replace(",", "", $request->$transferred);
-			$salary_final = '';
-			foreach ($salary_det as $key => $value) {
-				$detail = 'salary_'.$request->$Emp_ID.'_'.$value->Salarayid;
-				$salaryDet = $request->$detail;
-				if ($salaryDet != '') {
-					$salary_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDet).'##';
-				}
-			}
-			$deduction_final = '';
-			foreach ($salary_ded as $key => $value) {
-				$detail1 = 'Deduction_'.$request->$Emp_ID.'_'.$value->Salarayid;
-				$salaryDed = $request->$detail1;
-				if ($salaryDed != '') {
-					$deduction_final .= $value->Salarayid.'$'.str_replace(",", "", $salaryDed).'##';
-				}
-			}
-			if ($salary_final !="" || $deduction_final != "") {
-				$insert=DB::table('inv_salaryplus_main')
-					->insert(
-						['id' => '',
-						'Emp_ID' => $request->$Emp_ID,
-						'date' => $request->txt_startdate,
-						'Salary' => !empty($salary_final) ? $salary_final : '',
-						'Deduction' => !empty($deduction_final) ? $deduction_final : '',
-						'Transferred' => !empty($transferred_new) ? $transferred_new : 0,
-						'year' => $request->selYear,
-						'month' => $request->month,
-						'delFlg' => 0,
-						'CreatedBy' => $name,
-						'UpdatedBy' => $name,
-						'CreatedDateTime' => date('Y-m-d H:i:s'),
-						'UpdatedDateTime' => date('Y-m-d H:i:s')]);
-			}
-		}
-		return $insert;
-	}
-
 	public static function fnsalarycalcadd($request,$salary_det,$salary_ded) {
 		$name = Session::get('FirstName').' '.Session::get('LastName');
 		$salary_final = '';
@@ -363,6 +339,7 @@ class SalaryCalcplus extends Model{
 					'year_mon' => $request->selYear.'-'.$request->month.'-10',
 					'remarks' => $request->remarks,
 					'delFlg' => 0,
+					'empFlg' => 0,
 					'CreatedDateTime' => date('Y-m-d H:i:s'),
 					'UpdatedDateTime' => date('Y-m-d H:i:s'),
 					'CreatedBy' => $name,
@@ -405,6 +382,7 @@ class SalaryCalcplus extends Model{
 				'month' => $request->month,
 				'year_mon' => $request->selYear.'-'.$request->month.'-10',
 				'mailFlg' => '0',
+				'empFlg' => 0,
 				'UpdatedDateTime' => date('Y-m-d H:i:s'),
 				'UpdatedBy' => $name]
 		);
@@ -547,6 +525,7 @@ class SalaryCalcplus extends Model{
 		$db = DB::connection('mysql');
 		$years = $db->table('inv_salaryplus_main_emp')
 					->select(DB::raw('year as years'))
+					->WHERE('empFlg','=',0)
 					->groupBy("year")
 					->get();
 	 	return $years;
@@ -557,6 +536,7 @@ class SalaryCalcplus extends Model{
 		$query = $db->table('inv_salaryplus_main_emp')
 					->select('Emp_ID')
 					->where('year','LIKE', $request->selYear.'%')
+					->WHERE('empFlg','=',0)
 					->groupby("Emp_ID")
 					->orderBy("Emp_ID")
 					->get();
@@ -612,6 +592,7 @@ class SalaryCalcplus extends Model{
 					->select('Emp_ID')
 					->where('year','=', $year)
 					->where('month','=', $month)
+					->WHERE('empFlg','=',0)
 					->orderBy("Emp_ID")
 					->get();
 		return $query;
