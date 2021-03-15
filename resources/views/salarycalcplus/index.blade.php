@@ -244,10 +244,18 @@
 		
 		<div class="col-xs-12 mt5 pm0 pull-left pl10">
 
-			<a class="pull-left" href="javascript:salaryselectpopup_main();">
-	          	<img class="box19" src="{{ URL::asset('resources/assets/images/edit.png') }}"></a>
-				<a href="javascript:salaryselectpopup_main();" class="pull-left pr10 ml5 anchorstyle" title="{{ trans('messages.lbl_cempsel') }}">
+			<a href="javascript:salaryselectpopup_main();"
+	          	class = "pull-left pr10 ml5 btn btn-info" 
+				title = "{{ trans('messages.lbl_cempsel') }}">
+				<span class="fa fa-edit"></span>
 				{{ trans('messages.lbl_cempsel') }}
+			</a>
+
+			<a href = "javascript:contractempselectpopup();" 
+				class = "pull-left pr10 ml5 btn btn-info" 
+				title = "{{ trans('messages.lbl_conEmployee') }}">
+				<span class="fa fa-edit"></span>
+				{{ trans('messages.lbl_conEmployee') }}
 			</a>
 			
 			<!-- <div style="display: inline-block;" class="mr10 mb10 pull-right">
@@ -523,6 +531,14 @@
 	{{ Form::close() }}
 
 	<div id="salarypopup" class="modal fade">
+		<div id="login-overlay">
+			<div class="modal-content">
+				<!-- Popup will be loaded here -->
+			</div>
+		</div>
+	</div>
+	
+	<div id="contractemppopup" class="modal fade">
 		<div id="login-overlay">
 			<div class="modal-content">
 				<!-- Popup will be loaded here -->

@@ -433,6 +433,33 @@ Class SalarycalcplusController extends Controller {
 		return Redirect::to('salarycalcplus/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
 	}
 
+	public function contractemppopup(Request $request) {
+
+		$employeeSelect = SalaryCalcplus::getEmpDetails($request);
+		
+		return view('salarycalcplus.contractemppopup',[ 'request' => $request,
+											'employeeSelect' => $employeeSelect
+										]);
+	}
+
+	public function contractempselproces(Request $request) {
+		
+		$insert = SalaryCalcplus::InsertContractEmpDet($request);
+		if($insert){
+			Session::flash('success', 'Employees Selected Sucessfully!'); 
+			Session::flash('type', 'alert-success'); 
+		}else {
+			Session::flash('type', 'Employees Selected Unsucessfully!!'); 
+			Session::flash('type', 'alert-danger'); 
+		}
+		Session::flash('selMonth', $request->month); 
+		Session::flash('selYear', $request->year); 
+		$request->selected = "";
+		$request->removed = "";
+		
+		return Redirect::to('salarycalcplus/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+	}
+
 	public function view(Request $request) {
 
 		if ($request->hdn_id != '') {

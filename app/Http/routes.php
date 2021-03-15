@@ -127,6 +127,8 @@ Route::group(['prefix'=>'salarycalcplus','middleware' => 'auth'], function() {
 	Route::any('multiregister', 'SalarycalcplusController@multiregister');
 	Route::any('salarypopup', 'SalarycalcplusController@salarypopup');
 	Route::any('empselectprocess', 'SalarycalcplusController@empselectprocess');
+	Route::any('contractemppopup', 'SalarycalcplusController@contractemppopup');
+	Route::any('contractempselproces', 'SalarycalcplusController@contractempselproces');
 	Route::any('mailsendprocess', 'SalarycalcplusController@mailsendprocess');
 	Route::any('history', 'SalarycalcplusController@history');
 	Route::any('getdataExists', 'SalarycalcplusController@getdataExists');

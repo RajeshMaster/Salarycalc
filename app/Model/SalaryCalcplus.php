@@ -261,6 +261,100 @@ class SalaryCalcplus extends Model{
 		return true;
 	}
 
+	public static function InsertContractEmpDet($request) {
+		
+		$db = DB::connection('mysql');
+		$rows = array();
+		for ($i = 0; $i < count($request->selected); $i++) {
+			$getMainEmp = $db->TABLE('inv_salaryplus_main_emp')
+							->WHERE('Emp_Id','=', $request->selected[$i])
+							->WHERE('year', '=', $request->selectedyear)
+							->WHERE('month', '=', $request->selectedmonth)
+							->DELETE();
+			$rows[] = array('id' => '',
+							'Emp_Id' => $request->selected[$i],
+							'empFlg' => 0,
+							'delflg' => 0,
+							'year' => $request->selectedyear,
+							'month' => $request->selectedmonth,
+							'create_date' => date('Y-m-d H:i:s'),
+							'create_by' => Auth::user()->username,
+							'update_date' => date('Y-m-d H:i:s'),
+							'update_by' => Auth::user()->username);
+		}
+		DB::TABLE('inv_salaryplus_main_emp')->INSERT($rows);
+
+		for ($j = 0; $j < count($request->selected); $j++) { 
+
+			$updMainEmp = $db->TABLE('inv_salaryplus_main_emp')
+							->WHERE('Emp_Id', '=', $request->selected[$j])
+							->WHERE('year', '>', $request->selectedyear)
+							->update([
+								'empFlg' => 0,
+								'update_date' => date('Y-m-d H:i:s'),
+								'update_by' =>  Auth::user()->username
+							]);
+
+			$updSameYearEmp = $db->TABLE('inv_salaryplus_main_emp')
+							->WHERE('Emp_Id', '=', $request->selected[$j])
+							->WHERE('year', '=', $request->selectedyear)
+							->WHERE('month', '>=', $request->selectedmonth)
+							->update([
+								'empFlg' => 0,
+								'update_date' => date('Y-m-d H:i:s'),
+								'update_by' =>  Auth::user()->username
+							]);
+
+			$updMain = $db->TABLE('inv_salaryplus_main')
+							->WHERE('Emp_Id', '=', $request->selected[$j])
+							->WHERE('year', '>', $request->selectedyear)
+							->update([
+								'empFlg' => 0,
+								'UpdatedDateTime' => date('Y-m-d H:i:s'),
+								'UpdatedBy' =>  Auth::user()->username
+							]);
+
+			$updSameYear = $db->TABLE('inv_salaryplus_main')
+						->WHERE('Emp_Id', '=', $request->selected[$j])
+						->WHERE('year', '=', $request->selectedyear)
+						->WHERE('month', '>=', $request->selectedmonth)
+						->update([
+							'empFlg' => 0,
+							'UpdatedDateTime' => date('Y-m-d H:i:s'),
+							'UpdatedBy' =>  Auth::user()->username
+						]);
+		}
+		return true;
+	}
+
+	public static function getEmpDetails($request) {
+
+		$db = DB::connection('mysql');
+		$selectedEmployees = $db->table('inv_salaryplus_main_emp')
+				->SELECT('Emp_ID')
+				->WHERE('empFlg','=',1)
+				->ORDERBY('Emp_ID', 'ASC')
+ 	 			->GET();
+
+
+ 	 	$hdn_empid = array();
+ 		foreach ($selectedEmployees as $k => $v) {
+			$hdn_empid[$k] = $v->Emp_ID;
+		}
+
+		$db_mb = DB::connection('mysql_MB');
+		$employees = $db_mb->TABLE('emp_mstemployees')
+							->SELECT('Emp_ID','FirstName','LastName','resign_id',
+								'resigndate')
+							->WHERE('delFLg', '=', 0)
+							->WHERE('Title', '=', 2)
+							->where('Emp_ID', 'NOT LIKE', '%NST%')
+							->whereIn('Emp_ID',$hdn_empid)
+							->orderBy('Emp_ID', 'ASC')
+							->get();
+		return $employees;
+	}
+
 	public static function getsalaryDetails($request,$flg) {
 		$db = DB::connection('mysql');
 		$query = $db->table('mstsalaryplus')

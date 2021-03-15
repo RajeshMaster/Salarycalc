@@ -277,16 +277,21 @@ class ContractEmp extends Model{
 		$db = DB::connection('mysql');
 		$rows = array();
 		for ($i = 0; $i < count($request->selected); $i++) {
+			$getMainEmp = $db->TABLE('inv_salaryplus_main_emp')
+							->WHERE('Emp_Id','=', $request->selected[$i])
+							->WHERE('year', '=', $request->selectedyear)
+							->WHERE('month', '=', $request->selectedmonth)
+							->DELETE();
 			$rows[] = array('id' => '',
-							'Emp_Id' => $request->selected[$i],
-							'empFlg' => 1,
-							'delflg' => 0,
-							'year' => $request->selectedyear,
-							'month' => $request->selectedmonth,
-							'create_date' => date('Y-m-d H:i:s'),
-							'create_by' => Auth::user()->username,
-							'update_date' => date('Y-m-d H:i:s'),
-							'update_by' => Auth::user()->username);
+						'Emp_Id' => $request->selected[$i],
+						'empFlg' => 1,
+						'delflg' => 0,
+						'year' => $request->selectedyear,
+						'month' => $request->selectedmonth,
+						'create_date' => date('Y-m-d H:i:s'),
+						'create_by' => Auth::user()->username,
+						'update_date' => date('Y-m-d H:i:s'),
+						'update_by' => Auth::user()->username);
 		}
 		DB::TABLE('inv_salaryplus_main_emp')->INSERT($rows);
 

@@ -251,6 +251,20 @@ function salaryselectpopup_main() {
 	$('#salarypopup').modal('show');
 }
 
+function contractempselectpopup() {
+	var mainmenu = $('#mainmenu').val();
+	var year = $('#selYear').val();
+	var month = $('#selMonth').val();
+	var get_prev_yr = $('#get_prev_yr').val();
+	popupopenclose(1);
+	$('#contractemppopup').load('../salarycalcplus/contractemppopup?mainmenu='+mainmenu+'&year='+year+'&month='+month+'&get_prev_yr='+get_prev_yr);
+	$("#contractemppopup").modal({
+		backdrop: 'static',
+		keyboard: false
+	});
+	$('#contractemppopup').modal('show');
+}
+
 function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, currentyear, account_val) {
 
 	var yearmonth = year + "-" +  ("0" + month).substr(-2);
@@ -386,6 +400,21 @@ function empselectbypopupclick() {
 		$('#to option').prop('selected', true);
 		$('#from option').prop('selected', true);
 		document.empselectform.submit();
+		return true;
+	} else {
+		return false;
+	}
+}
+
+function contractempselpopupclick() {
+	var value = $("#selectedEmp option:selected").text(); 
+	if(value == "" || value == null) {
+		alert("Please Select atleast One Employee")
+		return false;
+	}
+	var Emp_selection = "Do You Want To Add?";
+	if(confirm(Emp_selection)) {
+		document.employeeselectform.submit();
 		return true;
 	} else {
 		return false;
