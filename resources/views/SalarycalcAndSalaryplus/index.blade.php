@@ -63,14 +63,14 @@
 	<div class="pt10 pl10 pr10 ">
 
 		<div style="display: inline-block;width: 45%;"  class="mt10 mb10 ml10 mr10">
-			SalaryCalc
+			Accounting
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
 					<col width="10%">
 					<col width="20%">
 					<col width="20%">
-					<col width="20%">
 					<col width="">
+					<col width="10%">
 				</colgroup>
 
 				<thead class="CMN_tbltheadcolor">
@@ -83,8 +83,7 @@
 							{{ trans('messages.lbl_empno') }}</th>
 						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
-						<th class="vam" >
-							{{ trans('messages.lbl_transferred') }}</th>
+						<th class="vam"></th>
 					</tr>
 				<tbody>
 					@php $i = 1; @endphp
@@ -94,19 +93,15 @@
 								{{ $i }}
 							</td>
 							<td class="tac">
-								{{ $value->year_mon }}
+								{{ $value->date }}
 							</td>
 							<td class="tac">
-								{{ $value->Emp_ID }}
+								{{ $value->emp_ID }}
 							</td>
 							<td class="tac">
-								@php 
-									$totamount = $value->Basic + $value->hra + $value->train_daily + $value->others 
-								@endphp
-								{{ $totamount }}
+								{{ $value->amount }}
 							</td>
 							<td class="tac">
-								{{ $value->Transferred }}
 							</td>
 						</tr>
 						@php $i++; @endphp
@@ -127,10 +122,11 @@
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
 					<col width="10%">
+					<col width="10%">
 					<col width="20%">
 					<col width="20%">
-					<col width="20%">
-					<col width="">
+					<col width="30%">
+					<col width="10%">
 				</colgroup>
 
 				<thead class="CMN_tbltheadcolor">
@@ -138,51 +134,57 @@
 						<th class="vam">
 							{{ trans('messages.lbl_sno') }}</th>
 						<th class="vam" >
+							{{ trans('messages.lbl_id') }}</th>
+						<th class="vam" >
 							{{ trans('messages.lbl_yearmonth') }}</th>
 						<th class="vam">
 							{{ trans('messages.lbl_empno') }}</th>
 						<th class="vam" >
-							{{ trans('messages.lbl_amount') }}</th>
-						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
+						<th class="vam" >
+							{{ trans('messages.lbl_employeeid') }}</th>
 					</tr>
 				<tbody>
-					@php $i = 1; @endphp
-					@foreach($empArrVal AS $key => $value)
+					@for ($j = 0; $j < count($empArr); $j++)
 						<tr>
 							<td>
-								{{ $i }}
+								{{ $j+1 }}
 							</td>
 							<td class="tac">
-								{{ $value->year_mon }}
+								@if(isset($empArr[$j]['id']))
+									{{ $empArr[$j]['id'] }}
+								@endif
 							</td>
 							<td class="tac">
-								{{ $value->Emp_ID }}
+								@if(isset($empArr[$j]['date']))
+									{{ $empArr[$j]['date'] }}
+								@endif
 							</td>
 							<td class="tac">
-								{{ Form::text('salAmt'.$i, 0,
-									array('id'=>'salAmt'.$i,
-										'name' => 'salAmt'.$i,
+								@if(isset($empArr[$j]['Emp_ID']))
+									{{ $empArr[$j]['Emp_ID'] }}
+								@endif
+							</td>
+							<td class="tac">
+								@if(isset($empArr[$j]['id']))
+									@if(isset($empArr[$j][$empArr[$j]['id']]['TotalAmt']))
+										{{ $empArr[$j][$empArr[$j]['id']]['TotalAmt'] }}
+									@endif
+								@endif
+							</td>
+							<td class="tac">
+								{{ Form::text('salempId'.$i, '',
+									array('id'=>'salempId'.$i,
+										'name' => 'salempId'.$i,
 										'style'=>'text-align:right;padding-right:4px;',
 										'autocomplete' =>'off',
-										'class'=>'box96per ime_mode_disable ml7 numonly',
-										'onblur' => 'return fnSetZero11(this.id);',
-										'onfocus' => 'return fnRemoveZero(this.id);',
-										'onclick' => 'return fnRemoveZero(this.id);',
-										'onkeyup'=>'return fnMoneyFormat(this.id,"jp");',
-										'onkeypress'=>'return event.charCode >=6 && event.charCode <=58',
+										'class'=>'ime_mode_disable ml7',
 										'data-label' => trans('messages.lbl_amount'))) 
 								}}
 							</td>
-							<td class="tac">
-								@php 
-									$amount = $value->salamt + $value->Travel
-								@endphp
-								{{ $amount }}
-							</td>
+							
 						</tr>
-						@php $i++; @endphp
-					@endforeach
+					@endfor
 					@if(count($empArrVal) == 0)
 					<td colspan="5">
 						<div class="text-center fr">

@@ -111,6 +111,22 @@ return [
             'engine' => null,
         ],
         // End_DB_Connection_For_mbsys
+        // DB_Connection_For_Invoice_System
+        'mysql_Invoice' => [
+            'driver' => 'mysql',
+            'host' => env('DB_HOST', 'localhost'),
+            'port' => env('DB_PORT', '3306'),
+            'database' => env('DB_DATABASE_INV', 'vps10081_ssmbtest_invdb'),
+            'username' => env('DB_USERNAME_INV', 'root'),
+            'password' => env('DB_PASSWORD_INV', ''),
+            'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
+            'prefix' => '',
+            'strict' => false,
+            'engine' => null,
+            
+        ],
+        // End_DB_Connection_For_Invoice_System
         'pgsql' => [
             'driver' => 'pgsql',
             'host' => env('DB_HOST', 'localhost'),

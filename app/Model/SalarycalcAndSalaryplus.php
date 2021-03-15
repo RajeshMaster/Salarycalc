@@ -55,18 +55,21 @@ class SalarycalcAndSalaryplus extends Model{
 					->select('*')
 					->where('year','=', $year)
 					->where('month','=', $month)
-					->orderBy("Emp_Id")
+					->orderBy("Travel",'DESC')
 					->get();
 		return $query;
 	}
 
 	public static function fnGetSalaryCalcList($year,$month){
-		$db = DB::connection('mysql');
-		$query = $db->table('inv_salary_main')
+		$db = DB::connection('mysql_Invoice');
+		$yearsss = date("Y-m", strtotime("-1 months", strtotime($year)));
+		$monthssss = date("m", strtotime("-1 months", strtotime($month)));
+		$query = $db->table('acc_cashregister')
 					->select('*')
-					->where('year','=', $year)
-					->where('month','=', $month)
-					->orderBy("Emp_Id")
+					->WHERE(DB::raw("SUBSTRING(date, 1, 4)"),'=', $year)
+					->WHERE(DB::raw("SUBSTRING(date, 6, 2)"),'=', $month)
+					->where('pageFlg','=', 2)
+					->orderBy("amount",'DESC')
 					->get();
 		return $query;
 	}
