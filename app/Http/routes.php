@@ -67,6 +67,12 @@ Route::group(['prefix'=>'NonStaff', 'middleware' => 'auth'], function() {
 	Route::any('nonstaffview', 'NonStaffController@nonstaffview');
 });
 
+//NonStaff
+Route::group(['prefix'=>'salarEmp', 'middleware' => 'auth'], function() {
+	Route::get('changelanguage', 'AjaxController@index');
+	Route::any('index', 'SalarycalcAndSalaryplusController@index');
+});
+
 
 // Home
 Route::group(['prefix'=>'Menu', 'middleware' => 'auth'], function() {
