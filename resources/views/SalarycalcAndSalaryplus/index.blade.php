@@ -149,7 +149,8 @@
 						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
 						<th class="vam" >
-							{{ trans('messages.lbl_id') }}</th>
+							{{ trans('messages.lbl_id') }}
+						</th>
 						<th class="vam" >
 							{{ trans('messages.lbl_employeeid') }}</th>
 					</tr>
@@ -192,6 +193,13 @@
 								}}
 							</td>
 							<td class="tac">
+								@php
+									if(isset($empArr[$j]['id'])) {
+										$id = $empArr[$j]['id'];
+									} else {
+										$id = "";
+									}
+								@endphp
 								{{ Form::text('salempId'.$j, '',
 									array('id'=>'salempId'.$j,
 										'name' => 'salempId'.$j,
