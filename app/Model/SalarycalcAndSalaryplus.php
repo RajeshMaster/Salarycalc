@@ -76,6 +76,17 @@ class SalarycalcAndSalaryplus extends Model{
 		return $query;
 	}
 
+	public static function fnSalaryCalcList($year,$month){
+		$db = DB::connection('mysql');
+		$query = $db->table('inv_salary_main')
+					->select('*')
+					->where('year','=', $year)
+					->where('month','=', $month)
+					->orderBy("Transferred",'DESC')
+					->get();
+		return $query;
+	}
+
 	public static function getsalaryDetails($request,$flg) {
 		$db = DB::connection('mysql');
 		$query = $db->table('mstsalaryplus')

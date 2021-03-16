@@ -72,6 +72,7 @@ Route::group(['prefix'=>'salarEmp', 'middleware' => 'auth'], function() {
 	Route::get('changelanguage', 'AjaxController@index');
 	Route::any('index', 'SalarycalcAndSalaryplusController@index');
 	Route::any('addeditemp', 'SalarycalcAndSalaryplusController@addeditemp');
+	Route::any('salindex', 'SalarycalcAndSalaryplusController@salindex');
 });
 
 
