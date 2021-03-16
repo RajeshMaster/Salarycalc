@@ -63,7 +63,7 @@
 	
 	<div class="pt10 pl10 pr10 ">
 
-		<div style="display: inline-block;width: 45%;"  class="mt10 mb10 ml10 mr10">
+		<div style="display: inline-block;width: 40%;"  class="mt10 mb10 ml10 mr10">
 			Accounting
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
@@ -103,19 +103,11 @@
 								{{ $value->amount }}
 							</td>
 							<td class="tac">
-								@php
-									if(isset($empArr[$i]['id'])) {
-										$id = $empArr[$i]['id'];
-									} else {
-										$id = "";
-									}
-								@endphp
 								<input  type = "checkbox" 
 										class = "empIdCheck" 
 										name = "empIdCheck"
-										id = "empIdCheck<?php echo $i; ?>" 
-										value = "<?php echo $i; ?>"
-										onclick = "employeeCheck('{{ $i }}','{{ $value->emp_ID }}','{{ $id }}')" >
+										id = "empIdCheck" 
+										value = "<?php echo $i; ?>">
 							</td>
 						</tr>
 						@php $i++; @endphp
@@ -131,16 +123,17 @@
 			</table>
 		</div>
 
-		<div style="display: inline-block;width: 45%;" class="mt10 mb10 ml10 mr10">
+		<div style="display: inline-block;width: 50%;" class="mt10 mb10 ml10 mr10">
 			SalaryCalcPlus
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
+					<col width="5%">
 					<col width="10%">
+					<col width="15%">
 					<col width="10%">
-					<col width="20%">
-					<col width="20%">
-					<col width="30%">
+					<col width="15%">
 					<col width="10%">
+					<col width="15%">
 				</colgroup>
 
 				<thead class="CMN_tbltheadcolor">
@@ -156,6 +149,8 @@
 						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
 						<th class="vam" >
+							{{ trans('messages.lbl_id') }}</th>
+						<th class="vam" >
 							{{ trans('messages.lbl_employeeid') }}</th>
 					</tr>
 				<tbody>
@@ -168,8 +163,6 @@
 								@if(isset($empArr[$j]['id']))
 									{{ $empArr[$j]['id'] }}
 								@endif
-								{{ Form::hidden('salId'.$j, '' , 
-									array('id' => 'salId'.$j)) }}
 							</td>
 							<td class="tac">
 								@if(isset($empArr[$j]['date']))
@@ -189,20 +182,30 @@
 								@endif
 							</td>
 							<td class="tac">
+								{{ Form::text('salId'.$j, '',
+									array('id'=>'salId'.$j,
+										'name' => 'salId'.$j,
+										'style'=>'text-align:center;',
+										'autocomplete' =>'off',
+										'class'=>'ime_mode_disable ml5 mr5 box90per',
+										'data-label' => trans('messages.lbl_id'))) 
+								}}
+							</td>
+							<td class="tac">
 								{{ Form::text('salempId'.$j, '',
 									array('id'=>'salempId'.$j,
 										'name' => 'salempId'.$j,
-										'style'=>'text-align:right;padding-right:4px;',
+										'style'=>'text-align:center;',
 										'autocomplete' =>'off',
-										'class'=>'ime_mode_disable ml7',
-										'data-label' => trans('messages.lbl_amount'))) 
+										'class'=>'ime_mode_disable ml5 mr5 box90per',
+										'data-label' => trans('messages.lbl_employeeid'))) 
 								}}
 							</td>
 							
 						</tr>
 					@endfor
 					@if(count($empArrVal) == 0)
-					<td colspan="6">
+					<td colspan="7">
 						<div class="text-center fr">
 							{{ trans('messages.lbl_nodatafound') }}
 						</div>

@@ -43,15 +43,15 @@ function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, c
 	}
 }
 
-function employeeCheck(val,empId,id) {
-	if ($("#empIdCheck"+val).prop('checked') == true) {
-		$('#salId'+val).val(id);
-		$('#salempId'+val).val(empId);
-	} else {
-		$('#salId'+val).val('');
-		$('#salempId'+val).val('');
-	}
-}
+// function employeeCheck(val,empId,id) {
+// 	if ($("#empIdCheck"+val).prop('checked') == true) {
+// 		$('#salId'+val).val(id);
+// 		$('#salempId'+val).val(empId);
+// 	} else {
+// 		$('#salId'+val).val('');
+// 		$('#salempId'+val).val('');
+// 	}
+// }
 
 function addeditemployee(totalval) {
 	if (totalval != "") {

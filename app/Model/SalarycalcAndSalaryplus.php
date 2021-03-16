@@ -51,8 +51,10 @@ class SalarycalcAndSalaryplus extends Model{
 
 	public static function fnGetEmpIdList($year,$month){
 		$db = DB::connection('mysql');
+		$empIdArr = array("MB0051");
 		$query = $db->table('inv_salaryplus_main')
 					->select('*')
+					->whereIn('Emp_ID',$empIdArr)
 					->where('year','=', $year)
 					->where('month','=', $month)
 					->orderBy("Travel",'DESC')
