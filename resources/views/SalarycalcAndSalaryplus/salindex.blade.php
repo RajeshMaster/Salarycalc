@@ -214,14 +214,11 @@
 										$id = "";
 									}
 								@endphp
-								{{ Form::text('salempId'.$j, '',
-									array('id'=>'salempId'.$j,
-										'name' => 'salempId'.$j,
-										'style'=>'text-align:center;',
-										'autocomplete' =>'off',
-										'class'=>'ime_mode_disable ml5 mr5 box90per',
-										'data-label' => trans('messages.lbl_employeeid'))) 
-								}}
+								<input type="text" name="salempId<?php echo $j; ?>"
+									id = "salempId<?php echo $j; ?>" 
+									style = "text-align:center;"
+									onchange = "employeeCheck('{{ $j }}','{{ $id }}');"
+									class = "ime_mode_disable ml5 mr5 box90per">
 							</td>
 							
 						</tr>

@@ -43,13 +43,11 @@ function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, c
 	}
 }
 
-function employeeCheck(loopVal,val) {
-	alert(id);
-	var loopVal = loopVal.charAt(loopVal.length-1);
-	if (val != "") {
-		$('#salId'+loopVal).val(id);
+function employeeCheck(val,id) {
+	if ($('#salempId'+val).val() != "") {
+		$('#salId'+val).val(id);
 	} else {
-		$('#salId'+loopVal).val('');
+		$('#salId'+val).val('');
 	}
 }
 

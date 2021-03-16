@@ -43,6 +43,14 @@ function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, c
 	}
 }
 
+function employeeCheck(val,id) {
+	if ($('#salempId'+val).val() != "") {
+		$('#salId'+val).val(id);
+	} else {
+		$('#salId'+val).val('');
+	}
+}
+
 function addeditemployee(totalval) {
 	if (totalval != "") {
 		var confirmprocess = confirm("Do You Want To Update?");
