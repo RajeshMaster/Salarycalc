@@ -86,11 +86,11 @@
 						<th class="vam"></th>
 					</tr>
 				<tbody>
-					@php $i = 1; @endphp
+					@php $i = 0; @endphp
 					@foreach($salaryCalcArrVal AS $key => $value)
 						<tr>
 							<td>
-								{{ $i }}
+								{{ $i+1 }}
 							</td>
 							<td class="tac">
 								{{ $value->date }}
@@ -102,6 +102,12 @@
 								{{ $value->amount }}
 							</td>
 							<td class="tac">
+								<input  type = "checkbox" 
+										class = "empIdCheck" 
+										name = "empIdCheck"
+										id = "empIdCheck<?php echo $i; ?>" 
+										value = "<?php echo $i; ?>"
+										onclick = "employeeCheck('{{ $i }}','{{ $value->emp_ID }}')" >
 							</td>
 						</tr>
 						@php $i++; @endphp
@@ -173,9 +179,9 @@
 								@endif
 							</td>
 							<td class="tac">
-								{{ Form::text('salempId'.$i, '',
-									array('id'=>'salempId'.$i,
-										'name' => 'salempId'.$i,
+								{{ Form::text('salempId'.$j, '',
+									array('id'=>'salempId'.$j,
+										'name' => 'salempId'.$j,
 										'style'=>'text-align:right;padding-right:4px;',
 										'autocomplete' =>'off',
 										'class'=>'ime_mode_disable ml7',

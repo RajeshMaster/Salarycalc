@@ -42,3 +42,11 @@ function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, c
 	$("#SalarycalcAndSalaryplus").submit();
 	}
 }
+
+function employeeCheck(val,empId) {
+	if ($("#empIdCheck"+val).prop('checked') == true) {
+		$('#salempId'+val).val(empId);
+	} else {
+		$('#salempId'+val).val('');
+	}
+}
