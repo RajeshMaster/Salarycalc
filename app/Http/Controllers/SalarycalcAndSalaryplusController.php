@@ -301,7 +301,12 @@ Class SalarycalcAndSalaryplusController extends Controller {
 		Session::flash('nextcnt', $request->nextcnt); 
 		Session::flash('account_val', $request->account_val); 
 		Session::flash('previou_next_year', $request->previou_next_year);
-		return Redirect::to('salarEmp/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+		if ($request->mainmenu == "salindex") {
+			return Redirect::to('salarEmp/salindex?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+		} else {
+			return Redirect::to('salarEmp/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'));
+		}
+		
 	}
 
 	public function salindex(Request $request) {
