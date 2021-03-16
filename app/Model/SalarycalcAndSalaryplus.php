@@ -135,5 +135,31 @@ class SalarycalcAndSalaryplus extends Model{
 			return 0;
 		}
 	}
-	
+
+	public static function updEmpId($request,$year,$month) {
+
+		$name = Session::get('FirstName').' '.Session::get('LastName');
+
+		for ($i = 0; $i < $request->totVal; $i++) { 
+
+			$id = "salId".$i;
+			$empid = "salempId".$i;
+
+			if ($request->$id !=""&& $request->$empid !=""&& $year !=""&& $month != "") {
+				$update = DB::table('inv_salaryplus_main')
+							->where('id',$request->$id)
+							->where('year',$year)
+							->where('month',$month)
+							->update([
+								'Emp_ID' => $request->$empid,
+								'empFlg' => 0,
+								'UpdatedDateTime' => date('Y-m-d H:i:s'),
+								'UpdatedBy' => $name
+							]);
+			}
+
+		}
+
+		return true;
+	}
 }

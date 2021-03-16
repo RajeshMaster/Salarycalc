@@ -4,7 +4,7 @@
 {{ HTML::script('resources/assets/js/SalarycalcAndSalaryplus.js') }}
 <script type="text/javascript">
 	var datetime = '<?php echo date('Ymdhis'); ?>';
-
+	var mainmenu = '<?php echo $request->mainmenu; ?>';
 </script>
 <style type="text/css">
 	
@@ -42,6 +42,7 @@
 			{{ Form::hidden('plimit', $request->plimit , array('id' => 'plimit')) }}
 			{{ Form::hidden('page', $request->page , array('id' => 'page')) }}
 			{{ Form::hidden('get_prev_yr', '' , array('id' => 'get_prev_yr')) }}
+			{{ Form::hidden('totVal', '' , array('id' => 'totVal')) }}
 
 		<!-- Start Heading -->
 		<div class="row hline pm0">
@@ -102,12 +103,19 @@
 								{{ $value->amount }}
 							</td>
 							<td class="tac">
+								@php
+									if(isset($empArr[$i]['id'])) {
+										$id = $empArr[$i]['id'];
+									} else {
+										$id = "";
+									}
+								@endphp
 								<input  type = "checkbox" 
 										class = "empIdCheck" 
 										name = "empIdCheck"
 										id = "empIdCheck<?php echo $i; ?>" 
 										value = "<?php echo $i; ?>"
-										onclick = "employeeCheck('{{ $i }}','{{ $value->emp_ID }}')" >
+										onclick = "employeeCheck('{{ $i }}','{{ $value->emp_ID }}','{{ $id }}')" >
 							</td>
 						</tr>
 						@php $i++; @endphp
@@ -160,6 +168,8 @@
 								@if(isset($empArr[$j]['id']))
 									{{ $empArr[$j]['id'] }}
 								@endif
+								{{ Form::hidden('salId'.$j, '' , 
+									array('id' => 'salId'.$j)) }}
 							</td>
 							<td class="tac">
 								@if(isset($empArr[$j]['date']))
@@ -192,7 +202,7 @@
 						</tr>
 					@endfor
 					@if(count($empArrVal) == 0)
-					<td colspan="5">
+					<td colspan="6">
 						<div class="text-center fr">
 							{{ trans('messages.lbl_nodatafound') }}
 						</div>
@@ -205,8 +215,12 @@
 	</div>
 
 	{{ Form::close() }}
-
-	
+	<div class = "vam tac">
+		<a href="javascript:addeditemployee('{{ count($empArr) }}');"
+			class="btn btn-warning">
+			<i class="fa fa-edit mr5"></i>{{ trans('messages.lbl_update') }}
+		</a>
+	</div>
 
 	
 

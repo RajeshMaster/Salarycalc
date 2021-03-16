@@ -43,10 +43,28 @@ function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, c
 	}
 }
 
-function employeeCheck(val,empId) {
+function employeeCheck(val,empId,id) {
 	if ($("#empIdCheck"+val).prop('checked') == true) {
+		$('#salId'+val).val(id);
 		$('#salempId'+val).val(empId);
 	} else {
+		$('#salId'+val).val('');
 		$('#salempId'+val).val('');
 	}
+}
+
+function addeditemployee(totalval) {
+	if (totalval != "") {
+		var confirmprocess = confirm("Do You Want To Update?");
+		if(confirmprocess) {
+			$('#totVal').val(totalval);
+			$('#SalarycalcAndSalaryplus').attr('action', 'addeditemp?mainmenu='+mainmenu+'&time='+datetime);
+			$("#SalarycalcAndSalaryplus").submit();
+		} else {
+			return false;
+		}
+	} else {
+		return false;
+	}
+	
 }
