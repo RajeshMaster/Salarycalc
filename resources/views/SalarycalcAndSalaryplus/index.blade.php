@@ -188,6 +188,7 @@
 										'name' => 'salId'.$j,
 										'style'=>'text-align:center;',
 										'autocomplete' =>'off',
+										'readonly' =>'true',
 										'class'=>'ime_mode_disable ml5 mr5 box90per',
 										'data-label' => trans('messages.lbl_id'))) 
 								}}
