@@ -70,6 +70,7 @@
 					<col width="10%">
 					<col width="20%">
 					<col width="20%">
+					<col width="20%">
 					<col width="">
 					<col width="10%">
 				</colgroup>
@@ -82,6 +83,8 @@
 							{{ trans('messages.lbl_yearmonth') }}</th>
 						<th class="vam">
 							{{ trans('messages.lbl_empno') }}</th>
+						<th class="vam" >
+							{{ trans('messages.lbl_transferred') }}</th>
 						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
 						<th class="vam"></th>
@@ -103,6 +106,11 @@
 								@endif
 							</td>
 							<td class="tac">
+								@if(isset($salaryCalcArr[$i]['Transferred']))
+									{{ $salaryCalcArr[$i]['Transferred'] }}
+								@endif
+							</td>
+							<td class="tac">
 								@if(isset($salaryCalcArr[$i]['id']))
 									@if(isset($salaryCalcArr[$i][$salaryCalcArr[$i]['id']]['TotalAmt']))
 										{{ $salaryCalcArr[$i][$salaryCalcArr[$i]['id']]['TotalAmt'] }}
@@ -119,7 +127,7 @@
 						</tr>
 					@endfor
 					@if(count($salaryCalcArrVal) == 0)
-					<td colspan="5">
+					<td colspan="6">
 						<div class="text-center fr">
 							{{ trans('messages.lbl_nodatafound') }}
 						</div>

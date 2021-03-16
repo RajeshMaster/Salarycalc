@@ -528,10 +528,10 @@ Class SalarycalcAndSalaryplusController extends Controller {
 				}
 			}
 			
-			$empArr[$i]['Amt'] = array_push($empArr,array($salary + $deduction + $value->Travel + $value->salamt));
+			$empArr[$i]['Amt'] = array_push($empArr,array($salary + $deduction + $value->Travel));
 			$empArr[$i][$value->id]['Salary'] = $salary;
 			$empArr[$i][$value->id]['Deduction'] = $deduction;
-			$empArr[$i][$value->id]['TotalAmt'] = $salary + $deduction + $value->Travel +  $value->salamt;
+			$empArr[$i][$value->id]['TotalAmt'] = $salary + $deduction + $value->Travel;
 			$empArr[$i]['id'] = $value->id;
 			$empArr[$i]['date'] = $value->date;
 			$empArr[$i]['Emp_ID'] = $value->Emp_ID;
@@ -606,13 +606,14 @@ Class SalarycalcAndSalaryplusController extends Controller {
 				}
 			}
 			
-			$salaryCalcArr[$j]['Amt'] = array_push($salaryCalcArr,array($salarySalcalc + $deductionSalcalc + $salArrvalue->Transferred + $salArrvalue->Basic + $salArrvalue->hra));
+			$salaryCalcArr[$j]['Amt'] = array_push($salaryCalcArr,array($salarySalcalc + $deductionSalcalc + $salArrvalue->Basic + $salArrvalue->hra));
 			$salaryCalcArr[$j][$salArrvalue->id]['Salary'] = $salarySalcalc;
 			$salaryCalcArr[$j][$salArrvalue->id]['Deduction'] = $deductionSalcalc;
-			$salaryCalcArr[$j][$salArrvalue->id]['TotalAmt'] = $salarySalcalc + $deductionSalcalc + $salArrvalue->Transferred + $salArrvalue->Basic + $salArrvalue->hra;
+			$salaryCalcArr[$j][$salArrvalue->id]['TotalAmt'] = $salarySalcalc + $deductionSalcalc + $salArrvalue->Basic + $salArrvalue->hra;
 			$salaryCalcArr[$j]['id'] = $salArrvalue->id;
 			$salaryCalcArr[$j]['date'] = $salArrvalue->date;
 			$salaryCalcArr[$j]['Emp_ID'] = $salArrvalue->Emp_ID;
+			$salaryCalcArr[$j]['Transferred'] = $salArrvalue->Transferred;
 			$j++;
 		}
 		rsort($salaryCalcArr);
