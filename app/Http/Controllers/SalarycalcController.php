@@ -91,7 +91,7 @@ Class SalarycalcController extends Controller {
 				$current_year = intval($splityear[0]);
 			}
 		} else if ($request->selYear) {
-			if ($request->selMonth > $account_close_mn) {
+			if ($request->selMonth >= $account_close_mn) {
 				$current_year = intval($request->selYear) + 1;
 				$last_year = intval($request->selYear);
 			} else {
