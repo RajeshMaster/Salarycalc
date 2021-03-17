@@ -57,116 +57,116 @@ Class SalarycalcController extends Controller {
 		$get_det = array();
 		$g_query_tot = array();
 
-			if (!isset($request->selMonth)) { 
-				$date_month = date('Y-m', strtotime("last month"));
-				// $date_month = date('Y-m');
-			} else { 
-				if ($request->get_prev_yr == 1) {
-					$prev_month_ts = strtotime($request->selYear.'-'. substr("0" . $request->selMonth , -2).' -1 month');
-					$date_month = date('Y-m', $prev_month_ts);
-				} else {
-					$date_month = $request->selYear . "-" . substr("0" . $request->selMonth , -2);
-				}
-			}
-					// print_r($date_month);exit();
-			$last=date('Y-m', strtotime('last month'));
-			$last1 = date($date_month , strtotime($last . " last month"));
-			$lastdate = explode('-',$last1);
-			$lastyear =$lastdate[0];
-			$lastmonth =$lastdate[1];
-			$request->selMonth = $lastmonth;
-			$request->selYear = $lastyear;
-			$g_accountperiod = SalaryCalc::fnGetAccountPeriod();
-			$account_close_yr = $g_accountperiod[0]->Closingyear;
-			$account_close_mn = $g_accountperiod[0]->Closingmonth;
-			$account_period = intval($g_accountperiod[0]->Accountperiod);
-
-			$splityear = explode('-', $request->previou_next_year); 
-			if ($request->previou_next_year != "") { 
-				if (intval($splityear[1]) > $account_close_mn) {
-					$last_year = intval($splityear[0]);
-					$current_year = intval($splityear[0]) + 1;
-				} else {
-					$last_year = intval($splityear[0]) - 1;
-					$current_year = intval($splityear[0]);
-				}
-			} else if ($request->selYear) {
-				if (date('m') > $account_close_mn) {
-					$current_year = intval($request->selYear) + 1;
-					$last_year = intval($request->selYear);
-				} else {
-					$current_year = intval($request->selYear);
-					$last_year = intval($request->selYear) - 1;
-				}
+		if (!isset($request->selMonth)) { 
+			$date_month = date('Y-m', strtotime("last month"));
+			// $date_month = date('Y-m');
+		} else { 
+			if ($request->get_prev_yr == 1) {
+				$prev_month_ts = strtotime($request->selYear.'-'. substr("0" . $request->selMonth , -2).' -1 month');
+				$date_month = date('Y-m', $prev_month_ts);
 			} else {
-				if (date('m') > $account_close_mn) {
-					$current_year = date('Y')+1;
-					$last_year = date('Y');
-				} else {
-					$current_year = date('Y');
-					$last_year = date('Y') - 1;
-				}
+				$date_month = $request->selYear . "-" . substr("0" . $request->selMonth , -2);
 			}
-			if ($account_close_mn == 12) {
-				for ($i = 1; $i <= 12; $i++) {
-					$year_month[$current_year][$i] = $i;
-				}
+		}
+				// print_r($date_month);exit();
+		$last=date('Y-m', strtotime('last month'));
+		$last1 = date($date_month , strtotime($last . " last month"));
+		$lastdate = explode('-',$last1);
+		$lastyear =$lastdate[0];
+		$lastmonth =$lastdate[1];
+		$request->selMonth = $lastmonth;
+		$request->selYear = $lastyear;
+		$g_accountperiod = SalaryCalc::fnGetAccountPeriod();
+		$account_close_yr = $g_accountperiod[0]->Closingyear;
+		$account_close_mn = $g_accountperiod[0]->Closingmonth;
+		$account_period = intval($g_accountperiod[0]->Accountperiod);
+
+		$splityear = explode('-', $request->previou_next_year); 
+		if ($request->previou_next_year != "") { 
+			if (intval($splityear[1]) > $account_close_mn) {
+				$last_year = intval($splityear[0]);
+				$current_year = intval($splityear[0]) + 1;
 			} else {
-				for ($i = ($account_close_mn + 1); $i <= 12; $i++) {
-					$year_month[$last_year][$i] = $i;
-				}
-				for ($i = 1; $i <= $account_close_mn; $i++) {
-					$year_month[$current_year][$i] = $i;
-				}
+				$last_year = intval($splityear[0]) - 1;
+				$current_year = intval($splityear[0]);
 			}
-			$year_month_day = $current_year . "-" . $account_close_mn . "-01";
-			$maxday = Common::fnGetMaximumDateofMonth($year_month_day);
-			$from_date = $last_year . "-" . substr("0" . $account_close_mn, -2). "-01"/* . substr("0" . $maxday, -2)*/;
-			$to_date = $current_year . "-" . substr("0" . ($account_close_mn + 1), -2) . "-01";
-			
-			$exp_query = SalaryCalc::fnGetmnthRecord($from_date, $to_date);
-			foreach ($exp_query as $key => $res1) {
-				$concat = $res1->year.'-'.$res1->month;
-				//array_push($dbrecord, $res1['start_date']);
-				array_push($dbrecord, $concat);
+		} else if ($request->selYear) {
+			if ($request->selMonth > $account_close_mn) {
+				$current_year = intval($request->selYear) + 1;
+				$last_year = intval($request->selYear);
+			} else {
+				$current_year = intval($request->selYear);
+				$last_year = intval($request->selYear) - 1;
 			}
+		} else {
+			if (date('m') > $account_close_mn) {
+				$current_year = date('Y')+1;
+				$last_year = date('Y');
+			} else {
+				$current_year = date('Y');
+				$last_year = date('Y') - 1;
+			}
+		}
+		if ($account_close_mn == 12) {
+			for ($i = 1; $i <= 12; $i++) {
+				$year_month[$current_year][$i] = $i;
+			}
+		} else {
+			for ($i = ($account_close_mn + 1); $i <= 12; $i++) {
+				$year_month[$last_year][$i] = $i;
+			}
+			for ($i = 1; $i <= $account_close_mn; $i++) {
+				$year_month[$current_year][$i] = $i;
+			}
+		}
+		$year_month_day = $current_year . "-" . $account_close_mn . "-01";
+		$maxday = Common::fnGetMaximumDateofMonth($year_month_day);
+		$from_date = $last_year . "-" . substr("0" . $account_close_mn, -2). "-01"/* . substr("0" . $maxday, -2)*/;
+		$to_date = $current_year . "-" . substr("0" . ($account_close_mn + 1), -2) . "-01";
+		
+		$exp_query = SalaryCalc::fnGetmnthRecord($from_date, $to_date);
+		foreach ($exp_query as $key => $res1) {
+			$concat = $res1->year.'-'.$res1->month;
+			//array_push($dbrecord, $res1['start_date']);
+			array_push($dbrecord, $concat);
+		}
 
-			$lastMonthAsLink = date("Y-m", strtotime("-1 months", strtotime(date('Y-m-01'))));
-				array_push($dbrecord, $lastMonthAsLink);
-			$exp_query1 = SalaryCalc::fnGetmnthRecordPrevious($from_date);
-			foreach ($exp_query1 as $key => $res2) {
-				array_push($dbprevious, $res2->date);
-			}
-			$dbprevious = array_unique($dbprevious);
+		$lastMonthAsLink = date("Y-m", strtotime("-1 months", strtotime(date('Y-m-01'))));
+			array_push($dbrecord, $lastMonthAsLink);
+		$exp_query1 = SalaryCalc::fnGetmnthRecordPrevious($from_date);
+		foreach ($exp_query1 as $key => $res2) {
+			array_push($dbprevious, $res2->date);
+		}
+		$dbprevious = array_unique($dbprevious);
 
-			$exp_query2 = SalaryCalc::fnGetmnthRecordNext($to_date);
-			foreach ($exp_query2 as $key => $res3) {
-				array_push($dbnext, $res3->date);
-			}
-			//START PREVIOUS AND FUTURE MONTH LINK WITHOUT DATA IN THE DB
-			$fu_date = date('Y')."-0".(date('m')+1);
-			$pre_date = date('Y')."-0".(date('m')-1);
-			$cur_date = date('Y')."-0".(date('m'));
-			if (!in_array($pre_date, $dbrecord)) {
-				array_push($dbrecord, $pre_date);
-			}
-			if (!in_array($cur_date, $dbrecord)) {
-				array_push($dbrecord, $cur_date);
-			}
-			if (!in_array($fu_date, $dbrecord)) {
-				array_push($dbrecord, $fu_date);
-			}
-			$dbrecord = array_unique($dbrecord);
-			foreach ($dbrecord AS $dbrecordkey => $dbrecordvalue) {
-				$split_val = explode("-",$dbrecordvalue);
-				$db_year_month[$split_val[0]][intval($split_val[1])] = intval($split_val[1]);
-			}
-			
-			$split_date = explode('-', $date_month);
+		$exp_query2 = SalaryCalc::fnGetmnthRecordNext($to_date);
+		foreach ($exp_query2 as $key => $res3) {
+			array_push($dbnext, $res3->date);
+		}
+		//START PREVIOUS AND FUTURE MONTH LINK WITHOUT DATA IN THE DB
+		$fu_date = date('Y')."-0".(date('m')+1);
+		$pre_date = date('Y')."-0".(date('m')-1);
+		$cur_date = date('Y')."-0".(date('m'));
+		if (!in_array($pre_date, $dbrecord)) {
+			array_push($dbrecord, $pre_date);
+		}
+		if (!in_array($cur_date, $dbrecord)) {
+			array_push($dbrecord, $cur_date);
+		}
+		if (!in_array($fu_date, $dbrecord)) {
+			array_push($dbrecord, $fu_date);
+		}
+		$dbrecord = array_unique($dbrecord);
+		foreach ($dbrecord AS $dbrecordkey => $dbrecordvalue) {
+			$split_val = explode("-",$dbrecordvalue);
+			$db_year_month[$split_val[0]][intval($split_val[1])] = intval($split_val[1]);
+		}
+		
+		$split_date = explode('-', $date_month);
 
-			$account_val = Common::getAccountPeriod($year_month, $account_close_yr, $account_close_mn, $account_period);
+		$account_val = Common::getAccountPeriod($year_month, $account_close_yr, $account_close_mn, $account_period);
 
-			$g_query = SalaryCalc::salaryDetail($request,$lastyear,$lastmonth,1);
+		$g_query = SalaryCalc::salaryDetail($request,$lastyear,$lastmonth,1);
 		$k = 0;
 		foreach ($g_query as $key => $value) {
 			$get_det[$k]['id'] = $value->id;
