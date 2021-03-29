@@ -1,3 +1,5 @@
+{{ HTML::script('resources/assets/js/salarycalcplus.js') }}
+
 <style>
 
 .modal {
@@ -27,8 +29,10 @@
 
 	 {{ Form::hidden('mainmenu', $request->mainmenu ,array('id' => 'mainmenu')) }}
 
-	 <input type="hidden" name="year" id="year" value="<?php echo $request->year ?>">
-	 <input type="hidden" name="month" id="month" value="<?php echo $request->month ?>">
+	<input type="hidden" name="year" id="year" value="<?php echo $request->year ?>">
+	<input type="hidden" name="month" id="month" value="<?php echo $request->month ?>">
+	
+	<div id="errorSectiondisplay" align="center" class="box100per"></div>
 
 	<div class="modal-body" style="padding: 10px !important;">
 		<div class="form-group col-md-12" style="min-height: 300px;">
@@ -42,6 +46,7 @@
 							array('id'=>'selectedyear', 
 									'name' => 'selectedyear',
 									'maxlength' => '4',
+									'data-label' => trans('messages.lbl_year'),
 									'onkeypress' => 'return isNumberKey(event)',
 									'class'=>'selectedyear box15per form-control')) }} 
 					<span class="fr ml5 mr5 red"> - </span>
@@ -49,6 +54,7 @@
 							array('id'=>'selectedmonth', 
 									'name' => 'selectedmonth',
 									'maxlength' => '2',
+									'data-label' => trans('messages.lbl_month'),
 									'onkeypress' => 'return isNumberKey(event)',
 									'class'=>'selectedmonth box12per form-control')) }} 
 				</div>
@@ -79,8 +85,8 @@
 		<div class="modal-footerbg-info mb10 mr10 ml10" 
 			style="padding: 6px !important;border-radius: 5px !important;">
 			<center>
-				<button id = "add" onclick="javascript:return contractempselpopupclick();"
-					class="btn btn-success CMN_display_block box100">
+				<button id = "add"
+					class="btn btn-success CMN_display_block box100 contractempselpopup">
 					<i class="fa fa-plus" aria-hidden="true"></i> 
 					{{ trans('messages.lbl_add') }}
 				</button>
