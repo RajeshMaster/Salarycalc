@@ -116,6 +116,27 @@
 						{{ trans('messages.lbl_gensen') }}
 					</a>
 				</div>
+				<div class="alinkEng ml20 mt5">
+					<a class="pageload csrp btn-link" 
+					href="{{ url('salarEmp/index?mainmenu=salarEmp&time='.date('Ymdhis')) }}" 
+					style="color:blue;font-size: 13px;">
+						{{ trans('messages.lbl_salarylist') }}
+					</a>
+				</div>
+				<div class="alinkEng ml20 mt5">
+					<a class="pageload csrp btn-link" 
+					href="{{ url('salarEmp/salindex?mainmenu=salindex&time='.date('Ymdhis')) }}" 
+					style="color:blue;font-size: 13px;">
+						{{ trans('messages.lbl_salarylist') }} +
+					</a>
+				</div>
+				<div class="alinkEng ml20 mt5">
+					<a class="pageload csrp btn-link" 
+					href="{{ url('SalaryDetails/index?mainmenu=SalaryDetails&time='.date('Ymdhis')) }}" 
+					style="color:blue;font-size: 13px;">
+						{{ trans('messages.lbl_salary_det') }}
+					</a>
+				</div>
 				@endif
 			</div>
 

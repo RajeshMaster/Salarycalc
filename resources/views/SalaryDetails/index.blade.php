@@ -1,7 +1,7 @@
 @extends('layouts.app')
 @section('content')
 @php use App\Http\Helpers @endphp
-{{ HTML::script('resources/assets/js/SalarycalcAndSalindex.js') }}
+{{ HTML::script('resources/assets/js/SalaryDetails.js') }}
 <script type="text/javascript">
 	var datetime = '<?php echo date('Ymdhis'); ?>';
 	var mainmenu = '<?php echo $request->mainmenu; ?>';
@@ -25,10 +25,10 @@
 
 <div class="CMN_display_block" id="main_contents" style="width: 100%;">
 	<!-- article to select the main&sub menu -->
-	<article id="expenses" class="DEC_flex_wrapper " data-category="expenses expenses_sub_9">
-		{{ Form::open(array('name'=>'SalarycalcAndSalindex',
-							'id'=>'SalarycalcAndSalindex',
-							'url'=>'salarEmp/salindex?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
+	<article id="expenses" class="DEC_flex_wrapper " data-category="expenses expenses_sub_10">
+		{{ Form::open(array('name'=>'SalaryDetails',
+							'id'=>'SalaryDetails',
+							'url'=>'SalaryDetails/index?mainmenu='.$request->mainmenu.'&time='.date('YmdHis'),
 							'files'=>true,
 							'method' => 'POST' )) }}
 			{{ Form::hidden('mainmenu', $request->mainmenu, array('id' => 'mainmenu')) }}
@@ -49,7 +49,7 @@
 			<div class="col-xs-12">
 				<img class="pull-left box35 mt10" src="{{ URL::asset('resources/assets/images/salary_1.png') }}">
 				<h2 class="pull-left pl5 mt10">
-					{{ trans('messages.lbl_salarylist') }} +
+					{{ trans('messages.lbl_salarylist') }}
 				</h2>
 			</div>
 		</div>
@@ -63,16 +63,14 @@
 	
 	<div class="pt10 pl10 pr10 ">
 
-		<div style="display: inline-block;width: 40%;"  class="mt10 mb10 ml10 mr10">
-			SalaryCalc
+		<div style="display: inline-block;width: 45%;"  class="mt10 mb10 ml10 mr10">
+			Accounting
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
+					<col width="3%">
+					<col width="15%">
 					<col width="10%">
-					<col width="20%">
-					<col width="20%">
-					<col width="20%">
-					<col width="">
-					<col width="10%">
+					<col width="15%">
 				</colgroup>
 
 				<thead class="CMN_tbltheadcolor">
@@ -84,50 +82,29 @@
 						<th class="vam">
 							{{ trans('messages.lbl_empno') }}</th>
 						<th class="vam" >
-							{{ trans('messages.lbl_transferred') }}</th>
-						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
-						<th class="vam"></th>
 					</tr>
 				<tbody>
-					@for($i = 0; $i < count($salaryCalcArr); $i++)
+					@php $i = 0; @endphp
+					@foreach($salaryCalcArrVal AS $key => $value)
 						<tr>
-							<td>
+							<td class="tac">
 								{{ $i+1 }}
 							</td>
 							<td class="tac">
-								@if(isset($salaryCalcArr[$i]['date']))
-									{{ $salaryCalcArr[$i]['date'] }}
-								@endif
+								{{ $value->date }}
 							</td>
 							<td class="tac">
-								@if(isset($salaryCalcArr[$i]['Emp_ID']))
-									{{ $salaryCalcArr[$i]['Emp_ID'] }}
-								@endif
+								{{ $value->emp_ID }}
 							</td>
 							<td class="tac">
-								@if(isset($salaryCalcArr[$i]['Transferred']))
-									{{ $salaryCalcArr[$i]['Transferred'] }}
-								@endif
-							</td>
-							<td class="tac">
-								@if(isset($salaryCalcArr[$i]['id']))
-									@if(isset($salaryCalcArr[$i][$salaryCalcArr[$i]['id']]['TotalAmt']))
-										{{ $salaryCalcArr[$i][$salaryCalcArr[$i]['id']]['TotalAmt'] }}
-									@endif
-								@endif
-							</td>
-							<td class="tac">
-								<input  type = "checkbox" 
-										class = "empIdCheck" 
-										name = "empIdCheck"
-										id = "empIdCheck" 
-										value = "<?php echo $i; ?>">
+								{{ $value->amount }}
 							</td>
 						</tr>
-					@endfor
+						@php $i++; @endphp
+					@endforeach
 					@if(count($salaryCalcArrVal) == 0)
-					<td colspan="6">
+					<td colspan="4">
 						<div class="text-center fr">
 							{{ trans('messages.lbl_nodatafound') }}
 						</div>
@@ -137,14 +114,11 @@
 			</table>
 		</div>
 
-		<div style="display: inline-block;width: 50%;" class="mt10 mb10 ml10 mr10">
+		<div style="display: inline-block;width: 45%;" class="mt10 mb10 ml10 mr10">
 			SalaryCalcPlus
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
-					<col width="5%">
-					<col width="10%">
-					<col width="15%">
-					<col width="10%">
+					<col width="3%">
 					<col width="15%">
 					<col width="10%">
 					<col width="15%">
@@ -155,29 +129,17 @@
 						<th class="vam">
 							{{ trans('messages.lbl_sno') }}</th>
 						<th class="vam" >
-							{{ trans('messages.lbl_id') }}</th>
-						<th class="vam" >
 							{{ trans('messages.lbl_yearmonth') }}</th>
 						<th class="vam">
 							{{ trans('messages.lbl_empno') }}</th>
 						<th class="vam" >
 							{{ trans('messages.lbl_totamt') }}</th>
-						<th class="vam" >
-							{{ trans('messages.lbl_id') }}
-						</th>
-						<th class="vam" >
-							{{ trans('messages.lbl_employeeid') }}</th>
 					</tr>
 				<tbody>
 					@for ($j = 0; $j < count($empArr); $j++)
 						<tr>
-							<td>
-								{{ $j+1 }}
-							</td>
 							<td class="tac">
-								@if(isset($empArr[$j]['id']))
-									{{ $empArr[$j]['id'] }}
-								@endif
+								{{ $j+1 }}
 							</td>
 							<td class="tac">
 								@if(isset($empArr[$j]['date']))
@@ -196,36 +158,11 @@
 									@endif
 								@endif
 							</td>
-							<td class="tac">
-								{{ Form::text('salId'.$j, '',
-									array('id'=>'salId'.$j,
-										'name' => 'salId'.$j,
-										'style'=>'text-align:center;',
-										'autocomplete' =>'off',
-										'readonly' =>'true',
-										'class'=>'ime_mode_disable ml5 mr5 box90per',
-										'data-label' => trans('messages.lbl_id'))) 
-								}}
-							</td>
-							<td class="tac">
-								@php
-									if(isset($empArr[$j]['id'])) {
-										$id = $empArr[$j]['id'];
-									} else {
-										$id = "";
-									}
-								@endphp
-								<input type="text" name="salempId<?php echo $j; ?>"
-									id = "salempId<?php echo $j; ?>" 
-									style = "text-align:center;"
-									onchange = "employeeCheck('{{ $j }}','{{ $id }}');"
-									class = "ime_mode_disable ml5 mr5 box90per">
-							</td>
 							
 						</tr>
 					@endfor
 					@if(count($empArrVal) == 0)
-					<td colspan="7">
+					<td colspan="4">
 						<div class="text-center fr">
 							{{ trans('messages.lbl_nodatafound') }}
 						</div>
@@ -238,14 +175,6 @@
 	</div>
 
 	{{ Form::close() }}
-	<div class = "vam tac">
-		<a href="javascript:addeditemployee('{{ count($empArr) }}');"
-			class="btn btn-warning">
-			<i class="fa fa-edit mr5"></i>{{ trans('messages.lbl_update') }}
-		</a>
-	</div>
-
-	
 
 	</article>
 </div>
