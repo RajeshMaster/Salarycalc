@@ -43,6 +43,8 @@
 			{{ Form::hidden('page', $request->page , array('id' => 'page')) }}
 			{{ Form::hidden('get_prev_yr', '' , array('id' => 'get_prev_yr')) }}
 			{{ Form::hidden('totVal', '' , array('id' => 'totVal')) }}
+			{{ Form::hidden('searchmethod', '' , array('id' => 'searchmethod')) }}
+			{{ Form::hidden('empIdArr', '' , array('id' => 'empIdArr')) }}
 
 		<!-- Start Heading -->
 		<div class="row hline pm0">
@@ -54,12 +56,13 @@
 			</div>
 		</div>
 		<!-- End Heading -->
-
-		<div class="box100per pr10 pl10 ">
-			<div class="mt10 mb10">
-				{{ Helpers::displayYear_MonthEst($account_period, $year_month, $db_year_month, $date_month, $dbnext, $dbprevious, $last_year, $current_year, $account_val) }}
+		@if($request->searchmethod != 3)
+			<div class="box100per pr10 pl10 ">
+				<div class="mt10 mb10">
+					{{ Helpers::displayYear_MonthEst($account_period, $year_month, $db_year_month, $date_month, $dbnext, $dbprevious, $last_year, $current_year, $account_val) }}
+				</div>
 			</div>
-		</div>
+		@endif
 	
 	<div class="pt10 pl10 pr10 ">
 
@@ -95,7 +98,9 @@
 								{{ $value->date }}
 							</td>
 							<td class="tac">
-								{{ $value->emp_ID }}
+								<a class="blue" href="javascript:empNameclick('{{ $value->emp_ID }}');" >
+									{{ $value->emp_ID }}
+								</a>
 							</td>
 							<td class="tac">
 								{{ $value->amount }}
@@ -148,7 +153,10 @@
 							</td>
 							<td class="tac">
 								@if(isset($empArr[$j]['Emp_ID']))
-									{{ $empArr[$j]['Emp_ID'] }}
+									<a class="blue" href="javascript:empNameclick('{{ $empArr[$j]['Emp_ID'] }}');" >
+										{{ $empArr[$j]['Emp_ID'] }}
+									</a>
+									
 								@endif
 							</td>
 							<td class="tac">

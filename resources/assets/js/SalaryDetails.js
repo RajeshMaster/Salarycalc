@@ -37,10 +37,21 @@ function getData(month, year, flg, prevcnt, nextcnt, account_period, lastyear, c
 	$('#pageclick').val('');
 	$('#page').val('');
 	$('#plimit').val('');
+	$("#searchmethod").val('');
 	$('#get_prev_yr').val('1');
 	$('#SalaryDetails').attr('action', 'index?mainmenu='+mainmenu+'&time='+datetime);
 	$("#SalaryDetails").submit();
 	}
+}
+
+function empNameclick(empId){ 
+	pageload();
+	$('#plimit').val(50);
+	$('#page').val('');
+	$('#empIdArr').val(empId);
+	$("#searchmethod").val(3);
+	$('#SalaryDetails').attr('action','index'+'?mainmenu='+mainmenu+'&time='+datetime); 
+	$("#SalaryDetails").submit();
 }
 
 

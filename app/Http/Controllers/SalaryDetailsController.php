@@ -151,8 +151,8 @@ Class SalaryDetailsController extends Controller {
 		$split_date = explode('-', $date_month);
 
 		$account_val = Common::getAccountPeriod($year_month, $account_close_yr, $account_close_mn, $account_period);
-		$empArrVal = SalaryDetails::fnGetEmpIdList($lastyear,$lastmonth);
-		$salaryCalcArrVal = SalaryDetails::fnGetSalaryCalcList($currentyear,$currentmonth);
+		$empArrVal = SalaryDetails::fnGetEmpIdList($request,$lastyear,$lastmonth);
+		$salaryCalcArrVal = SalaryDetails::fnGetSalaryCalcList($request,$currentyear,$currentmonth);
 
 		if ($request->get_prev_yr != 1) {
 			$prev_month_ts = strtotime($date_month.' +1 month');
@@ -242,7 +242,7 @@ Class SalaryDetailsController extends Controller {
 			$empArr[$i]['Emp_ID'] = $value->Emp_ID;
 			$i++;
 		}
-		rsort($empArr);
+		// rsort($empArr);
 
 		// For Year Bar Logic
 		$db_year_month_new = array();

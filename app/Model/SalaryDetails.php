@@ -49,28 +49,45 @@ class SalaryDetails extends Model{
 	 	return $query;
 	}
 
-	public static function fnGetEmpIdList($year,$month){
+	public static function fnGetEmpIdList($request,$year,$month){
 		$db = DB::connection('mysql');
+		$empIdArr = array($request->empIdArr);
 		$query = $db->table('inv_salaryplus_main')
-					->select('*')
-					->where('year','=', $year)
-					->where('month','=', $month)
-					->orderBy("Travel",'DESC')
-					->get();
+					->select('*');
+		if ($empIdArr != array() && $request->searchmethod == 3) {
+			$query = $query->whereIn('Emp_ID',$empIdArr)
+							->orderBy("year",'DESC')
+							->orderBy("month",'DESC')
+							->get();
+		} else {
+			$query = $query->where('year','=', $year)
+							->where('month','=', $month)
+							->orderBy("Emp_ID",'ASC')
+							->get();
+		}
 		return $query;
 	}
 
-	public static function fnGetSalaryCalcList($year,$month){
+	public static function fnGetSalaryCalcList($request,$year,$month){
 		$db = DB::connection('mysql_Invoice');
+		$empIdArr = array($request->empIdArr);
 		$yearsss = date("Y-m", strtotime("-1 months", strtotime($year)));
 		$monthssss = date("m", strtotime("-1 months", strtotime($month)));
 		$query = $db->table('acc_cashregister')
 					->select('*')
-					->WHERE(DB::raw("SUBSTRING(date, 1, 4)"),'=', $year)
-					->WHERE(DB::raw("SUBSTRING(date, 6, 2)"),'=', $month)
-					->where('pageFlg','=', 2)
-					->orderBy("amount",'DESC')
-					->get();
+					->where('pageFlg','=', 2);
+
+		if ($empIdArr != array() && $request->searchmethod == 3) {
+			$query = $query->whereIn('Emp_ID',$empIdArr)
+							->orderBy("date",'DESC')
+							->get();
+		} else {
+			$query = $query->WHERE(DB::raw("SUBSTRING(date, 1, 4)"),'=', $year)
+							->WHERE(DB::raw("SUBSTRING(date, 6, 2)"),'=', $month)
+							->orderBy("Emp_ID",'ASC')
+							->get();
+		}
+					
 		return $query;
 	}
 
