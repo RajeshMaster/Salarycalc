@@ -68,25 +68,16 @@ class SalaryDetails extends Model{
 		return $query;
 	}
 
-	public static function fnGetSalaryCalcList($request,$year,$month){
+	public static function fnGetSalaryCalcList($request,$empId,$year,$month){
 		$db = DB::connection('mysql_Invoice');
-		$empIdArr = array($request->empIdArr);
-		$yearsss = date("Y-m", strtotime("-1 months", strtotime($year)));
-		$monthssss = date("m", strtotime("-1 months", strtotime($month)));
+		$year_mon = $year."-".$month;
+		$yearMnth = date("Y-m", strtotime("1 months", strtotime($year_mon)));
 		$query = $db->table('acc_cashregister')
 					->select('*')
-					->where('pageFlg','=', 2);
-
-		if ($empIdArr != array() && $request->searchmethod == 3) {
-			$query = $query->whereIn('Emp_ID',$empIdArr)
-							->orderBy("date",'DESC')
-							->get();
-		} else {
-			$query = $query->WHERE(DB::raw("SUBSTRING(date, 1, 4)"),'=', $year)
-							->WHERE(DB::raw("SUBSTRING(date, 6, 2)"),'=', $month)
-							->orderBy("Emp_ID",'ASC')
-							->get();
-		}
+					->where('pageFlg','=', 2)
+					->WHERE('Emp_ID','=',$empId)
+					->WHERE(DB::raw("SUBSTRING(date, 1, 7)"),'=', $yearMnth)
+					->get();
 					
 		return $query;
 	}

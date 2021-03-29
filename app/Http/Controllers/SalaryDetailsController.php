@@ -152,7 +152,6 @@ Class SalaryDetailsController extends Controller {
 
 		$account_val = Common::getAccountPeriod($year_month, $account_close_yr, $account_close_mn, $account_period);
 		$empArrVal = SalaryDetails::fnGetEmpIdList($request,$lastyear,$lastmonth);
-		$salaryCalcArrVal = SalaryDetails::fnGetSalaryCalcList($request,$currentyear,$currentmonth);
 
 		if ($request->get_prev_yr != 1) {
 			$prev_month_ts = strtotime($date_month.' +1 month');
@@ -240,6 +239,11 @@ Class SalaryDetailsController extends Controller {
 			$empArr[$i]['id'] = $value->id;
 			$empArr[$i]['date'] = $value->date;
 			$empArr[$i]['Emp_ID'] = $value->Emp_ID;
+			$empArr[$i]['yearmonth'] = $value->year."-".$value->month;
+			$salaryCalcArrVal = SalaryDetails::fnGetSalaryCalcList($request,$value->Emp_ID,$value->year,$value->month);
+			if (isset($salaryCalcArrVal[0])) {
+				$empArr[$i]['paidAmount'] = $salaryCalcArrVal[0]->amount;
+			}
 			$i++;
 		}
 		// rsort($empArr);
@@ -260,7 +264,6 @@ Class SalaryDetailsController extends Controller {
 		return view('SalaryDetails.index',[	'request' => $request,
 											'empArrVal'=>$empArrVal,
 											'empArr'=>$empArr,
-											'salaryCalcArrVal'=>$salaryCalcArrVal,
 											'account_val'=>$account_val,
 											'account_period'=> $account_period,
 											'year_month'=> $year_month,

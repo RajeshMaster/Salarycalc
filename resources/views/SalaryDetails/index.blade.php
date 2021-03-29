@@ -51,7 +51,7 @@
 			<div class="col-xs-12">
 				<img class="pull-left box35 mt10" src="{{ URL::asset('resources/assets/images/salary_1.png') }}">
 				<h2 class="pull-left pl5 mt10">
-					{{ trans('messages.lbl_salarylist') }}
+					{{ trans('messages.lbl_salary_det') }}
 				</h2>
 			</div>
 		</div>
@@ -65,9 +65,8 @@
 		@endif
 	
 	<div class="pt10 pl10 pr10 ">
-
-		<div style="display: inline-block;width: 45%;"  class="mt10 mb10 ml10 mr10">
-			Accounting
+		
+		<div style="display: inline-block;width: 40%;" class="mt10 mb10 ml10 mr10">
 			<table class="tablealternate mt10 mb10">
 				<colgroup>
 					<col width="3%">
@@ -81,64 +80,14 @@
 						<th class="vam">
 							{{ trans('messages.lbl_sno') }}</th>
 						<th class="vam" >
-							{{ trans('messages.lbl_yearmonth') }}</th>
+							{{ trans('messages.lbl_salary') }} 
+							{{ trans('messages.lbl_month')}} /
+							{{ trans('messages.lbl_date') }}
+						</th>
 						<th class="vam">
 							{{ trans('messages.lbl_empno') }}</th>
 						<th class="vam" >
-							{{ trans('messages.lbl_totamt') }}</th>
-					</tr>
-				<tbody>
-					@php $i = 0; @endphp
-					@foreach($salaryCalcArrVal AS $key => $value)
-						<tr>
-							<td class="tac">
-								{{ $i+1 }}
-							</td>
-							<td class="tac">
-								{{ $value->date }}
-							</td>
-							<td class="tac">
-								<a class="blue" href="javascript:empNameclick('{{ $value->emp_ID }}');" >
-									{{ $value->emp_ID }}
-								</a>
-							</td>
-							<td class="tac">
-								{{ $value->amount }}
-							</td>
-						</tr>
-						@php $i++; @endphp
-					@endforeach
-					@if(count($salaryCalcArrVal) == 0)
-					<td colspan="4">
-						<div class="text-center fr">
-							{{ trans('messages.lbl_nodatafound') }}
-						</div>
-					</td>
-					@endif
-				</tbody>
-			</table>
-		</div>
-
-		<div style="display: inline-block;width: 45%;" class="mt10 mb10 ml10 mr10">
-			SalaryCalcPlus
-			<table class="tablealternate mt10 mb10">
-				<colgroup>
-					<col width="3%">
-					<col width="15%">
-					<col width="10%">
-					<col width="15%">
-				</colgroup>
-
-				<thead class="CMN_tbltheadcolor">
-					<tr>
-						<th class="vam">
-							{{ trans('messages.lbl_sno') }}</th>
-						<th class="vam" >
-							{{ trans('messages.lbl_yearmonth') }}</th>
-						<th class="vam">
-							{{ trans('messages.lbl_empno') }}</th>
-						<th class="vam" >
-							{{ trans('messages.lbl_totamt') }}</th>
+							{{ trans('messages.lbl_sal_amt') }}</th>
 					</tr>
 				<tbody>
 					@for ($j = 0; $j < count($empArr); $j++)
@@ -147,6 +96,12 @@
 								{{ $j+1 }}
 							</td>
 							<td class="tac">
+								@if(isset($empArr[$j]['yearmonth']))
+									{{ $empArr[$j]['yearmonth'] }}
+								@endif
+								@if(isset($empArr[$j]['yearmonth']) && isset($empArr[$j]['date']))
+									<span class="fwb"> / </span>
+								@endif
 								@if(isset($empArr[$j]['date']))
 									{{ $empArr[$j]['date'] }}
 								@endif
@@ -170,16 +125,79 @@
 						</tr>
 					@endfor
 					@if(count($empArrVal) == 0)
-					<td colspan="4">
-						<div class="text-center fr">
-							{{ trans('messages.lbl_nodatafound') }}
-						</div>
-					</td>
+					<tr>
+						<td colspan="4">
+							<div class="text-center fr">
+								{{ trans('messages.lbl_nodatafound') }}
+							</div>
+						</td>
+					</tr>
 					@endif
 					
 				</tbody>
 			</table>
 		</div>
+
+		<div style="display: inline-block;width: 10%;"  class="mt10 mb10 ml10 mr10">
+			<table class="tablealternate mt10 mb10">
+				<colgroup>
+					<col width="10%">
+				</colgroup>
+
+				<thead class="CMN_tbltheadcolor">
+					<tr>
+						<th class="vam" >
+							{{ trans('messages.lbl_paid') }} 
+							{{ trans('messages.lbl_amount') }}
+						</th>
+					</tr>
+				</thead>
+				<tbody>
+					@for($i = 0; $i < count($empArr); $i++)
+						<tr>
+							<td class="tac">
+								@if(isset($empArr[$i]['paidAmount']))
+									@if(isset($empArr[$i]['id']))
+										@if(isset($empArr[$i][$empArr[$i]['id']]['TotalAmt']))
+											@if($empArr[$i][$empArr[$i]['id']]['TotalAmt'] == $empArr[$i]['paidAmount'])
+												<span style="color: black;"> 
+													{{ $empArr[$i]['paidAmount'] }} 
+												</span>
+											@else
+												<span style="color: red;"> 
+													{{ $empArr[$i]['paidAmount'] }} 
+												</span>
+											@endif
+										@else
+											<span style="color: red;"> 
+												{{ $empArr[$i]['paidAmount'] }} 
+											</span>
+										@endif
+									@else
+										<span style="color: red;"> 
+											{{ $empArr[$i]['paidAmount'] }} 
+										</span>
+									@endif
+									
+								@else
+									<span style="color: red;"> 0 </span>
+								@endif
+							</td>
+						</tr>
+					@endfor
+					@if(count($empArrVal) == 0)
+					<tr>
+						<td colspan="1">
+							<div class="text-center fr">
+								{{ trans('messages.lbl_nodatafound') }}
+							</div>
+						</td>
+					</tr>
+					@endif
+				</tbody>
+			</table>
+		</div>
+
 	</div>
 
 	{{ Form::close() }}
